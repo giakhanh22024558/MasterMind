@@ -106,61 +106,22 @@ To accept all defaults, write: "Use defaults from `architecture/conventions-defa
 
 ---
 
-## DFD conventions
-
-(Read by [`dfd/SKILL.md`](https://github.com/giakhanh22024558/MasterMind/blob/main/skills/diagram/dfd/SKILL.md). See [`dfd/conventions-schema.md`](https://github.com/giakhanh22024558/MasterMind/blob/main/skills/diagram/dfd/conventions-schema.md) for the full checklist.)
-
-### Canvas-overlay source
-
-Master architecture file path that DFDs overlay on:
-
-`<e.g. diagrams/1-overview/myproject-architecture.drawio>`
-
-### Yourdon notation choice
-
-- **Process shape**: `<rounded box · classical circle · …>` (default: rounded box for canvas-overlay consistency)
-- **Data store shape**: `<cylinder · open rectangle · …>` (default: cylinder)
-- **External entity shape**: `<rounded box · square · …>` (default: rounded box)
-
-### Process numbering scheme
-
-- Format: `<e.g. Yourdon N.M>` (default: Yourdon N.M)
-- Convention for sub-processes: `<2.1, 2.2, …>` (default)
-
-### Edge styles
-
-- **Data flow**: `<accept default · override>`
-- **Trigger flow**: `<same as data flow + TRIGGER: prefix>` (default)
-- **Prohibited flow**: `<accept default · override>`
-
-### Grey-out style
-
-- Fill: `<#hex>` (default: `#f5f5f5`)
-- Stroke: `<#hex>` (default: `#bdbdbd`)
-- Font: `<#hex>` (default: `#bdbdbd`)
-
-### Companion markdown structure
-
-Each DFD `.drawio` has a `.md` companion with sections (mark which apply):
-
-- ✅ Notation key
-- ✅ Storage tech mapping
-- ✅ Mermaid version
-- ✅ Process catalogue table
-- ✅ Trigger inventory
-- ✅ Process independence/dependency map
-- ✅ Architectural constraints
-- ✅ Cross-references
-
 ---
 
 ## Future diagram types
 
-(Add sections as the project adopts new diagram types — activity, BPMN, sequence, state, ERD, etc.)
+(Add sections as the project adopts new diagram types. Each new diagram type requires a corresponding sub-skill at `skills/diagram/<type>/` — see top-level [`SKILL.md`](https://github.com/giakhanh22024558/MasterMind/blob/main/skills/diagram/SKILL.md) "Adding a new diagram-type sub-skill" for the 5-step process.)
+
+### DFD conventions
+
+*(Not yet adopted in this template. When adopting:*
+- *Add sub-skill at `skills/diagram/dfd/` with uniform folder structure*
+- *Add this section back with: canvas-overlay source, Yourdon notation choice, process numbering, edge styles, grey-out style, companion markdown structure*
+- *Default approach: DFD as overlay on architecture canvas · Yourdon shapes mapped to architecture cell shapes for cross-mapping)*
 
 ### Activity diagram conventions
 
-*(Not yet adopted. When adopting, add a sub-skill at `skills/diagram/activity/` per [`SKILL.md`](https://github.com/giakhanh22024558/MasterMind/blob/main/skills/diagram/SKILL.md) "Adding a new diagram-type sub-skill" section.)*
+*(Not yet adopted.)*
 
 ### BPMN conventions
 
