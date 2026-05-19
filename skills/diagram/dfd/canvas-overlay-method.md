@@ -1,6 +1,10 @@
-# DFD authoring convention
+# DFD · canvas-overlay method
 
-How to build Data Flow Diagrams that visually anchor to the master architecture for trivial cross-mapping.
+How to build Data Flow Diagrams that visually anchor to the master architecture for 1:1 cross-mapping. This is the **default method** used by this sub-skill; projects can override in `diagram-conventions.md`.
+
+For visual vocabulary (shapes for process / store / entity), see [`yourdon-notation.md`](yourdon-notation.md).
+
+For convention defaults (edge styles, grey-out style, legend template), see [`conventions-defaults.md`](conventions-defaults.md).
 
 ## Core principle — "Architecture as canvas, DFD as overlay"
 

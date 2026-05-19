@@ -1,6 +1,8 @@
-# Edge label conventions
+# Architecture diagram · edge label rules
 
-How to phrase edge labels for clarity, audit trail, and self-explanation.
+Architecture-specific edge label conventions. For cross-diagram-type principles (reference-ID + characterization format, prohibition format), see [`../_shared/edge-labels-general.md`](../_shared/edge-labels-general.md).
+
+These rules apply to **master architecture diagrams** specifically. For DFD edge conventions, see [`../dfd/canvas-overlay-method.md`](../dfd/canvas-overlay-method.md).
 
 ## Rule 1 · Verb form for operational edges (mandatory)
 
