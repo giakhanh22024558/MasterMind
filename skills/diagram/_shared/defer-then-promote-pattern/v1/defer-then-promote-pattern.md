@@ -96,7 +96,7 @@ Each instantiation should specify:
 | Architecture edge format | Aggregated edge with surfaces named in label, OR per-surface edges |
 | Design-decisions row | `V5` (or similar visual-convention category) |
 
-See [`architecture/patterns/cross-layer-reads-tracking.md`](../architecture/patterns/cross-layer-reads-tracking.md) and [`architecture/patterns/hardware-gaps-tracking.md`](../architecture/patterns/hardware-gaps-tracking.md) for concrete instantiations.
+See [`architecture/patterns/`](../../../architecture/patterns/) (look for `cross-layer-reads-tracking.md` and `hardware-gaps-tracking.md`) for concrete instantiations.
 
 ## Why the pattern works
 

@@ -92,7 +92,7 @@ Edit Mermaid:
 + LAYER_A <-->|"R/W app-layer queues<br/>(Comms · <decision-id> WAL-encrypted)<br/>+ (Reports · offline-queue-first)"| STORE_X
 ```
 
-Apply same change to Drawio via [`scripts/update-cell-value.py`](../scripts/update-cell-value.py):
+Apply same change to Drawio via `update-cell-value.py` (in [`../../../_shared/scripts/`](../../../_shared/scripts/)):
 ```python
 CELL_ID = "e_layer_a_to_store_x"
 NEW_VALUE = "&lt;b&gt;R/W app-layer queues&lt;/b&gt;..."

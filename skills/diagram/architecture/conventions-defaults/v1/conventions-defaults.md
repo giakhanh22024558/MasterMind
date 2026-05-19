@@ -1,6 +1,6 @@
 # Architecture diagram · conventions defaults
 
-Default conventions applied by the architecture sub-skill when a project hasn't specified its own. **Project conventions** in `<project-root>/diagram-conventions.md` always override these defaults — see [`../_shared/conventions-discovery.md`](../_shared/conventions-discovery.md) for the discovery protocol.
+Default conventions applied by the architecture sub-skill when a project hasn't specified its own. **Project conventions** in `<project-root>/diagram-conventions.md` always override these defaults — see [`../_shared/conventions-discovery.md`](../../../_shared/conventions-discovery/) for the discovery protocol.
 
 These defaults are sensible starting points · projects are free to redefine any of them.
 

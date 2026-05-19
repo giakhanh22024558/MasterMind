@@ -59,7 +59,7 @@ For anything still unspecified, use the diagram-type sub-skill's `conventions-de
 
 ## Format of `diagram-conventions.md` (at project root)
 
-The skill expects this file to follow the structure in [`_project-template/PROJECT-CONVENTIONS.md`](../_project-template/PROJECT-CONVENTIONS.md). Sections per diagram type — projects fill in what they use, leave the rest blank.
+The skill expects this file to follow the structure in [`_project-template/`](../../../_project-template/). Sections per diagram type — projects fill in what they use, leave the rest blank.
 
 Example skeleton:
 

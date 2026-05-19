@@ -1,8 +1,8 @@
 # Architecture diagram · edge label rules
 
-Architecture-specific edge label conventions. For cross-diagram-type principles (reference-ID + characterization format, prohibition format), see [`../_shared/edge-labels-general.md`](../_shared/edge-labels-general.md).
+Architecture-specific edge label conventions. For cross-diagram-type principles (reference-ID + characterization format, prohibition format), see [`../_shared/edge-labels-general.md`](../../../_shared/edge-labels-general/).
 
-These rules apply to **master architecture diagrams** specifically. For DFD edge conventions, see [`../dfd/canvas-overlay-method.md`](../dfd/canvas-overlay-method.md).
+These rules apply to **master architecture diagrams** specifically. For DFD edge conventions, see the DFD sub-skill (not yet implemented).
 
 ## Rule 1 · Verb form for operational edges (mandatory)
 

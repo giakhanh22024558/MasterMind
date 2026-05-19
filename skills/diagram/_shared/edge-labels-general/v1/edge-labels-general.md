@@ -75,8 +75,8 @@ Don't try to squeeze everything onto one line — readability suffers.
 For diagram types where edges represent **operational/control** relationships (most diagram types except pure data-payload), labels should be in **verb form** describing the action one component performs on the other.
 
 See diagram-type-specific docs:
-- [`../architecture/edge-labels.md`](../architecture/edge-labels.md)
-- [`../dfd/canvas-overlay-method.md`](../dfd/canvas-overlay-method.md) (DFD uses different conventions for data-payload labels)
+- [`architecture/edge-labels/`](../../../architecture/edge-labels/)
+- DFD edge conventions (not yet implemented)
 
 ## Principle 6 · Prohibition labels (mandatory format)
 

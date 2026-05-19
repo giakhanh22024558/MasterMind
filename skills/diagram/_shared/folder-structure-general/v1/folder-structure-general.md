@@ -142,7 +142,7 @@ Lives at `research/design-decisions.md` (not under `diagrams/`).
 
 Structured as a master table where every architectural choice (whether applied or deferred) is captured as a row with: choice · alternatives · rationale · revisit trigger · status · spec authority.
 
-See [`patterns/design-decisions-format.md`](../patterns/design-decisions-format.md) for the full row format.
+See [`../design-decisions-format/`](../../design-decisions-format/) for the full row format.
 
 ## Scripts folder
 

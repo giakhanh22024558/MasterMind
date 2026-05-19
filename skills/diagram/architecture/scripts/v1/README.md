@@ -1,6 +1,6 @@
 # Architecture sub-skill · scripts
 
-Layout calculation + Drawio edit helpers specific to architecture diagrams. For diagram-type-agnostic scripts (cell updates, cell insertion, edge revert), see [`../../_shared/scripts/`](../../_shared/scripts/).
+Layout calculation + Drawio edit helpers specific to architecture diagrams. For diagram-type-agnostic scripts (cell updates, cell insertion, edge revert), see [`../../../_shared/scripts/`](../../../_shared/scripts/).
 
 ## Available scripts
 
@@ -24,9 +24,9 @@ Layout calculation + Drawio edit helpers specific to architecture diagrams. For 
 
 When you need:
 
-- Atomic update of a cell's display label → [`../../_shared/scripts/update-cell-value.py`](../../_shared/scripts/update-cell-value.py)
-- Atomic insertion of a new cell → [`../../_shared/scripts/add-cell.py`](../../_shared/scripts/add-cell.py)
-- Rollback a batch of edges → [`../../_shared/scripts/revert-edges.py`](../../_shared/scripts/revert-edges.py)
+- Atomic update of a cell's display label → `update-cell-value.py` in [`../../../_shared/scripts/`](../../../_shared/scripts/)
+- Atomic insertion of a new cell → `add-cell.py` in [`../../../_shared/scripts/`](../../../_shared/scripts/)
+- Rollback a batch of edges → `revert-edges.py` in [`../../../_shared/scripts/`](../../../_shared/scripts/)
 
 ## Pattern · combining scripts
 
@@ -53,7 +53,7 @@ All scripts in this folder:
 - **UTF-8 encoding** for read/write
 - **Verify after running** via grep or visual inspection
 
-See [`../../_shared/atomic-edits-pattern.md`](../../_shared/atomic-edits-pattern.md) for the broader pattern.
+See [`atomic-edits-pattern`](../../../_shared/atomic-edits-pattern/) for the broader pattern.
 
 ## Adapting templates to your project
 

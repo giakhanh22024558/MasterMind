@@ -110,7 +110,7 @@ Why: the table is dense; the list is glanceable for status meetings. Both stay i
 
 Edge labels, subsystem docs, and compliance rules reference design-decisions by ID:
 
-- **Edge labels**: `(M0f Firebase-independent)` style (see [`conventions/edge-labels.md`](../conventions/edge-labels.md))
+- **Edge labels**: `(<decision-id> <characterization>)` style (see [`../edge-labels-general/`](../../edge-labels-general/))
 - **Subsystem docs**: cite IDs in "Per-module audit findings" sections
 - **Compliance matrix**: link rows to their authoritative design decisions
 
