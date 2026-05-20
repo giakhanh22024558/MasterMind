@@ -1,0 +1,6 @@
+# Python build artifacts
+__pycache__/
+*.pyc
+
+# Generated SRS output / smoke tests
+_srs_format_smoketest.docx
