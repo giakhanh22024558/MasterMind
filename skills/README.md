@@ -7,6 +7,7 @@ This folder contains the actual skills. Each subfolder is a self-contained skill
 | Skill | Purpose | Status |
 |---|---|---|
 | [`diagram/`](diagram/) | Build, audit, and maintain software diagrams (architecture · DFD · future types) | ✅ Architecture sub-skill complete · DFD pending |
+| [`models/model_001/model_001_srs/`](models/model_001/model_001_srs/) | Generate IEEE-standard SRS `.docx` documents from Markdown content (content/format separation) | ✅ Complete |
 
 ## How to add a new skill
 
@@ -22,8 +23,11 @@ This folder is for **created skills only**. To create a new skill:
 ```
 skills/
 ├── README.md                ← this file (overview of created skills)
-└── diagram/                 ← actual skill
-    └── …                    follows uniform structure per meta-skill
+├── diagram/                 ← actual skill
+│   └── …                    follows uniform structure per meta-skill
+└── models/                  ← skills grouped by numbered model
+    └── model_001/
+        └── model_001_srs/   ← actual skill (uniform structure)
 ```
 
 Sibling folders at repo root:
