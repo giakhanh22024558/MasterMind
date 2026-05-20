@@ -1,84 +1,84 @@
 # model_001_srs · conventions defaults
 
-Format mặc định áp dụng khi `<project-root>/model_001_srs-conventions.md` không khai báo. Toàn bộ giá trị dưới đây **decode trực tiếp từ một tài liệu SRS chuẩn** đang dùng thực tế, và được mã hóa trong [`../../scripts/v1/srs_format.py`](../../scripts/v1/srs_format.py). Dự án có thể override.
+Default formatting applied when `<project-root>/model_001_srs-conventions.md` does not declare a value. Every value below is **decoded directly from a real standard SRS document** in actual use, and is encoded in [`srs_format.py`](../../scripts/v1/srs_format.py). Projects may override.
 
-(Về meta-pattern, xem [`meta/conventions-as-data-pattern/`](../../../../../../core/meta/conventions-as-data-pattern/).)
+(For the meta-pattern, see [`conventions-as-data-pattern`](../../../../../../core/meta/conventions-as-data-pattern/).)
 
-## Trang & lề (Page)
+## Page & margins
 
-| Thuộc tính | Default | Ghi chú |
+| Property | Default | Note |
 |---|---|---|
-| Khổ giấy | A4 dọc (210 × 297 mm) | — |
-| Lề | 19.05 mm đều 4 cạnh | = 1080 dxa |
-| Khoảng cách header/footer | 12.5 mm | = 708 dxa |
+| Paper size | A4 portrait (210 × 297 mm) | — |
+| Margins | 19.05 mm on all four sides | = 1080 dxa |
+| Header/footer distance | 12.5 mm | = 708 dxa |
 
 ## Font
 
-| Vai trò | Font | Cỡ |
+| Role | Font | Size |
 |---|---|---|
-| Chữ thân bài | Mulish | 11 pt |
-| Chữ trong bảng | Mulish | 10 pt |
-| Tiêu đề trang bìa | Mulish | 28 pt |
-| Caption (Hình) | Mulish italic | 9 pt |
+| Body text | Mulish | 11 pt |
+| Table text | Mulish | 10 pt |
+| Cover-page title | Mulish | 28 pt |
+| Caption (figures) | Mulish italic | 9 pt |
 
-## Bảng màu
+## Color palette
 
-| Tên | Hex | Dùng cho |
+| Name | Hex | Used for |
 |---|---|---|
-| Màu chủ đạo | `193D74` | Heading 1/2, nền header bảng, gạch chân H1 |
+| Primary color | `193D74` | Heading 1/2, table-header background, H1 underline |
 | Accent teal | `156082` | Heading 5 |
-| Xám | `656668` | Heading 4, dòng version trang bìa |
-| Navy caption | `0E2841` | Caption |
-| Chữ thân bài | `252729` | Body text, Title, Heading 3 |
-| Nền callout | `FFF8DF` | Bảng callout 1 ô (placeholder) |
-| Chữ header bảng | `FFFFFF` | Chữ trên nền header xanh |
+| Gray | `656668` | Heading 4, cover-page version line |
+| Navy caption | `0E2841` | Captions |
+| Body text | `252729` | Body text, Title, Heading 3 |
+| Callout background | `FFF8DF` | Single-cell callout table (placeholder) |
+| Table-header text | `FFFFFF` | Text on the blue header background |
 
-## Heading
+## Headings
 
-| Cấp | Cỡ | Đậm | Màu | Numbering |
+| Level | Size | Bold | Color | Numbering |
 |---|---|---|---|---|
 | Title | 28 pt | — | `252729` | — |
-| Heading 1 | 16 pt | ✅ | `193D74` | `1` · có **gạch chân** `#193D74` |
+| Heading 1 | 16 pt | ✅ | `193D74` | `1` · with an **underline** `#193D74` |
 | Heading 2 | 13 pt | ✅ | `193D74` | `1.1` |
 | Heading 3 | 11.5 pt | ✅ | `252729` | `1.1.1` |
-| Heading 4 | 11 pt | ✅ | `656668` | `1.1.1.1` (cấp thấp nhất dạng số) |
-| Heading 5 | 11 pt | ✅ | `156082` | `A. B. C.` (chữ HOA, restart theo H4) |
-| Heading 6 | 11 pt | — | `1F4D78` | `a. b. c.` (chữ thường, restart theo H5) |
+| Heading 4 | 11 pt | ✅ | `656668` | `1.1.1.1` (lowest numeric level) |
+| Heading 5 | 11 pt | ✅ | `156082` | `A. B. C.` (uppercase, restarts per H4) |
+| Heading 6 | 11 pt | — | `1F4D78` | `a. b. c.` (lowercase, restarts per H5) |
 
-- Heading frontmatter đầu tiên ("Lịch sử Phiên bản") **không** numbering.
+- The first frontmatter heading (`Lịch sử Phiên bản` — version history) is **not** numbered.
 
-## Bảng
+## Tables
 
-| Thuộc tính | Default |
+| Property | Default |
 |---|---|
-| Bề rộng nội dung | 171.9 mm (A4 − 2 lề) |
-| Viền | Đơn 0.5 pt, toàn bộ ô |
-| Header | Nền `#193D74`, chữ trắng in đậm 10 pt |
-| Body | Chữ 10 pt màu đen |
-| Hàng có mọi ô giống nhau | Tự merge thành 1 ô |
+| Content width | 171.9 mm (A4 − 2 margins) |
+| Border | Single 0.5 pt, all cells |
+| Header | Background `#193D74`, white bold 10 pt text |
+| Body | 10 pt black text |
+| Row with all cells identical | Auto-merged into one cell |
 
-## Quy ước tự sinh
+## Auto-generated conventions
 
-| Quy ước | Format mặc định |
+| Convention | Default format |
 |---|---|
-| Mã STT/ID bảng thành phần | `COM-<Heading 4 bỏ dấu chấm>-<NNN>` · nối tiếp trong cùng H4 |
-| Mã Business Rule | `BR-<Heading 4 bỏ dấu chấm>-<NNN>` |
-| Số hình | `Hình <Heading 4>-<n>` · căn giữa · áp dụng cho Wireframe + Sơ đồ luồng |
-| Trang bìa | Đứng độc lập 1 trang |
-| Mục lục | Field TOC native cấp 1-3, đứng độc lập 1 trang, tự cập nhật khi mở Word |
-| Ngắt trang | Sau trang bìa · sau Mục lục · sau "Lịch sử Phiên bản" |
+| Component-table STT/ID codes | `COM-<Heading 4 without dots>-<NNN>` · continuous within the same H4 |
+| Business Rule codes | `BR-<Heading 4 without dots>-<NNN>` |
+| Figure numbers | `Hình <Heading 4>-<n>` · centered · applied to Wireframes + Flow diagrams |
+| Cover page | Standalone on one page |
+| Table of contents | Native TOC field levels 1-3, standalone on one page, updates when opened in Word |
+| Page breaks | After the cover page · after the TOC · after `Lịch sử Phiên bản` (version history) |
 
 ## Footer
 
-`{Tên dự án}  ·  Software Requirements Specification` + tab phải + `Trang {PAGE} / {NUMPAGES}` — toàn bộ 9 pt.
+`{Project name}  ·  Software Requirements Specification` + right tab + `Trang {PAGE} / {NUMPAGES}` — all 9 pt.
 
-## Legend Loại / Thuộc tính (canonical)
+## Legend of Loại / Thuộc tính (canonical)
 
-Danh sách giá trị `Loại` (Input, Select, Button, Date Picker…) và `Thuộc tính` (`Required`, `Unique`, `Read-only`, `Max_N_char`, `[Mặc định]`…) là **canonical**, định nghĩa trong `LEGEND_TYPES` / `LEGEND_ATTRS` tại [`../../scripts/v1/srs_format.py`](../../scripts/v1/srs_format.py). Tài liệu chính **tái sử dụng**, không tạo mới.
+The list of `Loại` (type — Input, Select, Button, Date Picker…) and `Thuộc tính` (attribute — `Required`, `Unique`, `Read-only`, `Max_N_char`, `[Mặc định]`…) values is **canonical**, defined in `LEGEND_TYPES` / `LEGEND_ATTRS` in [`srs_format.py`](../../scripts/v1/srs_format.py). The main document **reuses** them; it never creates new ones.
 
-## Khi defaults áp dụng
+## When defaults apply
 
-Mỗi mục dự án không khai trong `model_001_srs-conventions.md` → lấy default ở đây. Skill **acknowledge nguồn** khi giải thích:
+Any item the project does not declare in `model_001_srs-conventions.md` → takes the default here. The skill **acknowledges the source** when explaining:
 
-- "Theo `model_001_srs-conventions.md` của dự án, dùng X"
-- "Dự án không khai Y, dùng default từ `conventions-defaults/`"
+- "Per the project's `model_001_srs-conventions.md`, used X"
+- "The project did not declare Y, used the default from `conventions-defaults/`"

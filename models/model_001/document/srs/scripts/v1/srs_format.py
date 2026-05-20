@@ -1,24 +1,24 @@
 # -*- coding: utf-8 -*-
 """
-srs_format.py — Chuẩn format tài liệu SRS (LEXcentra)
-=====================================================
+srs_format.py — SRS document format standard (LEXcentra)
+========================================================
 
-Decode trực tiếp từ `FINAL_SRS_IEEE_LEX.docx` — đặc tả TOÀN BỘ hình thức
-trình bày dưới dạng code Python (`python-docx`).
+Decoded directly from `FINAL_SRS_IEEE_LEX.docx` — specifies the ENTIRE
+presentation as Python code (`python-docx`).
 
-NGUYÊN TẮC: Nội dung viết ở .md  ·  Format/style viết ở Python (file này).
+PRINCIPLE: content is written in .md  ·  format/style is written in Python (this file).
 
-Tính năng:
-  - Trang bìa (logo + tiêu đề + bảng metadata)
-  - Mục lục native (TOC field, tự cập nhật khi mở Word)
-  - Heading 1..6 + gạch chân Heading 1
-  - Numbering đa cấp tự động cho heading (1, 1.1, 1.1.1, ...)
-  - Bảng chuẩn SRS · callout · legend Loại/Thuộc tính
-  - Footer có field PAGE / NUMPAGES
+Features:
+  - Cover page (logo + title + metadata table)
+  - Native table of contents (TOC field, auto-updates when opened in Word)
+  - Heading 1..6 + Heading 1 underline
+  - Automatic multi-level heading numbering (1, 1.1, 1.1.1, ...)
+  - Standard SRS tables · callout · Loại/Thuộc tính legend
+  - Footer with PAGE / NUMPAGES fields
 
-Cài đặt:  pip install python-docx
+Install:  pip install python-docx
 
-Đơn vị OOXML:  1 pt = 20 dxa (twips) · 1 inch = 1440 dxa · border sz = 1/8 pt
+OOXML units:  1 pt = 20 dxa (twips) · 1 inch = 1440 dxa · border sz = 1/8 pt
 """
 
 import os
@@ -32,33 +32,33 @@ from docx.oxml import OxmlElement
 
 
 # ============================================================
-# 1. BẢNG MÀU CHUẨN  (styles.xml + theme1.xml)
+# 1. STANDARD COLOR PALETTE  (styles.xml + theme1.xml)
 # ============================================================
 class Color:
-    PRIMARY        = RGBColor(0x19, 0x3D, 0x74)  # #193D74 - H1/H2 + nền header bảng + gạch chân H1
+    PRIMARY        = RGBColor(0x19, 0x3D, 0x74)  # #193D74 - H1/H2 + table header fill + H1 underline
     ACCENT_TEAL    = RGBColor(0x15, 0x60, 0x82)  # #156082 - Heading 5
-    HEADING4_GRAY  = RGBColor(0x65, 0x66, 0x68)  # #656668 - Heading 4 + dòng version cover
+    HEADING4_GRAY  = RGBColor(0x65, 0x66, 0x68)  # #656668 - Heading 4 + cover version line
     HEADING6_BLUE  = RGBColor(0x1F, 0x4D, 0x78)  # #1F4D78 - Heading 6
     CAPTION_NAVY   = RGBColor(0x0E, 0x28, 0x41)  # #0E2841 - Caption (Hình ...)
-    BODY_TEXT      = RGBColor(0x25, 0x27, 0x29)  # #252729 - màu chữ mặc định
-    TABLE_TEXT     = RGBColor(0x00, 0x00, 0x00)  # #000000 - chữ trong ô bảng
-    HEADER_TEXT    = RGBColor(0xFF, 0xFF, 0xFF)  # #FFFFFF - chữ header bảng
-    CALLOUT_FILL   = "FFF8DF"                    # #FFF8DF - nền callout "[Đang cập nhật]"
-    TABLE_HDR_FILL = "193D74"                    # nền header bảng (hex)
-    H1_BORDER      = "193D74"                    # màu gạch chân Heading 1
+    BODY_TEXT      = RGBColor(0x25, 0x27, 0x29)  # #252729 - default text color
+    TABLE_TEXT     = RGBColor(0x00, 0x00, 0x00)  # #000000 - table cell text
+    HEADER_TEXT    = RGBColor(0xFF, 0xFF, 0xFF)  # #FFFFFF - table header text
+    CALLOUT_FILL   = "FFF8DF"                    # #FFF8DF - callout fill "[Đang cập nhật]"
+    TABLE_HDR_FILL = "193D74"                    # table header fill (hex)
+    H1_BORDER      = "193D74"                    # Heading 1 underline color
 
 
 # ============================================================
-# 2. FONT CHUẨN
+# 2. STANDARD FONTS
 # ============================================================
 class Font:
     DEFAULT = "Mulish"
-    SIZE_BODY     = 11.0   # chữ thân bài
-    SIZE_TABLE    = 10.0   # chữ trong bảng
-    SIZE_TITLE    = 28.0   # tiêu đề cover
-    SIZE_SUBTITLE = 18.0   # phụ đề cover
-    SIZE_VERSION  = 12.0   # dòng version cover
-    SIZE_TOC_HEAD = 16.0   # chữ "Mục lục"
+    SIZE_BODY     = 11.0   # body text
+    SIZE_TABLE    = 10.0   # table text
+    SIZE_TITLE    = 28.0   # cover title
+    SIZE_SUBTITLE = 18.0   # cover subtitle
+    SIZE_VERSION  = 12.0   # cover version line
+    SIZE_TOC_HEAD = 16.0   # the "Mục lục" heading text
     SIZE_H1, SIZE_H2, SIZE_H3 = 16.0, 13.0, 11.5
     SIZE_H4, SIZE_H5, SIZE_H6 = 11.0, 11.0, 11.0
     SIZE_CAPTION  = 9.0
@@ -69,7 +69,7 @@ class Font:
 # ============================================================
 class Page:
     WIDTH_MM, HEIGHT_MM = 210.0, 297.0          # A4 portrait
-    MARGIN_MM = 19.05                            # 1080 dxa, đều 4 cạnh
+    MARGIN_MM = 19.05                            # 1080 dxa, all four sides
     HEADER_DIST_MM = FOOTER_DIST_MM = 12.5       # 708 dxa
 
 
@@ -87,15 +87,15 @@ HEADINGS = [
     ("Caption",  "Caption",   Font.SIZE_CAPTION, False, Color.CAPTION_NAVY, 0,  10),
 ]
 
-# Gạch chân Heading 1 (decode: <w:pBdr><w:bottom .../></w:pBdr>)
+# Heading 1 underline (decoded: <w:pBdr><w:bottom .../></w:pBdr>)
 H1_BORDER = dict(val="single", color=Color.H1_BORDER, sz="6", space="4")
 
 
 # ============================================================
-# 5. BẢNG  (Sli Table Style)
+# 5. TABLE  (Sli Table Style)
 # ============================================================
 class Table:
-    CONTENT_WIDTH_MM = 171.9     # 9746 dxa = A4 - 2*lề
+    CONTENT_WIDTH_MM = 171.9     # 9746 dxa = A4 - 2*margin
     BORDER_SIZE_8THPT = 4        # 0.5pt
     BORDER_COLOR = "auto"
     HEADER_FILL = Color.TABLE_HDR_FILL
@@ -104,17 +104,17 @@ class Table:
 
 
 # ============================================================
-# 6. NUMBERING ĐA CẤP CHO HEADING
-#    numId riêng, format: 1 / 1.1 / 1.1.1 ... tới 6 cấp
+# 6. MULTI-LEVEL HEADING NUMBERING
+#    dedicated numId, format: 1 / 1.1 / 1.1.1 ... up to 6 levels
 # ============================================================
-HEADING_NUM_ID = 77   # numId dành riêng cho heading multilevel
+HEADING_NUM_ID = 77   # numId dedicated to the heading multilevel list
 
 
 # ============================================================
 # 7. FOOTER
 # ============================================================
 class Footer:
-    # {project} = mã/tên dự án, truyền qua new_srs_document(project_name=...)
+    # {project} = project code/name, passed via new_srs_document(project_name=...)
     LEFT_TEXT_TEMPLATE = "{project}  ·  Software Requirements Specification"
     DEFAULT_PROJECT = "[Tên dự án]"
     PAGE_PREFIX = "Trang "
@@ -125,7 +125,7 @@ class Footer:
 # 8. COVER PAGE
 # ============================================================
 class Cover:
-    # logo trích từ SRS gốc (image1.png), kích thước hiển thị gốc
+    # logo extracted from the original SRS (image1.png), at its native display size
     LOGO_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                              "assets", "srs_logo.png")
     LOGO_WIDTH_MM = 90.0
@@ -137,8 +137,8 @@ class Cover:
 
 
 # ============================================================
-# 9. LEGEND — Chú giải Loại & Thuộc tính thành phần
-#    Nguồn dữ liệu CANONICAL: tái sử dụng, KHÔNG tạo loại/thuộc tính mới.
+# 9. LEGEND — component Loại & Thuộc tính reference
+#    CANONICAL data source: reuse it, do NOT create new types/attributes.
 # ============================================================
 LEGEND_TYPES = [
     ("Input (Text/Email/Password/Search)", "Ô nhập liệu một dòng, phân loại theo kiểu dữ liệu."),
@@ -166,7 +166,7 @@ LEGEND_ATTRS = [
 
 
 # ============================================================
-# ===================  HÀM DỰNG STYLE  =======================
+# ===================  STYLE-BUILDING FUNCTIONS  =============
 # ============================================================
 def _set_spacing(style, before_pt, after_pt):
     pf = style.paragraph_format
@@ -190,9 +190,9 @@ def _apply_default(doc):
 
 
 def _add_heading1_border(style):
-    """Gạch chân Heading 1: <w:pBdr><w:bottom .../></w:pBdr>."""
+    """Heading 1 underline: <w:pBdr><w:bottom .../></w:pBdr>."""
     ppr = style.element.get_or_add_pPr()
-    # xóa pBdr cũ nếu có
+    # remove any existing pBdr
     for old in ppr.findall(qn("w:pBdr")):
         ppr.remove(old)
     pbdr = OxmlElement("w:pBdr")
@@ -206,7 +206,7 @@ def _add_heading1_border(style):
 
 
 def _apply_headings(doc):
-    """Nạp Title + Heading 1..6 + Caption; gạch chân Heading 1."""
+    """Load Title + Heading 1..6 + Caption; underline Heading 1."""
     for sid, name, size, bold, color, before, after in HEADINGS:
         try:
             style = doc.styles[name]
@@ -216,7 +216,7 @@ def _apply_headings(doc):
         f.name = Font.DEFAULT
         f.size = Pt(size)
         f.bold = bold
-        # color None (Title, Heading 3) -> ép về body để override default xanh của python-docx
+        # color None (Title, Heading 3) -> force to body color to override python-docx's default blue
         f.color.rgb = color if color is not None else Color.BODY_TEXT
         if name == "Caption":
             f.italic = True
@@ -227,13 +227,13 @@ def _apply_headings(doc):
 
 def _apply_heading_numbering(doc):
     """
-    Numbering đa cấp tự động cho Heading 1..6: 1 / 1.1 / 1.1.1 ...
-    Tạo abstractNum + num trong numbering.xml, link numPr vào từng Heading style.
+    Automatic multi-level numbering for Heading 1..6: 1 / 1.1 / 1.1.1 ...
+    Creates abstractNum + num in numbering.xml, links numPr into each Heading style.
     """
     numbering = doc.part.numbering_part.element
     nsW = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
 
-    # chọn abstractNumId chưa dùng
+    # pick an unused abstractNumId
     used_abs = [int(a.get(qn("w:abstractNumId")))
                 for a in numbering.findall(qn("w:abstractNum"))]
     abs_id = (max(used_abs) + 1) if used_abs else 0
@@ -244,9 +244,9 @@ def _apply_heading_numbering(doc):
     mlt.set(qn("w:val"), "multilevel")
     abstractNum.append(mlt)
 
-    # Cấp 1-4 (ilvl 0-3): số thập phân  ->  1 / 1.1 / 1.1.1 / 1.1.1.1
-    # Cấp 5  (ilvl 4)   : chữ HOA       ->  A. B. C.  (restart theo H4 cha)
-    # Cấp 6  (ilvl 5)   : chữ thường    ->  a. b. c.  (restart theo H5 cha)
+    # Levels 1-4 (ilvl 0-3): decimal             ->  1 / 1.1 / 1.1.1 / 1.1.1.1
+    # Level 5  (ilvl 4)    : uppercase letters   ->  A. B. C.  (restarts per parent H4)
+    # Level 6  (ilvl 5)    : lowercase letters   ->  a. b. c.  (restarts per parent H5)
     for ilvl in range(6):
         lvl = OxmlElement("w:lvl")
         lvl.set(qn("w:ilvl"), str(ilvl))
@@ -272,7 +272,7 @@ def _apply_heading_numbering(doc):
             lvl.append(el)
         abstractNum.append(lvl)
 
-    # chèn abstractNum TRƯỚC <w:num> đầu tiên (đúng schema)
+    # insert abstractNum BEFORE the first <w:num> (correct schema order)
     first_num = numbering.find(qn("w:num"))
     if first_num is not None:
         first_num.addprevious(abstractNum)
@@ -286,7 +286,7 @@ def _apply_heading_numbering(doc):
     num.append(absRef)
     numbering.append(num)
 
-    # link numPr vào từng Heading style
+    # link numPr into each Heading style
     for ilvl, name in enumerate(["Heading 1", "Heading 2", "Heading 3",
                                  "Heading 4", "Heading 5", "Heading 6"]):
         try:
@@ -304,7 +304,7 @@ def _apply_heading_numbering(doc):
 
 
 def suppress_numbering(paragraph):
-    """Tắt numbering cho 1 paragraph cụ thể (numId=0) — dùng cho heading frontmatter."""
+    """Disable numbering for one specific paragraph (numId=0) — used for the frontmatter heading."""
     ppr = paragraph._p.get_or_add_pPr()
     for old in ppr.findall(qn("w:numPr")):
         ppr.remove(old)
@@ -327,7 +327,7 @@ def _apply_page(doc):
 
 
 def _add_field(paragraph, field_code, placeholder="", size=None):
-    """Chèn field (PAGE, NUMPAGES, TOC...) vào paragraph."""
+    """Insert a field (PAGE, NUMPAGES, TOC...) into the paragraph."""
     run = paragraph.add_run()
     if size is not None:
         run.font.size = size
@@ -351,8 +351,8 @@ def _add_field(paragraph, field_code, placeholder="", size=None):
 def _apply_footer(doc, project_name):
     left_text = Footer.LEFT_TEXT_TEMPLATE.format(project=project_name)
     sz = Pt(Font.SIZE_CAPTION)
-    # Xóa tab mặc định của style "Footer" (có sẵn center-tab khiến "\t"
-    # nhảy vào giữa trang thay vì mép phải).
+    # Remove the default tab of the "Footer" style (it has a built-in center-tab
+    # that makes "\t" jump to the page center instead of the right edge).
     try:
         fppr = doc.styles["Footer"].element.find(qn("w:pPr"))
         if fppr is not None:
@@ -376,7 +376,7 @@ def _apply_footer(doc, project_name):
 
 
 def _enable_update_fields(doc):
-    """Bật cờ để Word tự cập nhật field (TOC) khi mở file."""
+    """Set the flag so Word auto-updates fields (TOC) when the file is opened."""
     settings = doc.settings.element
     if settings.find(qn("w:updateFields")) is None:
         uf = OxmlElement("w:updateFields")
@@ -385,13 +385,13 @@ def _enable_update_fields(doc):
 
 
 # ============================================================
-# ===================  API CHÍNH  ============================
+# ===================  MAIN API  =============================
 # ============================================================
 def new_srs_document(project_name=None):
-    """Document đã nạp đầy đủ chuẩn format SRS (page, font, heading,
-    numbering, footer, auto-update field).
+    """A Document preloaded with the full SRS format standard (page, font,
+    heading, numbering, footer, auto-update fields).
 
-    project_name: mã/tên dự án hiển thị ở footer. Nếu None -> placeholder.
+    project_name: project code/name shown in the footer. If None -> placeholder.
     """
     doc = Document()
     _apply_default(doc)
@@ -419,8 +419,8 @@ def _runs(paragraph, text, size_pt=None, color=None, bold=None, italic=None):
 
 def add_cover_header(doc, title, subtitle, version_line, logo_path=None):
     """
-    Dựng phần đầu trang bìa: logo (căn giữa) + tiêu đề + phụ đề + version.
-    Bảng metadata do caller render riêng (để xử lý **bold** trong ô).
+    Build the top of the cover page: logo (centered) + title + subtitle + version.
+    The metadata table is rendered separately by the caller (to handle **bold** in cells).
     """
     logo_path = logo_path or Cover.LOGO_PATH
 
@@ -450,7 +450,7 @@ def add_cover_header(doc, title, subtitle, version_line, logo_path=None):
 
 
 def add_toc(doc):
-    """Chèn 'Mục lục' + field TOC native (cấp 1-3, tự cập nhật khi mở Word)."""
+    """Insert 'Mục lục' + a native TOC field (levels 1-3, auto-updates when opened in Word)."""
     p_head = doc.add_paragraph()
     p_head.paragraph_format.space_before = Pt(6)
     p_head.paragraph_format.space_after = Pt(6)
@@ -462,7 +462,7 @@ def add_toc(doc):
 
 
 def add_page_break(doc):
-    """Ngắt sang trang mới."""
+    """Break to a new page."""
     p = doc.add_paragraph()
     p.add_run().add_break(WD_BREAK.PAGE)
 
@@ -490,7 +490,7 @@ def _set_table_borders(table):
 
 
 def add_srs_table(doc, headers, rows, col_widths_mm=None):
-    """Bảng chuẩn SRS: viền 0.5pt, header nền #193D74 chữ trắng đậm 10pt, body 10pt."""
+    """Standard SRS table: 0.5pt borders, header fill #193D74 with white bold 10pt text, body 10pt."""
     n = len(headers)
     table = doc.add_table(rows=1 + len(rows), cols=n)
     table.alignment = WD_TABLE_ALIGNMENT.CENTER
@@ -519,7 +519,7 @@ def add_srs_table(doc, headers, rows, col_widths_mm=None):
 
 
 def add_callout(doc, text):
-    """Bảng 1 ô callout '[Đang cập nhật]' — nền kem #FFF8DF."""
+    """Single-cell callout table '[Đang cập nhật]' — cream fill #FFF8DF."""
     table = doc.add_table(rows=1, cols=1)
     table.alignment = WD_TABLE_ALIGNMENT.CENTER
     _set_table_borders(table)
@@ -533,11 +533,11 @@ def add_callout(doc, text):
 
 def add_legend_section(doc):
     """
-    Chèn 2 bảng chú giải: Loại thành phần & Thuộc tính.
-    Dùng MỘT LẦN trong Mục 'Yêu cầu Hành vi Chung'. Tài liệu chính
-    chỉ TÁI SỬ DỤNG các giá trị này, không định nghĩa mới.
-    Nhãn 2 bảng dùng paragraph in đậm (KHÔNG phải Heading) -> không
-    bị numbering và không lọt vào Mục lục.
+    Insert the 2 reference tables: component Loại & Thuộc tính.
+    Used ONCE in the 'Yêu cầu Hành vi Chung' section. The main document
+    only REUSES these values; it never defines new ones.
+    The 2 table labels use bold paragraphs (NOT Headings) -> they are not
+    numbered and do not leak into the table of contents.
     """
     p1 = doc.add_paragraph()
     p1.paragraph_format.space_before = Pt(6)

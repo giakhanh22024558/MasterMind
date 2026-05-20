@@ -1,6 +1,6 @@
 # Skill template
 
-Copy-paste starter scaffold for creating a new skill in `skills/`.
+Copy-paste starter scaffold for creating a new skill in `models/`.
 
 ## How to use
 
@@ -8,15 +8,15 @@ Copy-paste starter scaffold for creating a new skill in `skills/`.
 
 ```bash
 # Edit CONFIG block first, then run:
-python meta/scripts/v1/scaffold-new-skill.py
+python core/meta/scripts/v1/scaffold-new-skill.py
 ```
 
-Output: a new `skills/<your-skill-name>/` folder with the uniform structure, placeholders renamed, and a list of next steps.
+Output: a new skill folder under `models/model_NNN/<category>/` with the uniform structure, placeholders renamed, and a list of next steps.
 
 ### Option B · Manual copy
 
 ```bash
-cp -r template/v1 skills/<your-skill-name>
+cp -r core/template/v1 models/model_NNN/<category>/<your-skill-name>
 ```
 
 Then manually find-and-replace placeholders:
@@ -50,6 +50,6 @@ Each module starts with at minimum a README that:
 4. Add at least one pattern in `patterns/v1/`
 5. Add at least one worked walkthrough in `examples/v1/`
 6. (If applicable) Add scripts in `scripts/v1/`
-7. Update `skills/README.md` to add your skill to the "Currently implemented" table
+7. Update the model's `README.md` to add your skill to its skill table
 
 See [`meta/skill-creation-guide/`](../meta/skill-creation-guide/) for the full step-by-step guide.

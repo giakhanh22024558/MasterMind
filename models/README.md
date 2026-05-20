@@ -1,25 +1,25 @@
 # models
 
-Các **model** — mỗi `model_NNN/` là một cụm skill cụ thể cho một dự án / bối cảnh. Người dùng tạo model mới theo yêu cầu.
+The **models** — each `model_NNN/` is a cluster of concrete skills for one project / context. Users create new models on demand.
 
-## Cấu trúc một model
+## Structure of a model
 
 ```
 models/model_NNN/
 ├── diagram/
-│   └── <type>/        ← skill diagram cụ thể (vd: architecture)
+│   └── <type>/        ← concrete diagram skill (e.g. architecture)
 └── document/
-    └── <type>/        ← skill document cụ thể (vd: srs)
+    └── <type>/        ← concrete document skill (e.g. srs)
 ```
 
-Mỗi model chứa các bộ skill (`diagram`, `document`...); bên trong là skill specific hơn (`architecture`, `srs`...).
+Each model holds skill categories (`diagram`, `document`...); inside each category are more specific skills (`architecture`, `srs`...).
 
-## Model hiện có
+## Existing models
 
-| Model | Skill |
+| Model | Skills |
 |---|---|
 | [`model_001/`](model_001/) | `diagram/architecture` · `document/srs` |
 
-## Quy tắc
+## Rule
 
-Dù input context hay định dạng output khác nhau, **mọi model phải tuân [Core Rule](../core/core-rule/)**. Model chỉ chứa phần *specific*; phần *chung* (methodology, versioning, meta) luôn tham chiếu về [`../core/`](../core/).
+However different the input context or output format, **every model must follow the [Core Rule](../core/core-rule/)**. A model holds only the *specific* part; the *shared* part (methodology, versioning, meta) always references back to [`../core/`](../core/).

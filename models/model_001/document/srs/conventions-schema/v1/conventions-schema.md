@@ -1,52 +1,52 @@
 # model_001_srs · conventions schema
 
-Checklist các convention một dự án cần khai báo khi dùng skill `model_001_srs`. Dự án điền schema này vào `<project-root>/model_001_srs-conventions.md`; mục nào bỏ trống → fallback về [`../../conventions-defaults/`](../../conventions-defaults/).
+Checklist of the conventions a project must declare when using the `model_001_srs` skill. The project fills this schema into `<project-root>/model_001_srs-conventions.md`; any item left blank → falls back to [`conventions-defaults/`](../../conventions-defaults/).
 
-(Về meta-pattern, xem [`meta/conventions-as-data-pattern/`](../../../../../../core/meta/conventions-as-data-pattern/).)
+(For the meta-pattern, see [`conventions-as-data-pattern`](../../../../../../core/meta/conventions-as-data-pattern/).)
 
 ## Required conventions
 
-### 1 · Định danh dự án
+### 1 · Project identity
 
-| Item | Format | Default | Ví dụ |
+| Item | Format | Default | Example |
 |---|---|---|---|
-| Tên dự án | Text ngắn | (lấy từ tiêu đề trang bìa của file .md) | `RoomBooking` |
-| Phụ đề tài liệu | Text | `Software Requirements Specification` | — |
-| Đường dẫn logo | Path tới file ảnh (.png) | [`scripts/v1/assets/srs_logo.png`](../../scripts/v1/assets/srs_logo.png) | `assets/my_logo.png` |
+| Project name | Short text | (taken from the cover-page title of the `.md`) | `RoomBooking` |
+| Document subtitle | Text | `Software Requirements Specification` | — |
+| Logo path | Path to an image file (.png) | [`scripts/v1/assets/srs_logo.png`](../../scripts/v1/assets/srs_logo.png) | `assets/my_logo.png` |
 
-> Tên dự án **không hard-code** — generator lấy từ dòng tiêu đề đầu tiên của frontmatter `.md` và truyền vào footer + trang bìa.
+> The project name is **not hard-coded** — the generator takes it from the first title line of the `.md` frontmatter and passes it into the footer and cover page.
 
-### 2 · Metadata tài liệu
+### 2 · Document metadata
 
-| Item | Format | Default | Ví dụ |
+| Item | Format | Default | Example |
 |---|---|---|---|
-| Phiên bản | `Draft x.y.z` theo semver | `Draft 1.0.0` | `Draft 1.0.3` |
-| Ngày | `DD/MM/YYYY` | (ngày tạo) | `19/05/2026` |
-| Đội chuẩn bị | Text | `[Đội kỹ thuật]` | `Đội kỹ thuật Slitigenz` |
+| Version | `Draft x.y.z` semver | `Draft 1.0.0` | `Draft 1.0.3` |
+| Date | `DD/MM/YYYY` | (creation date) | `19/05/2026` |
+| Prepared by | Text | `[Đội kỹ thuật]` | `Đội kỹ thuật Slitigenz` |
 
-### 3 · Bảng màu (tùy chọn override)
+### 3 · Color palette (optional override)
 
-| Item | Format | Default | Ghi chú |
+| Item | Format | Default | Note |
 |---|---|---|---|
-| Màu chủ đạo | Hex `RRGGBB` | `193D74` | Heading 1/2 + nền header bảng + gạch chân H1 |
-| Màu accent | Hex | `156082` | Heading 5 |
-| Màu chữ thân bài | Hex | `252729` | — |
+| Primary color | Hex `RRGGBB` | `193D74` | Heading 1/2 + table-header background + H1 underline |
+| Accent color | Hex | `156082` | Heading 5 |
+| Body text color | Hex | `252729` | — |
 
-> Đa số dự án **không cần override màu** — bộ màu mặc định decode từ SRS chuẩn. Chỉ khai khi cần đồng bộ brand riêng.
+> Most projects **do not need to override colors** — the default palette is decoded from a standard SRS. Override only when matching a specific brand.
 
 ## Optional conventions
 
-- **Giới hạn AI prompt** (`Max_N_char` cho ô nhập AI) — chỉ khai nếu hệ thống có tính năng AI; default `4000`
-- **Giá trị Loại/Thuộc tính bổ sung** — nếu domain cần Loại component mới, bổ sung vào Legend canonical (`LEGEND_TYPES` / `LEGEND_ATTRS` trong `scripts/v1/srs_format.py`) trước khi dùng, **không** tự chế trong .md
+- **AI prompt limit** (`Max_N_char` for AI input fields) — declare only if the system has AI features; default `4000`
+- **Additional Loại/Thuộc tính values** — if the domain needs a new component type, add it to the canonical Legend (`LEGEND_TYPES` / `LEGEND_ATTRS` in `scripts/v1/srs_format.py`) before use; do **not** invent it ad hoc in the `.md`
 
-## Checklist (cho skill agent)
+## Checklist (for the skill agent)
 
-Khi nạp file conventions của dự án lần đầu:
+When loading a project's conventions file for the first time:
 
-- [ ] Tên dự án xác định (từ .md hoặc conventions file)
-- [ ] Logo: dùng file dự án hay default?
-- [ ] Phiên bản + ngày + đội chuẩn bị đã có
-- [ ] Có override màu brand không?
-- [ ] Hệ thống có tính năng AI → cần khai giới hạn prompt không?
+- [ ] Project name determined (from the `.md` or the conventions file)
+- [ ] Logo: use the project file or the default?
+- [ ] Version + date + prepared-by present
+- [ ] Any brand color override?
+- [ ] Does the system have AI features → does the prompt limit need declaring?
 
-Nếu mục bắt buộc nào chưa rõ và không phải optional → **hỏi người dùng** trước khi sinh tài liệu.
+If any required item is unclear and not optional → **ask the user** before generating the document.

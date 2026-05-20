@@ -1,6 +1,6 @@
 # Skill creation guide
 
-Step-by-step process for creating a new skill in `skills/`. Apply this when a user asks you to build a new skill for a new domain (e.g. `business_analysis`, `code_review`, `data_modeling`, `interview-prep`).
+Step-by-step process for creating a new skill in `models/`. Apply this when a user asks you to build a new skill for a new domain (e.g. `business_analysis`, `code_review`, `data_modeling`, `interview-prep`).
 
 ## Step 1 · Decide the shape
 
@@ -11,7 +11,7 @@ Two shapes are possible:
 For skills where there's only ONE main "type" of activity. The skill has top-level content modules and that's it.
 
 ```
-skills/<skill>/
+models/model_NNN/<category>/<skill>/
 ├── SKILL.md                          unversioned · agent-facing entry
 ├── README.md                         unversioned · human-facing
 ├── conventions-schema/v1/            what conventions the skill needs from a project
@@ -29,12 +29,15 @@ Example: `code-review` skill — one main activity (review code) · no need for 
 For skills covering multiple distinct types (like `diagram/` covers architecture, DFD, future activity/BPMN/sequence/state/ERD). Use when each type has different conventions, notation, or workflows.
 
 ```
-skills/<skill>/
+core/<category>/                      framework (invariant)
 ├── SKILL.md                          unversioned · dispatcher
 ├── README.md                         unversioned
-├── VERSIONING.md                     unversioned (optional — can refer to _meta)
+├── VERSIONING.md                     unversioned (optional)
 ├── _shared/                          cross-sub-skill methodology
 │   └── <module>/v1/
+└── _project-template/v1/             starter conventions for adopting projects
+
+models/model_NNN/<category>/          concrete sub-skills (per project)
 ├── <sub-skill-1>/                    follows uniform sub-skill structure (Shape A)
 │   ├── SKILL.md
 │   ├── conventions-schema/v1/
@@ -54,7 +57,7 @@ Example: `diagram/` skill — covers architecture, DFD, etc. · each has differe
 ## Step 2 · Copy the template
 
 ```bash
-cp -r template/v1 skills/<your-skill-name>
+cp -r core/template/v1 models/model_NNN/<category>/<your-skill-name>
 ```
 
 Then **rename and update** every file with your skill's name and content.
@@ -151,7 +154,7 @@ Write one or more docs describing the domain's specific vocabulary, notation, or
 
 | File | Update |
 |---|---|
-| `skills/README.md` | Add your skill to the "Currently implemented" table |
+| `models/model_NNN/README.md` | Add your skill to the model's skill table |
 | Your skill's `SKILL.md` | Make sure description matches what the skill does · helps AI agents pick it |
 
 ## Step 12 · Test by invoking
@@ -181,16 +184,16 @@ See [`../versioning-pattern/`](../../versioning-pattern/) for the bumping proces
 Inside your new skill's content, when discussing a meta-pattern (versioning, conventions-as-data, defer-then-promote, atomic-edits), **reference the meta-skill** instead of duplicating the content:
 
 ```markdown
-For the versioning model, see [`meta/versioning-pattern/`](../../meta/versioning-pattern/).
+For the versioning model, see [`versioning-pattern`](../../../../core/meta/versioning-pattern/).
 ```
 
 This keeps the meta-pattern as single source of truth · your skill stays focused on domain content.
 
 ## Anti-patterns specific to skill creation
 
-- ❌ Skipping `template/` — building from scratch tends to drift from convention
+- ❌ Skipping `core/template/` — building from scratch tends to drift from convention
 - ❌ Hardcoding domain examples in pattern docs (use placeholders like `<spec-id>`, `<reference-id>`)
 - ❌ Writing patterns that are actually just project notes — patterns must be reusable across projects
 - ❌ Inventing new folder structures — uniform structure exists for a reason
-- ❌ Re-deriving meta-patterns instead of referencing `meta/`
-- ❌ Forgetting to update `skills/README.md` after creating a new skill
+- ❌ Re-deriving meta-patterns instead of referencing `core/meta/`
+- ❌ Forgetting to update the model's `README.md` after creating a new skill

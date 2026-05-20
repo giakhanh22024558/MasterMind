@@ -1,19 +1,19 @@
-# Cross-reference — Kỹ thuật tham chiếu chéo
+# Cross-reference technique
 
-> **Trạng thái: STUB — chờ bổ sung chi tiết.**
-> Folder này được tạo trước để giữ chỗ cho kỹ thuật cross-reference. Đặc tả chi tiết sẽ được người dùng cung cấp sau.
+> **Status: STUB — detailed specification pending.**
+> This folder is created up front to reserve a place for the cross-reference technique. The detailed specification will be provided by the user later.
 
-## Phạm vi
+## Scope
 
-Kỹ thuật mà agent dùng để chỉnh sửa file **User layer** (`.docx`, `.drawio`) sau khi đã đọc nội dung từ **Agent layer** (`.md`) — xem [`core-rule`](../../core-rule/).
+The technique an agent uses to edit **User-layer** files (`.docx`, `.drawio`) after reading content from the **Agent layer** (`.md`) — see [`core-rule`](../../core-rule/).
 
-Mục tiêu: mỗi phần tử ở User layer (đoạn văn, ô bảng, hình, node draw.io) phải truy vết được về đúng vị trí nguồn ở Agent layer, để mọi chỉnh sửa luôn nhất quán và không lệch giữa hai tầng.
+Goal: every element in the User layer (paragraph, table cell, figure, draw.io node) must be traceable back to its exact source position in the Agent layer, so that every edit stays consistent and never drifts between the two layers.
 
-## Cần đặc tả (TODO)
+## To be specified (TODO)
 
-- [ ] Cơ chế định danh / neo (anchor) giữa `.md` và `.docx` / `.drawio`
-- [ ] Quy trình resolve một cross-reference khi chỉnh sửa
-- [ ] Xử lý khi Agent layer và User layer lệch nhau
-- [ ] Ví dụ minh họa cụ thể cho document (`.docx`) và diagram (`.drawio`)
+- [ ] Anchor / identification mechanism between `.md` and `.docx` / `.drawio`
+- [ ] Procedure for resolving a cross-reference during an edit
+- [ ] Handling divergence between the Agent layer and the User layer
+- [ ] Concrete examples for documents (`.docx`) and diagrams (`.drawio`)
 
-*Khi hoàn thiện đặc tả: cập nhật file này, bỏ nhãn STUB, và bump version nếu cần theo [`versioning-pattern`](../../meta/versioning-pattern/).*
+*When the specification is complete: update this file, remove the STUB label, and bump the version if needed per [`versioning-pattern`](../../meta/versioning-pattern/).*

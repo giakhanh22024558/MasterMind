@@ -1,15 +1,15 @@
-# core/diagram — khung lõi skill diagram
+# core/diagram — diagram-skill framework
 
-Phần **bất biến** của skill diagram: methodology dùng chung (`_shared/`), mô hình versioning, và template project-conventions. **Skill diagram cụ thể** (architecture, dfd...) sống trong từng model tại `models/model_NNN/diagram/<type>/`.
+The **invariant** part of the diagram skill: shared methodology (`_shared/`), the versioning model, and the project-conventions template. **Concrete diagram skills** (architecture, dfd...) live inside each model at `models/model_NNN/diagram/<type>/`.
 
 ## Layout
 
 ```
 core/diagram/
 ├── SKILL.md            ← dispatcher (unversioned)
-├── README.md           ← file này
-├── VERSIONING.md       ← mô hình versioning
-├── _shared/            ← methodology dùng chung mọi loại diagram
+├── README.md           ← this file
+├── VERSIONING.md       ← versioning model
+├── _shared/            ← methodology shared across all diagram types
 │   ├── conventions-discovery/v1/
 │   ├── folder-structure-general/v1/
 │   ├── design-decisions-format/v1/
@@ -21,22 +21,22 @@ core/diagram/
 └── _project-template/v1/   ← PROJECT-CONVENTIONS.md template
 ```
 
-## Skill diagram cụ thể
+## Concrete diagram skills
 
-| Model | Sub-skill | Vị trí |
+| Model | Sub-skill | Location |
 |---|---|---|
 | model_001 | architecture | [`models/model_001/diagram/architecture/`](../../models/model_001/diagram/architecture/) |
 
-## Tạo sub-skill diagram mới
+## Creating a new diagram sub-skill
 
-Tạo `models/model_NNN/diagram/<type>/` theo uniform structure — xem [`SKILL.md`](SKILL.md) phần "Adding a new diagram-type sub-skill". Sub-skill tham chiếu ngược về `core/diagram/_shared/` cho methodology chung.
+Create `models/model_NNN/diagram/<type>/` following the uniform structure — see [`SKILL.md`](SKILL.md), section "Adding a new diagram-type sub-skill". A sub-skill references back to `core/diagram/_shared/` for shared methodology.
 
-## Nguyên tắc
+## Principles
 
-- **Conventions là data** — dự án khai ở `<project>/diagram-conventions.md`, skill đọc & áp.
-- **Versioning theo leaf-folder** — xem [`VERSIONING.md`](VERSIONING.md).
-- Tuân [Core Rule](../core-rule/) — `.drawio` là user layer, `.md` / Mermaid là agent layer.
+- **Conventions are data** — a project declares them in `<project>/diagram-conventions.md`; the skill reads & applies.
+- **Versioning at leaf-folder grain** — see [`VERSIONING.md`](VERSIONING.md).
+- Follows the [Core Rule](../core-rule/) — `.drawio` is the user layer, `.md` / Mermaid is the agent layer.
 
 ## Stack
 
-Mermaid (diagram dạng text) · Drawio `.drawio` XML · Python scripts (atomic edits) · Markdown (narrative).
+Mermaid (text-based diagrams) · Drawio `.drawio` XML · Python scripts (atomic edits) · Markdown (narrative).

@@ -1,74 +1,74 @@
-# Pattern · Tách Content / Format (content-in-md, format-in-python)
+# Pattern · Content / Format separation (content-in-md, format-in-python)
 
-Pattern nền tảng của skill `model_001_srs`.
+The foundational pattern of the `model_001_srs` skill.
 
 ## Problem
 
-Khi soạn tài liệu kỹ thuật trực tiếp trong Word:
+When authoring a technical document directly in Word:
 
-- Người soạn vừa lo nội dung vừa lo format → mất tập trung, format không đồng nhất
-- Sửa format toàn cục (đổi màu heading, đổi font) phải sửa thủ công từng chỗ
-- Mã định danh (STT/ID, số hình), numbering heading viết tay → dễ trùng, dễ lệch
-- Khó review nội dung vì lẫn với markup trình bày
-- Mỗi tài liệu mới phải dựng lại format từ đầu
+- The author juggles content and formatting at once → loss of focus, inconsistent formatting
+- A global format change (heading color, font) must be applied by hand in many places
+- Identifier codes (STT/ID, figure numbers) and heading numbering written by hand → easy to duplicate or misalign
+- Hard to review content because it is mixed with presentation markup
+- Every new document rebuilds the formatting from scratch
 
 ## Solution
 
-Tách hai mối quan tâm thành hai tầng độc lập:
+Separate the two concerns into two independent layers:
 
-| Tầng | Nơi sống | Chứa gì |
+| Layer | Where it lives | Holds |
 |---|---|---|
-| **Content** | File `.md` | Chữ nghĩa, cấu trúc heading, bảng, bullet — KHÔNG format trình bày |
-| **Format** | Code Python | Font, màu, page, numbering, trang bìa, mục lục, quy ước tự sinh |
+| **Content** | `.md` file | Words, heading structure, tables, bullets — NO presentation formatting |
+| **Format** | Python code | Font, color, page, numbering, cover page, table of contents, auto-generated conventions |
 
-Một **generator** ghép 2 tầng → xuất `.docx`:
+A **generator** combines the two layers → produces the `.docx`:
 
 ```
 content.md  ──┐
               ├──▶  srs_md_to_docx.py  ──▶  output.docx
-srs_format.py ┘     (generator)            (đúng chuẩn format)
+srs_format.py ┘     (generator)            (correct standard formatting)
 ```
 
-- `srs_format.py` — chuẩn format: hằng số màu/font/page, style heading, numbering đa cấp, API dựng trang bìa / TOC / bảng / callout.
-- `srs_md_to_docx.py` — generator: parse `.md`, áp format, xử lý các quy ước tự sinh.
+- `srs_format.py` — the format standard: color/font/page constants, heading styles, multi-level numbering, the API to build the cover page / TOC / tables / callouts.
+- `srs_md_to_docx.py` — the generator: parses the `.md`, applies the format, handles the auto-generated conventions.
 
-### Hệ quả: các quy ước "tự sinh"
+### Consequence: the "auto-generated" conventions
 
-Vì format là code, generator tự lo những thứ trước đây viết tay:
+Because format is code, the generator handles things that used to be hand-written:
 
-| Quy ước | Cơ chế |
+| Convention | Mechanism |
 |---|---|
-| Numbering heading | Multilevel list native — `1`/`1.1`/`1.1.1`/`1.1.1.1`, H5 `A.B.C.` |
-| Mã STT/ID | `COM-<heading H4>-<NNN>` — sinh từ vị trí bảng, nối tiếp trong cùng H4 |
-| Số hình | `Hình <heading H4>-<n>` — đếm theo mục |
-| Merge ô | Hàng có mọi ô giống hệt → gộp 1 ô |
-| Trang bìa / TOC | Dựng từ frontmatter `.md` + field TOC native |
+| Heading numbering | Native multilevel list — `1`/`1.1`/`1.1.1`/`1.1.1.1`, H5 `A.B.C.` |
+| STT/ID codes | `COM-<heading H4>-<NNN>` — derived from the table position, continuous within the same H4 |
+| Figure numbers | `Hình <heading H4>-<n>` — counted per section |
+| Cell merging | A row with all cells identical → merged into one cell |
+| Cover page / TOC | Built from the `.md` frontmatter + a native TOC field |
 
-→ Người soạn để **trống** ô STT/ID, ghi caption `Hình [mô tả]` không số — generator điền.
+→ The author leaves STT/ID cells **empty** and writes captions as `Hình [description]` with no number — the generator fills them in.
 
 ## Trade-offs
 
-**Ưu:**
-- Người soạn chỉ tập trung nội dung; format luôn đồng nhất
-- Đổi format toàn cục = sửa 1 chỗ trong Python, build lại
-- Không bao giờ trùng/lệch mã ID, số hình, numbering
-- File `.md` dễ review, dễ diff, dễ version-control
+**Pros:**
+- The author focuses only on content; formatting is always consistent
+- A global format change = edit one place in Python, rebuild
+- ID codes, figure numbers, and numbering are never duplicated or misaligned
+- The `.md` file is easy to review, diff, and version-control
 
-**Nhược:**
-- Cần bước build (chạy script) — không WYSIWYG tức thì
-- Người soạn phải tuân cấu trúc `.md` quy ước (xem [`../../srs-structure/`](../../srs-structure/))
-- Sửa tinh chỉnh visual cuối cùng (vị trí ảnh…) vẫn cần mở Word
+**Cons:**
+- Requires a build step (running the script) — not instant WYSIWYG
+- The author must follow the conventional `.md` structure (see [`srs-structure/`](../../srs-structure/))
+- Final visual fine-tuning (image positioning…) still requires opening Word
 
 ## Worked example
 
-Tham chiếu [`../../examples/`](../../examples/) — sinh một SRS hoàn chỉnh từ `SRS_Sample.md`.
+See [`examples/`](../../examples/) — generating a complete SRS from `SRS_Sample.md`.
 
 ## When NOT to use
 
-- Tài liệu một lần, ngắn, không cần format chuẩn lặp lại → soạn thẳng Word nhanh hơn
-- Tài liệu cần cộng tác realtime nhiều người trên cùng bản Word
+- A one-off, short document that does not need a repeatable standard format → authoring directly in Word is faster
+- A document needing real-time multi-person collaboration on the same Word file
 
 ## Cross-references
 
-- Generator ghi file `.docx` sync-prone → áp [`meta/atomic-edits-pattern/`](../../../../../../core/meta/atomic-edits-pattern/): đóng Word trước khi build, build = đọc/ghi 1 lần, re-run được.
-- Nếu giá trị Loại/Thuộc tính mới lặp lại ≥3 lần → cân nhắc promote vào Legend canonical theo [`meta/defer-then-promote-pattern/`](../../../../../../core/meta/defer-then-promote-pattern/).
+- The generator writes a sync-prone `.docx` file → apply [`atomic-edits-pattern`](../../../../../../core/meta/atomic-edits-pattern/): close Word before building, build = read/write once, re-runnable.
+- If a new `Loại`/`Thuộc tính` value recurs ≥3 times → consider promoting it to the canonical Legend per [`defer-then-promote-pattern`](../../../../../../core/meta/defer-then-promote-pattern/).

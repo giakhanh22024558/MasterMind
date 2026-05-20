@@ -1,11 +1,15 @@
 # Uniform skill structure (mandatory)
 
-Every skill (and every sub-skill within a multi-domain skill) in this repo MUST follow the same folder structure. This makes any skill predictable to navigate — readers know where `patterns/` is, where `scripts/` is, where conventions are defined.
+Every concrete skill (and every category framework) in this repo MUST follow the same folder structure. This makes any skill predictable to navigate — readers know where `patterns/` is, where `scripts/` is, where conventions are defined.
 
-## Shape A · Single-domain skill (flat)
+> **Where skills live:** a concrete skill lives in a model at `models/model_NNN/<category>/<skill>/` (`<category>` is `diagram` or `document`). Cross-cutting framework and methodology live in `core/`.
+
+## Shape A · Single concrete skill (flat)
+
+A concrete skill — one main "type" of activity. It has top-level content modules and that's it. Lives at `models/model_NNN/<category>/<skill>/`.
 
 ```
-skills/<skill>/
+models/model_NNN/<category>/<skill>/
 ├── SKILL.md                          ← unversioned · agent-facing entry
 ├── README.md                         ← unversioned · human-facing entry
 ├── conventions-schema/v1/            ← versioned · what conventions the skill needs
@@ -20,17 +24,28 @@ skills/<skill>/
     └── <doc>.md
 ```
 
-## Shape B · Multi-domain skill (with sub-skills)
+Examples: `models/model_001/document/srs/`, `models/model_001/diagram/architecture/`.
+
+## Shape B · Multi-domain category (framework + sub-skills)
+
+When a domain covers multiple distinct types (like `diagram` covers architecture, DFD, future activity/BPMN/sequence/state/ERD), it is split across `core/` and `models/`:
+
+- The **framework** lives in `core/<category>/` — the dispatcher `SKILL.md`, `VERSIONING.md`, the cross-cutting `_shared/` methodology, and `_project-template/`. Invariant across projects.
+- Each **concrete sub-skill** is a Shape A skill living in a model at `models/model_NNN/<category>/<type>/`.
 
 ```
-skills/<skill>/
-├── SKILL.md                          ← unversioned · top-level dispatcher
+core/<category>/                      ← framework (invariant)
+├── SKILL.md                          ← unversioned · dispatcher
 ├── README.md                         ← unversioned
-├── VERSIONING.md                     ← unversioned (optional · can ref _meta)
+├── VERSIONING.md                     ← unversioned (optional)
 ├── _shared/                          ← cross-sub-skill methodology
 │   ├── <module-a>/v1/
 │   ├── <module-b>/v1/
 │   └── scripts/v1/
+└── _project-template/v1/
+    └── PROJECT-CONVENTIONS.md         ← starter for projects adopting this category
+
+models/model_NNN/<category>/          ← concrete sub-skills (per project)
 ├── <sub-skill-1>/                    ← Shape A folder structure
 │   ├── SKILL.md                      unversioned · sub-skill entry
 │   ├── conventions-schema/v1/
@@ -43,13 +58,7 @@ skills/<skill>/
     └── ...
 ```
 
-Plus optionally:
-
-```
-skills/<skill>/
-└── _project-template/v1/
-    └── PROJECT-CONVENTIONS.md        ← starter for projects adopting this skill
-```
+Example: the `diagram` category — framework in `core/diagram/`, the `architecture` sub-skill in `models/model_001/diagram/architecture/`.
 
 ## Mandatory elements per skill / sub-skill
 
@@ -81,7 +90,7 @@ See [`../versioning-pattern/`](../../versioning-pattern/) for the full versionin
 | Benefit | Mechanism |
 |---|---|
 | **Predictable navigation** | Reader always knows where `patterns/` is, where `scripts/` is |
-| **Easy onboarding for new skills** | Copy `template/v1/`, fill in content, done |
+| **Easy onboarding for new skills** | Copy `core/template/v1/`, fill in content, done |
 | **Modular evolution** | Bump `patterns/v1` → `patterns/v2` without touching `scripts/` |
 | **Project-overridable conventions** | `conventions-schema/` + `conventions-defaults/` enable conventions-as-data pattern |
 | **Self-documenting depth** | The folder structure itself is documentation |
@@ -90,7 +99,7 @@ See [`../versioning-pattern/`](../../versioning-pattern/) for the full versionin
 
 If you discover a recurring concept that deserves its own module (e.g. you keep adding similar patterns and want to formalize):
 
-1. Create the leaf folder: `skills/<skill>/<new-module>/v1/`
+1. Create the leaf folder: `models/model_NNN/<category>/<skill>/<new-module>/v1/`
 2. Add the content
 3. Update the skill's `SKILL.md` to reference it
 4. Done · the module is now part of the skill
@@ -109,6 +118,6 @@ The structure scales — there's no fixed maximum on how many content modules a 
 
 | Within a content module | Use leaf-folder paths (latest) — e.g. `[patterns/](../../patterns/)` |
 | Pinned to a specific version | Use explicit `vN/` paths — e.g. `[v1/foo.md](../../patterns/v1/foo.md)` |
-| To meta-patterns | Use `meta/` paths — e.g. `[versioning model](../../../meta/versioning-pattern/)` |
+| To meta-patterns | Use `core/meta/` paths — e.g. a skill linking to `core/meta/versioning-pattern/` |
 
 See [`../conventions-as-data-pattern/`](../../conventions-as-data-pattern/) for how conventions are loaded from project files.

@@ -1,63 +1,63 @@
 # model_001_srs — README
 
-Skill sinh tài liệu **Software Requirements Specification (SRS)** chuẩn IEEE 830 / ISO·IEC·IEEE 29148 ở định dạng `.docx`, từ nội dung viết bằng Markdown.
+A skill that generates **Software Requirements Specification (SRS)** documents to the IEEE 830 / ISO·IEC·IEEE 29148 standard in `.docx` format, from content written in Markdown.
 
-Triết lý: **nội dung viết ở `.md` · hình thức nằm trong code Python**. Người soạn chỉ lo nội dung; generator tự áp toàn bộ format và các quy ước tự sinh.
+Philosophy: **content is written in `.md` · presentation lives in Python code**. The author handles only content; the generator applies all formatting and the auto-generated conventions.
 
 ## Quick start
 
-| Nếu bạn muốn… | Đọc |
+| If you want to… | Read |
 |---|---|
-| Hiểu skill trong 1 trang | [`SKILL.md`](SKILL.md) |
-| Biết cấu trúc nội dung một SRS | [`srs-structure/`](srs-structure/) |
-| Biết format chuẩn (font, màu, page, numbering) | [`conventions-defaults/`](conventions-defaults/) |
-| Biết dự án cần khai báo gì | [`conventions-schema/`](conventions-schema/) |
-| Xem ví dụ sinh SRS đầy đủ | [`examples/`](examples/) |
-| Chạy generator | [`scripts/`](scripts/) |
+| Understand the skill in one page | [`SKILL.md`](SKILL.md) |
+| Know the content structure of an SRS | [`srs-structure/`](srs-structure/) |
+| Know the standard format (font, color, page, numbering) | [`conventions-defaults/`](conventions-defaults/) |
+| Know what a project must declare | [`conventions-schema/`](conventions-schema/) |
+| See a full SRS-generation example | [`examples/`](examples/) |
+| Run the generator | [`scripts/`](scripts/) |
 
-## Sinh một file SRS — 3 bước
+## Generate an SRS file — 3 steps
 
-1. **Soạn nội dung** ở file `.md` theo cấu trúc [`srs-structure/`](srs-structure/)
-2. **Chạy**: `python scripts/v1/srs_md_to_docx.py <input.md> <output.docx>`
-3. **Mở** `.docx` trong Word → field Mục lục tự cập nhật
+1. **Author content** in a `.md` file following the structure in [`srs-structure/`](srs-structure/)
+2. **Run**: `python scripts/v1/srs_md_to_docx.py <input.md> <output.docx>`
+3. **Open** the `.docx` in Word → the table-of-contents field updates automatically
 
-## Bộ công cụ làm gì cho bạn
+## What the toolkit does for you
 
-| Tự động xử lý | Chi tiết |
+| Handled automatically | Detail |
 |---|---|
-| Trang bìa | Logo + tên dự án + version + bảng metadata, đứng độc lập 1 trang |
-| Mục lục | Field TOC native (cấp 1-3), tự cập nhật khi mở Word |
-| Numbering heading | H1-H4 số thập phân `1`/`1.1`/`1.1.1`/`1.1.1.1`; H5 `A. B. C.`; H6 `a. b. c.` |
-| Mã STT/ID | Tự sinh `COM-<heading H4>-<NNN>` cho bảng thành phần, `BR-…` cho Business Rules |
-| Số hình | Tự đánh `Hình <heading H4>-<n>`, căn giữa |
-| Merge ô | Hàng có các ô giống hệt nhau → tự gộp 1 ô |
-| Format | Font Mulish, màu `#193D74`, A4, gạch chân Heading 1, footer có số trang |
+| Cover page | Logo + project name + version + metadata table, standalone on one page |
+| Table of contents | Native TOC field (levels 1-3), updates automatically when opened in Word |
+| Heading numbering | H1-H4 decimal `1`/`1.1`/`1.1.1`/`1.1.1.1`; H5 `A. B. C.`; H6 `a. b. c.` |
+| STT/ID codes | Auto-generates `COM-<heading H4>-<NNN>` for component tables, `BR-…` for Business Rules |
+| Figure numbers | Auto-numbers `Hình <heading H4>-<n>`, centered |
+| Cell merging | A row whose cells are all identical → merged into one cell |
+| Formatting | Mulish font, color `#193D74`, A4, underlined Heading 1, footer with page numbers |
 
 ## Folder layout
 
 ```
 srs/
 ├── SKILL.md                       ← agent-facing entry
-├── README.md                      ← file này
-├── conventions-schema/v1/         ← convention dự án cần khai
-├── conventions-defaults/v1/       ← format mặc định (decode từ SRS chuẩn)
-├── srs-structure/v1/              ← đặc tả cấu trúc nội dung SRS
-├── patterns/v1/                   ← pattern tái sử dụng
-├── examples/v1/                   ← walkthrough + file mẫu
+├── README.md                      ← this file
+├── conventions-schema/v1/         ← conventions a project must declare
+├── conventions-defaults/v1/       ← default formatting (decoded from a standard SRS)
+├── srs-structure/v1/              ← specification of SRS content structure
+├── patterns/v1/                   ← reusable patterns
+├── examples/v1/                   ← walkthrough + sample file
 └── scripts/v1/                    ← srs_format.py + srs_md_to_docx.py + assets/
 ```
 
-## Adoption guide cho một dự án
+## Adoption guide for a project
 
-1. Tạo `<project-root>/model_001_srs-conventions.md` theo [`conventions-schema/`](conventions-schema/)
-2. Khai: tên dự án, đường dẫn logo, thông tin version; phần nào bỏ trống → dùng default
-3. Soạn nội dung SRS ở `.md`, chạy generator
+1. Create `<project-root>/model_001_srs-conventions.md` per [`conventions-schema/`](conventions-schema/)
+2. Declare: project name, logo path, version info; leave anything blank → defaults are used
+3. Author the SRS content in `.md`, run the generator
 
 ## Stack
 
-- **Markdown** cho nội dung + tài liệu
-- **Python** (`python-docx`) cho generator — cài: `pip install python-docx`
-- **1 asset nhị phân**: `scripts/v1/assets/srs_logo.png` (logo trang bìa)
+- **Markdown** for content + documentation
+- **Python** (`python-docx`) for the generator — install: `pip install python-docx`
+- **One binary asset**: `scripts/v1/assets/srs_logo.png` (cover-page logo)
 
 ## License
 

@@ -1,30 +1,32 @@
-# SRS Template — Mô tả cấu trúc tài liệu
+# SRS Template — content structure specification
 
-Trích xuất từ `FINAL_SRS_IEEE_LEX.md` (dự án LEXcentra). Tài liệu này mô tả **khuôn mẫu** mà mọi bản SRS theo chuẩn này phải tuân theo — dùng để tạo mới hoặc kiểm tra tính nhất quán của một SRS.
+Extracted from `FINAL_SRS_IEEE_LEX.md` (the LEXcentra project). This document describes the **template** every SRS following this standard must conform to — use it to create a new SRS or to check an existing one for consistency.
 
-Chuẩn tham chiếu: **IEEE Std 830-1998 / ISO/IEC/IEEE 29148:2018**.
+Reference standard: **IEEE Std 830-1998 / ISO/IEC/IEEE 29148:2018**.
 
----
-
-## 1. Bố cục tổng thể
-
-SRS gồm **6 phần cấp 1** (`#`), theo đúng thứ tự:
-
-```
-[Trang bìa]
-# Lịch sử Phiên bản
-# Giới thiệu
-# Mô tả Tổng quan
-# Yêu cầu Cụ thể
-# Yêu cầu Phi chức năng
-```
+> Section names, table column headers, and field labels below are kept in Vietnamese: they are the **literal text** an author writes into the `.md` and that the generator emits into the `.docx`. This skill produces Vietnamese-language SRS documents. The surrounding explanations are in English.
 
 ---
 
-## 2. Trang bìa (trước heading đầu tiên)
+## 1. Overall layout
+
+An SRS has **6 level-1 parts** (`#`), in this exact order:
 
 ```
-**[Tên sản phẩm]**
+[Cover page]
+# Lịch sử Phiên bản       (Version History)
+# Giới thiệu              (Introduction)
+# Mô tả Tổng quan         (Overall Description)
+# Yêu cầu Cụ thể          (Specific Requirements)
+# Yêu cầu Phi chức năng   (Non-functional Requirements)
+```
+
+---
+
+## 2. Cover page (before the first heading)
+
+```
+**[Product name]**
 **Software Requirements Specification**
 Phiên bản [Draft x.y.z] · [DD/MM/YYYY]
 
@@ -41,157 +43,157 @@ Phiên bản [Draft x.y.z] · [DD/MM/YYYY]
 
 ---
 
-## 3. `# Lịch sử Phiên bản`
+## 3. `# Lịch sử Phiên bản` (Version History)
 
-Bảng 4 cột, mỗi dòng = 1 phiên bản:
+A 4-column table, one row per version:
 
-| Cột | Nội dung |
+| Column | Content |
 |---|---|
-| Phiên bản | x.y.z |
-| Ngày | DD/MM/YYYY |
-| Mô tả | Các thay đổi, mỗi ý cách nhau bằng `<br>` |
-| Tác giả | Tên người thực hiện |
+| Phiên bản (Version) | x.y.z |
+| Ngày (Date) | DD/MM/YYYY |
+| Mô tả (Description) | Changes, each item separated by `<br>` |
+| Tác giả (Author) | Name of the person who made the change |
 
 ---
 
-## 4. `# Giới thiệu`
+## 4. `# Giới thiệu` (Introduction)
 
-- Mở đầu bằng **bullet list**: `Mục đích`, `Phạm vi`, `Đối tượng` (in đậm tên mục).
-- `## Định nghĩa, Từ viết tắt và Ký hiệu` — bảng 2 cột: `Thuật ngữ / Từ viết tắt` | `Định nghĩa`.
-- `## Tổng quan Tài liệu` — đoạn văn + bullet mô tả bố cục các mục còn lại.
+- Opens with a **bullet list**: `Mục đích` (Purpose), `Phạm vi` (Scope), `Đối tượng` (Audience) — the item name in bold.
+- `## Định nghĩa, Từ viết tắt và Ký hiệu` (Definitions, Acronyms and Symbols) — a 2-column table: `Thuật ngữ / Từ viết tắt` | `Định nghĩa`.
+- `## Tổng quan Tài liệu` (Document Overview) — a paragraph + bullets describing the layout of the remaining sections.
 
 ---
 
-## 5. `# Mô tả Tổng quan`
+## 5. `# Mô tả Tổng quan` (Overall Description)
 
-| Tiểu mục (`##`) | Nội dung |
+| Subsection (`##`) | Content |
 |---|---|
-| Bối cảnh Sản phẩm | Đoạn văn + bullet mô tả hệ thống và các giao tiếp ngoại vi |
-| Chức năng Sản phẩm | Bảng 2 cột: `Lĩnh vực Tính năng` \| `Tóm tắt` |
-| Phân loại Người dùng và Đặc điểm | Bảng: `Phân loại Người dùng` \| `Mô tả` \| `Trình độ Kỹ thuật` \| `Tần suất Sử dụng` |
-| Yêu cầu Hành vi Chung | Tập các quy tắc toàn cục, mỗi quy tắc là 1 tiểu mục `###` |
+| Bối cảnh Sản phẩm (Product Context) | Paragraph + bullets describing the system and its external interfaces |
+| Chức năng Sản phẩm (Product Functions) | 2-column table: `Lĩnh vực Tính năng` \| `Tóm tắt` |
+| Phân loại Người dùng và Đặc điểm (User Classes and Characteristics) | Table: `Phân loại Người dùng` \| `Mô tả` \| `Trình độ Kỹ thuật` \| `Tần suất Sử dụng` |
+| Yêu cầu Hành vi Chung (General Behavior Requirements) | A set of global rules, each rule a `###` subsection |
 
-**Các quy tắc chung (`###`) thường có:** Quy tắc Validation Đầu vào · Quy tắc Xử lý Lỗi & Phản hồi · Quy tắc Hiển thị theo Vai trò (RBAC) · Quy tắc Trạng thái Loading · Quy tắc Hành vi Input (Inline Edit) · Quy tắc Hiển thị & Tương tác trên Màn danh sách · Quy tắc Tìm kiếm, Lọc & Sắp xếp.
-→ Mỗi quy tắc trình bày dạng **bảng 3 cột**: `Tình huống` \| `Hành vi Hệ thống` \| `Ghi chú`.
+**Common general rules (`###`) typically include:** Quy tắc Validation Đầu vào · Quy tắc Xử lý Lỗi & Phản hồi · Quy tắc Hiển thị theo Vai trò (RBAC) · Quy tắc Trạng thái Loading · Quy tắc Hành vi Input (Inline Edit) · Quy tắc Hiển thị & Tương tác trên Màn danh sách · Quy tắc Tìm kiếm, Lọc & Sắp xếp.
+→ Each rule is presented as a **3-column table**: `Tình huống` \| `Hành vi Hệ thống` \| `Ghi chú`.
 
 ---
 
-## 6. `# Yêu cầu Cụ thể` — phần lõi
+## 6. `# Yêu cầu Cụ thể` (Specific Requirements) — the core part
 
-Tổ chức theo **Module / Epic**. Mỗi module là 1 tiểu mục `##`:
+Organized by **Module / Epic**. Each module is a `##` subsection:
 
 ```
-## [Tên Module]                          (vd: Quản lý người dùng)
+## [Module name]                          (e.g. Quản lý người dùng)
    ### Danh sách Yêu cầu Chức năng
-   ### Đặc tả Chi tiết — [Tên tính năng] (FEAT-XXX[, FEAT-YYY])
-   ### Đặc tả Chi tiết — [Tên tính năng] (FEAT-ZZZ)
+   ### Đặc tả Chi tiết — [Feature name] (FEAT-XXX[, FEAT-YYY])
+   ### Đặc tả Chi tiết — [Feature name] (FEAT-ZZZ)
    ...
 ```
 
-### 6.1. `### Danh sách Yêu cầu Chức năng`
+### 6.1. `### Danh sách Yêu cầu Chức năng` (Functional Requirements List)
 
-Bảng 3 cột liệt kê toàn bộ FR của module:
+A 3-column table listing every FR of the module:
 
 | ID | Yêu cầu | Ưu tiên |
 |---|---|---|
-| FEAT-XXX | [Mô tả ngắn yêu cầu] | Very High / High / Medium / Low |
+| FEAT-XXX | [Short requirement description] | Very High / High / Medium / Low |
 
-### 6.2. `### Đặc tả Chi tiết — [Tên] (FEAT-XXX)` — đơn vị lặp
+### 6.2. `### Đặc tả Chi tiết — [Name] (FEAT-XXX)` — the repeating unit
 
-Mỗi đặc tả tính năng gồm **5 khối con theo thứ tự cố định**:
+Each feature specification has **5 sub-blocks in a fixed order**:
 
-#### (a) Bảng "Đặc tả Use Case" — bảng 2 cột (key–value)
+#### (a) The "Đặc tả Use Case" table — a 2-column key–value table
 
-| Trường | Nội dung |
+| Field | Content |
 |---|---|
 | Mã tính năng (Use case / Feature) | FEAT-XXX |
-| Tác nhân | Vai trò người dùng liên quan |
-| Mô tả | 1–3 câu tóm tắt tính năng |
-| Sự kiện kích hoạt | Hành động/sự kiện mở đầu use case |
-| Tiền điều kiện | Điều kiện phải đúng trước khi chạy |
-| Luồng chính | Các bước, mỗi bước cách nhau `<br>` |
-| Luồng ngoại lệ / Xử lý lỗi | Các nhánh lỗi, mỗi nhánh cách nhau `<br>` |
-| Hậu điều kiện | Trạng thái hệ thống sau khi hoàn tất |
+| Tác nhân (Actor) | Related user role |
+| Mô tả (Description) | 1–3 sentences summarizing the feature |
+| Sự kiện kích hoạt (Trigger) | The action/event that starts the use case |
+| Tiền điều kiện (Precondition) | Conditions that must hold before running |
+| Luồng chính (Main flow) | The steps, each separated by `<br>` |
+| Luồng ngoại lệ / Xử lý lỗi (Exception flow / Error handling) | Error branches, each separated by `<br>` |
+| Hậu điều kiện (Postcondition) | System state after completion |
 
-#### (b) `#### Sơ đồ luồng`
+#### (b) `#### Sơ đồ luồng` (Flow diagram)
 
-Mục chứa **sơ đồ luồng nghiệp vụ** (activity / flow diagram) trực quan hóa Luồng chính + Luồng ngoại lệ. Khi chưa có diagram, đặt placeholder dạng callout 1 ô: `| [ Sơ đồ luồng — sẽ được bổ sung ] |`. Về sau append diagram bằng caption `Hình [mô tả]` (generator tự đánh số + căn giữa như mục Wireframe).
+A section holding the **business flow diagram** (activity / flow diagram) visualizing the Main flow + Exception flow. When no diagram exists yet, place a single-cell callout placeholder: `| [ Sơ đồ luồng — sẽ được bổ sung ] |`. Later, append the diagram with a `Hình [description]` caption (the generator numbers and centers it, same as the Wireframe section).
 
-#### (c) `#### Giao diện / Wireframe`
+#### (c) `#### Giao diện / Wireframe` (Interface / Wireframe)
 
-Liệt kê các hình: `Hình [Mô tả wireframe]` — generator tự đánh số `Hình <heading H4>-<n>`.
+List the figures: `Hình [wireframe description]` — the generator numbers them `Hình <heading H4>-<n>`.
 
-#### (d) `#### Đặc tả các thành phần`
+#### (d) `#### Đặc tả các thành phần` (Component specification)
 
-Một hoặc nhiều bảng component. Mỗi bảng có thể có sub-heading `#####` (vd "Pop-up Tạo người dùng mới"). Cột chuẩn:
+One or more component tables. Each table may have a `#####` sub-heading (e.g. "Pop-up Tạo người dùng mới"). Standard columns:
 
 | STT / ID | Tên / Label | Loại | Thuộc tính | Mô tả |
 |---|---|---|---|---|
 
-- **Loại** / **Thuộc tính**: chỉ dùng giá trị đã định nghĩa ở Legend (Mục Yêu cầu Hành vi Chung) — xem Mục 8b.
-- **STT / ID**: để **trống** trong .md — generator tự sinh `COM-<heading H4>-<NNN>`.
-- **Dòng nhóm**: một dòng có cả 5 ô cùng giá trị = tiêu đề nhóm (vd "Thông tin người dùng", "Hành động") — generator tự merge thành 1 ô.
+- **Loại** / **Thuộc tính**: only use values defined in the Legend (the General Behavior Requirements section) — see Section 8b.
+- **STT / ID**: leave **empty** in the `.md` — the generator produces `COM-<heading H4>-<NNN>`.
+- **Group row**: a row whose 5 cells all hold the same value is a group header (e.g. "Thông tin người dùng", "Hành động") — the generator merges it into one cell.
 
 #### (e) `#### Business Rules / System Behavior`
 
-Bảng 2 cột — chỉ thêm khi tính năng có ràng buộc nghiệp vụ. Cột "Mã BR" để trống — generator tự sinh `BR-<heading H4>-<NNN>`:
+A 2-column table — add it only when the feature has business constraints. Leave the "Mã BR" column empty — the generator produces `BR-<heading H4>-<NNN>`:
 
 | Mã BR | Mô tả |
 |---|---|
 
 ---
 
-## 7. `# Yêu cầu Phi chức năng`
+## 7. `# Yêu cầu Phi chức năng` (Non-functional Requirements)
 
-Mỗi loại NFR là 1 tiểu mục `##`: Hiệu năng · Độ tin cậy và Tính sẵn sàng · Bảo mật · Khả năng Bảo trì · Khả năng Mở rộng · Khả năng Sử dụng. Nội dung dạng bullet hoặc đoạn văn.
+Each NFR type is a `##` subsection: Hiệu năng (Performance) · Độ tin cậy và Tính sẵn sàng (Reliability & Availability) · Bảo mật (Security) · Khả năng Bảo trì (Maintainability) · Khả năng Mở rộng (Scalability) · Khả năng Sử dụng (Usability). Content as bullets or paragraphs.
 
 ---
 
-## 8. Quy ước định dạng (bắt buộc tuân thủ)
+## 8. Formatting conventions (mandatory)
 
-| Quy ước | Mô tả |
+| Convention | Description |
 |---|---|
-| Mã tính năng | `FEAT-XXX` (3 chữ số). Một đặc tả có thể gộp nhiều mã: `(FEAT-001, FEAT-002)` |
-| Xuống dòng trong ô bảng | Dùng `<br>` — không tách thành nhiều dòng markdown |
-| Tag tiêu chí mặc định | `[Mặc định]` đặt sau giá trị (vd ô tìm kiếm, sắp xếp) |
-| Giới hạn ký tự | `Max_N_char` trong cột Thuộc tính |
-| Tham chiếu chéo | Trích mã FEAT hoặc số Mục (vd "theo quy tắc Mục 2.4.1") |
-| In đậm | Tên trường key trong bảng Use Case, từ khóa quan trọng trong BR |
-| Trạng thái tài liệu | `Draft` cho tới khi chốt; phiên bản tăng theo semver |
+| Feature code | `FEAT-XXX` (3 digits). One specification may combine several codes: `(FEAT-001, FEAT-002)` |
+| Line break inside a table cell | Use `<br>` — do not split into multiple markdown lines |
+| Default-criterion tag | `[Mặc định]` placed after the value (e.g. search field, sort field) |
+| Character limit | `Max_N_char` in the Thuộc tính column |
+| Cross-reference | Cite a FEAT code or a section number (e.g. "per the rule in Section 2.4.1") |
+| Bold | Key field names in the Use Case table, important keywords in BRs |
+| Document status | `Draft` until finalized; the version increments per semver |
 
 ---
 
-## 8b. Quy ước do generator tự xử lý (`srs_format.py` + `srs_md_to_docx.py`)
+## 8b. Conventions handled automatically by the generator (`srs_format.py` + `srs_md_to_docx.py`)
 
-Các quy ước sau **không cần viết tay trong .md** — generator tự sinh khi build `.docx`:
+The following conventions **do not need to be hand-written in the `.md`** — the generator produces them when building the `.docx`:
 
-| Quy ước | Cơ chế |
+| Convention | Mechanism |
 |---|---|
-| Trang bìa | Logo (`assets/srs_logo.png`) + tiêu đề + phụ đề + version, căn giữa. Lấy từ frontmatter .md. **Trang bìa đứng độc lập 1 trang** |
-| Tên/Mã dự án | **Biến** — generator lấy từ tiêu đề trang bìa, truyền vào footer (`new_srs_document(project_name=...)`). Không hard-code |
-| Mục lục | Field TOC native (cấp 1-3), tự cập nhật khi mở Word. **Mục lục đứng độc lập 1 trang** |
-| Numbering heading | Tự động — Heading 1-4: số thập phân `1` / `1.1` / `1.1.1` / `1.1.1.1` (cấp thấp nhất = H4, 4 số). Heading 5: chữ HOA `A. B. C.`; Heading 6: chữ thường `a. b. c.`. Heading frontmatter đầu tiên (Lịch sử Phiên bản) **không** numbering |
-| Ngắt trang | Tự chèn page break: sau trang bìa, sau Mục lục, sau "Lịch sử Phiên bản" (để mục này đứng độc lập) |
-| Gạch chân Heading 1 | Viền dưới `single #193D74` |
-| Merge ô trùng | Hàng có mọi ô giống hệt nhau (header "Đặc tả Use Case", dòng nhóm) → tự merge thành 1 ô |
-| Callout | Bảng 1 cột trong .md (`\| [ nội dung ] \|`) → render nền kem (vd placeholder Sơ đồ luồng) |
-| **STT/ID bảng thành phần** | Tự sinh `COM-<Heading 4 no-dot>-<NNN>` — **mã lấy theo Heading 4**. Nhiều bảng trong các H5 con của cùng 1 H4 → đánh số nối tiếp. Ô STT/ID trong .md để **trống** |
-| **Mã BR** | Tự sinh `BR-<Heading 4 no-dot>-<NNN>`. Ô Mã BR trong .md để trống |
-| Caption Hình | Tự đánh số `Hình <Heading 4>-<n>`, căn giữa. Áp dụng cho mục Wireframe và Sơ đồ luồng. Trong .md chỉ cần ghi `Hình [mô tả]` |
-| Legend Loại/Thuộc tính | Marker `{{LEGEND}}` trong .md → generator chèn 2 bảng chú giải canonical |
+| Cover page | Logo (`assets/srs_logo.png`) + title + subtitle + version, centered. Taken from the `.md` frontmatter. **The cover page stands alone on one page** |
+| Project name/code | A **variable** — the generator takes it from the cover-page title and passes it into the footer (`new_srs_document(project_name=...)`). Not hard-coded |
+| Table of contents | Native TOC field (levels 1-3), updates when opened in Word. **The TOC stands alone on one page** |
+| Heading numbering | Automatic — Heading 1-4: decimal `1` / `1.1` / `1.1.1` / `1.1.1.1` (lowest level = H4, 4 numbers). Heading 5: uppercase `A. B. C.`; Heading 6: lowercase `a. b. c.`. The first frontmatter heading (Lịch sử Phiên bản) is **not** numbered |
+| Page breaks | Inserted automatically: after the cover page, after the TOC, after `Lịch sử Phiên bản` (so that section stands alone) |
+| Heading 1 underline | Bottom border `single #193D74` |
+| Duplicate-cell merge | A row whose cells are all identical (the "Đặc tả Use Case" header, group rows) → merged into one cell |
+| Callout | A single-column table in the `.md` (`\| [ content ] \|`) → rendered with a cream background (e.g. the Flow-diagram placeholder) |
+| **Component-table STT/ID** | Auto-generated `COM-<Heading 4 no-dot>-<NNN>` — **the code is derived from Heading 4**. Multiple tables under the H5 children of the same H4 → numbered continuously. Leave the STT/ID cells **empty** in the `.md` |
+| **BR code** | Auto-generated `BR-<Heading 4 no-dot>-<NNN>`. Leave the Mã BR cells empty in the `.md` |
+| Figure caption | Auto-numbered `Hình <Heading 4>-<n>`, centered. Applies to the Wireframe and Flow-diagram sections. In the `.md` just write `Hình [description]` |
+| Loại/Thuộc tính Legend | The `{{LEGEND}}` marker in the `.md` → the generator inserts the 2 canonical legend tables |
 
-**Quan trọng — tái sử dụng Legend:** Mọi giá trị `Loại` và `Thuộc tính` dùng trong đặc tả thành phần PHẢI thuộc danh sách đã định nghĩa ở Legend (Mục Yêu cầu Hành vi Chung). Không tự tạo loại/thuộc tính mới — nếu cần giá trị mới, bổ sung vào Legend canonical (`LEGEND_TYPES` / `LEGEND_ATTRS` trong `srs_format.py`) trước.
+**Important — reuse the Legend:** every `Loại` and `Thuộc tính` value used in a component specification MUST belong to the list defined in the Legend (the General Behavior Requirements section). Do not create new types/attributes — if a new value is needed, add it to the canonical Legend (`LEGEND_TYPES` / `LEGEND_ATTRS` in `srs_format.py`) first.
 
 ---
 
-## 9. Checklist kiểm tra một SRS có khớp template
+## 9. Checklist — does an SRS match the template
 
-- [ ] Có đủ 6 phần cấp 1 đúng thứ tự
-- [ ] Trang bìa có bảng metadata 5 dòng + dòng "Mục lục"
-- [ ] Lịch sử Phiên bản đúng 4 cột
-- [ ] Mỗi module có "Danh sách Yêu cầu Chức năng" trước các đặc tả chi tiết
-- [ ] Mỗi `### Đặc tả Chi tiết` có đủ: bảng Use Case (8 trường) → Wireframe → Đặc tả thành phần → (Business Rules nếu cần)
-- [ ] Mọi mã FEAT trong đặc tả đều xuất hiện ở "Danh sách Yêu cầu Chức năng" của module
-- [ ] Bảng component đúng cột chuẩn (STT/ID, Tên/Label, Loại, [Thuộc tính], Mô tả)
-- [ ] Xuống dòng trong ô đều dùng `<br>`
-- [ ] Có phần "Yêu cầu Phi chức năng" ở cuối
+- [ ] All 6 level-1 parts present in the right order
+- [ ] Cover page has the 5-row metadata table + the "Mục lục" line
+- [ ] Lịch sử Phiên bản has exactly 4 columns
+- [ ] Each module has a "Danh sách Yêu cầu Chức năng" before its detailed specifications
+- [ ] Each `### Đặc tả Chi tiết` has all of: Use Case table (8 fields) → Wireframe → Component specification → (Business Rules if needed)
+- [ ] Every FEAT code in a specification also appears in the module's "Danh sách Yêu cầu Chức năng"
+- [ ] Component tables use the standard columns (STT/ID, Tên/Label, Loại, [Thuộc tính], Mô tả)
+- [ ] Line breaks inside cells all use `<br>`
+- [ ] A "Yêu cầu Phi chức năng" part exists at the end

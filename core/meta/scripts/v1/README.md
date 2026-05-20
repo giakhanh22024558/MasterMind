@@ -2,7 +2,7 @@
 
 | Script | Purpose |
 |---|---|
-| [`scaffold-new-skill.py`](scaffold-new-skill.py) | Copy `template/v1/` to `skills/<new-name>/` and rename placeholders. Quick start for a new skill. |
+| [`scaffold-new-skill.py`](scaffold-new-skill.py) | Copy `core/template/v1/` to a new skill folder under `models/` and rename placeholders. Quick start for a new skill. |
 
 ## How to use
 
@@ -16,10 +16,10 @@ NEW_SKILL_DESCRIPTION = "..."
 Run:
 
 ```bash
-python meta/scripts/v1/scaffold-new-skill.py
+python core/meta/scripts/v1/scaffold-new-skill.py
 ```
 
-Output: a new `skills/<your-skill-name>/` folder with the uniform structure, placeholders filled in, and a list of next steps.
+Output: a new skill folder under `models/model_NNN/<category>/` with the uniform structure, placeholders filled in, and a list of next steps.
 
 ## Why a script
 

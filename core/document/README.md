@@ -1,7 +1,7 @@
 # core/document
 
-Khung lõi (bất biến) cho các skill sinh tài liệu văn bản (`.docx`...). Entry point: [`SKILL.md`](SKILL.md).
+Core (invariant) framework for text-document generation skills (`.docx`...). Entry point: [`SKILL.md`](SKILL.md).
 
-Đây là phần *chung* — skill document **cụ thể** nằm trong model tại `models/model_NNN/document/<type>/` (ví dụ `srs`).
+This is the *shared* part — **concrete** document skills live inside a model at `models/model_NNN/document/<type>/` (for example `srs`).
 
-> Trạng thái: khung + stub. Sẽ tách thêm content module lõi khi có nhiều skill document.
+> Status: framework + stub. More core content modules will be extracted once there are multiple document skills.

@@ -1,6 +1,6 @@
 ---
 name: meta
-description: Meta-skill — how to create a new skill in this repo. Captures the mindset, folder-structure conventions, versioning model, and design patterns that every skill in `skills/` follows. Use when starting a new skill (e.g. `business_analysis`, `code_review`, `data_modeling`) or when reviewing an existing skill's structure for consistency.
+description: Meta-skill — how to create a new skill in this repo. Captures the mindset, folder-structure conventions, versioning model, and design patterns that every skill in `models/` follows. Use when starting a new skill (e.g. `business_analysis`, `code_review`, `data_modeling`) or when reviewing an existing skill's structure for consistency.
 ---
 
 # Meta-skill — how to create any skill
@@ -15,7 +15,7 @@ Invoke when:
 - You're **reviewing** an existing skill for structural consistency
 - You're **deciding where to put new content** in an existing skill (which sub-folder, which version)
 - You're **bumping a version** of a content module and want to follow the established pattern
-- You need to **explain the structure** of `skills/` to a new contributor
+- You need to **explain the structure** of the repo (`core/` + `models/`) to a new contributor
 
 ## The 4 core patterns (every skill applies these)
 
@@ -37,8 +37,8 @@ Plus one applicable-when-relevant pattern:
 See [`skill-creation-guide/`](skill-creation-guide/) for the full step-by-step process. Summary:
 
 1. **Decide single vs multi-sub-skill** structure
-2. **Copy the template** (`template/v1/`) as starting skeleton
-3. **Rename** the folder to your skill name (`business_analysis`, `code_review`, etc.)
+2. **Copy the template** (`core/template/v1/`) as starting skeleton
+3. **Place it** in a model at `models/model_NNN/<category>/<your-skill-name>/`
 4. **Fill in the required top-level docs** (`SKILL.md`, `README.md`)
 5. **Populate** each content module's `v1/` subfolder with at least one item
 6. **Write your skill's `conventions-schema/v1/`** — what conventions does a project need to define when using your skill?
@@ -73,10 +73,10 @@ See [`examples/`](examples/) for a concrete walkthrough — how the existing `di
 
 ## Relationship to other skills
 
-- **Every other skill in `skills/`** should reference this meta-skill in its top-level `SKILL.md`
+- **Every concrete skill in `models/`** should reference this meta-skill in its top-level `SKILL.md`
 - Patterns common across many skills (versioning, conventions-as-data, atomic-edits, defer-then-promote) live HERE — not duplicated in each skill
-- Skill-specific patterns (e.g. `diagram/architecture/patterns/storage-exception` is specific to architecture diagrams) stay in the skill
-- If a pattern starts appearing in 3+ skills, **promote it to `meta/`** (defer-then-promote applied to meta-patterns themselves)
+- Skill-specific patterns (e.g. `models/model_001/diagram/architecture/patterns/storage-exception` is specific to architecture diagrams) stay in the skill
+- If a pattern starts appearing in 3+ skills, **promote it to `core/meta/`** (defer-then-promote applied to meta-patterns themselves)
 
 ## Stack assumption
 

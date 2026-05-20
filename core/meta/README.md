@@ -13,7 +13,7 @@ How to create any new skill in this repo · the mindset, structure, and patterns
 | Make project conventions configurable (not hardcoded) | [`conventions-as-data-pattern/`](conventions-as-data-pattern/) |
 | Track emerging concerns before structural commit | [`defer-then-promote-pattern/`](defer-then-promote-pattern/) |
 | Safely edit sync-prone files | [`atomic-edits-pattern/`](atomic-edits-pattern/) |
-| See an existing skill applying all patterns | [`examples/`](examples/) (walks through `diagram/`) |
+| See an existing skill applying all patterns | [`examples/`](examples/) (walks through the diagram skill) |
 | Scaffold a new skill from template | [`scripts/`](scripts/) + [`../template/v1/`](../template/v1/) |
 
 ## The 4 essential patterns
@@ -40,7 +40,7 @@ The meta-skill says "here's how we do it" once, and every future skill picks up 
 ## Folder layout
 
 ```
-meta/
+core/meta/
 ├── SKILL.md                                       ← agent-facing entry
 ├── README.md                                      ← this file
 ├── skill-creation-guide/v1/                       step-by-step creation process

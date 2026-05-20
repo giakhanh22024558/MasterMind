@@ -14,7 +14,7 @@ Every skill in this repo versions its content at the **leaf-folder grain**. AI s
 | Category | Versioned? | Examples |
 |---|---|---|
 | **Content modules** (patterns, scripts, schemas, examples, type-specific docs) | ✅ Yes — `vN/` subfolders | `<skill>/patterns/v1/`, `<skill>/scripts/v1/` |
-| **Navigation docs** (`SKILL.md`, `README.md`, `VERSIONING.md`) | ❌ No — always current | `<skill>/SKILL.md`, `skills/README.md` |
+| **Navigation docs** (`SKILL.md`, `README.md`, `VERSIONING.md`) | ❌ No — always current | `<skill>/SKILL.md`, `models/model_NNN/README.md` |
 
 Rule of thumb: if it describes **what to do**, version it. If it describes **how to navigate**, don't.
 

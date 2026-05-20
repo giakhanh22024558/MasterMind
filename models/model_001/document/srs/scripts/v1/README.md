@@ -1,53 +1,53 @@
 # model_001_srs · scripts
 
-Logic của skill — bộ công cụ sinh tài liệu SRS `.docx`.
+The skill's logic — the toolkit that generates SRS `.docx` documents.
 
 ## Available scripts
 
-| Script | Mục đích |
+| Script | Purpose |
 |---|---|
-| [`srs_format.py`](srs_format.py) | **Chuẩn format** — hằng số màu/font/page, style heading, numbering đa cấp, API dựng trang bìa / TOC / bảng / callout / legend. Là module được `srs_md_to_docx.py` import |
-| [`srs_md_to_docx.py`](srs_md_to_docx.py) | **Generator** — parse file `.md`, áp `srs_format`, xử lý merge ô / mã STT-ID / số hình / page break → xuất `.docx` |
-| [`assets/srs_logo.png`](assets/srs_logo.png) | Logo trang bìa (asset nhị phân, bắt buộc) |
+| [`srs_format.py`](srs_format.py) | **Format standard** — color/font/page constants, heading styles, multi-level numbering, the API to build the cover page / TOC / tables / callouts / legend. Imported as a module by `srs_md_to_docx.py` |
+| [`srs_md_to_docx.py`](srs_md_to_docx.py) | **Generator** — parses the `.md` file, applies `srs_format`, handles cell merging / STT-ID codes / figure numbers / page breaks → produces the `.docx` |
+| [`assets/srs_logo.png`](assets/srs_logo.png) | Cover-page logo (binary asset, mandatory) |
 
-## Cài đặt
+## Installation
 
 ```bash
 pip install python-docx
 ```
 
-## Dùng
+## Usage
 
 ```bash
-# cú pháp đầy đủ
+# full syntax
 python srs_md_to_docx.py <input.md> <output.docx>
 
-# không tham số -> dùng file mẫu examples/v1/SRS_Sample.md, xuất SRS_Sample.docx ở thư mục hiện tại
+# no arguments -> uses the sample file examples/v1/SRS_Sample.md, outputs SRS_Sample.docx in the current folder
 python srs_md_to_docx.py
 ```
 
-## Smoke test riêng phần format
+## Smoke test of the format layer only
 
 ```bash
-python srs_format.py        # sinh _srs_format_smoketest.docx kiểm tra style
+python srs_format.py        # generates _srs_format_smoketest.docx to check the styles
 ```
 
-## Lưu ý (atomic edits)
+## Note (atomic edits)
 
-Generator ghi file `.docx` — có thể là file sync-prone (OneDrive/Drive). Theo [`meta/atomic-edits-pattern/`](../../../../../../core/meta/atomic-edits-pattern/):
+The generator writes a `.docx` file — which may be a sync-prone file (OneDrive/Drive). Per [`atomic-edits-pattern`](../../../../../../core/meta/atomic-edits-pattern/):
 
-- **Đóng Word** trước khi chạy (file đang mở → lỗi `Permission denied`)
-- Generator đọc `.md` 1 lần / ghi `.docx` 1 lần — re-run được, idempotent
-- `srs_format.py` và `srs_md_to_docx.py` phải nằm **cùng thư mục** (`srs_md_to_docx` import `srs_format`)
-- `assets/srs_logo.png` phải nằm cạnh `srs_format.py` (đường dẫn logo tính tương đối theo file script)
+- **Close Word** before running (an open file → `Permission denied` error)
+- The generator reads the `.md` once / writes the `.docx` once — re-runnable, idempotent
+- `srs_format.py` and `srs_md_to_docx.py` must be in the **same folder** (`srs_md_to_docx` imports `srs_format`)
+- `assets/srs_logo.png` must sit next to `srs_format.py` (the logo path is resolved relative to the script file)
 
-## Khi cập nhật format
+## When updating the format
 
-- Sửa hằng số / style → sửa trong `srs_format.py`
-- Sửa cách parse `.md` / quy ước tự sinh → sửa trong `srs_md_to_docx.py`
-- Thay đổi phá vỡ tương thích → bump `scripts/v1` → `scripts/v2` theo [`meta/versioning-pattern/`](../../../../../../core/meta/versioning-pattern/)
+- Edit constants / styles → edit `srs_format.py`
+- Edit `.md` parsing / auto-generated conventions → edit `srs_md_to_docx.py`
+- A breaking change → bump `scripts/v1` → `scripts/v2` per [`versioning-pattern`](../../../../../../core/meta/versioning-pattern/)
 
 ## How to add a new script
 
-1. Tạo `<verb>-<noun>.py`, có docstring nêu mục đích
-2. Cập nhật bảng "Available scripts" ở trên
+1. Create `<verb>-<noun>.py` with a docstring stating its purpose
+2. Update the "Available scripts" table above

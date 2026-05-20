@@ -1,12 +1,12 @@
 # model_001
 
-Cụm skill số 001.
+Skill cluster number 001.
 
 ## Skills
 
-| Bộ | Skill | Mục đích |
+| Category | Skill | Purpose |
 |---|---|---|
-| diagram | [`diagram/architecture/`](diagram/architecture/) | Vẽ / audit master architecture diagram (C4-style) |
-| document | [`document/srs/`](document/srs/) | Sinh tài liệu IEEE SRS định dạng `.docx` từ nội dung Markdown |
+| diagram | [`diagram/architecture/`](diagram/architecture/) | Draw / audit master architecture diagrams (C4-style) |
+| document | [`document/srs/`](document/srs/) | Generate IEEE SRS documents in `.docx` format from Markdown |
 
-Mỗi skill tuân uniform structure — entry point là `SKILL.md` của skill đó, và tuân [Core Rule](../../core/core-rule/).
+Each skill follows the uniform structure — its entry point is its own `SKILL.md` — and follows the [Core Rule](../../core/core-rule/).

@@ -1,39 +1,39 @@
 # MasterMind
 
-Kho **skill** tái sử dụng cho agent AI. Cấu trúc 2 tầng: phần lõi bất biến (`core/`) và các model cụ thể theo dự án (`models/`).
+A repository of reusable **skills** for AI agents. Two-tier structure: an invariant core (`core/`) and concrete per-project models (`models/`).
 
-## Cấu trúc
+## Structure
 
 ```
 MasterMind/
-├── core/        ← lõi bất biến — chung cho mọi dự án, không đổi khi thêm model
-│   ├── core-rule/        quy tắc lõi 3 tầng
-│   ├── cross-reference/  kỹ thuật tham chiếu chéo (stub)
-│   ├── diagram/          khung lõi skill diagram
-│   ├── document/         khung lõi skill document
-│   ├── meta/             cách tạo skill mới
-│   └── template/         scaffold skill mới
-└── models/      ← skill cụ thể theo dự án
+├── core/        ← invariant core — shared across projects, unchanged when models are added
+│   ├── core-rule/        the 3-layer core rule
+│   ├── cross-reference/  cross-reference technique (stub)
+│   ├── diagram/          diagram-skill framework
+│   ├── document/         document-skill framework
+│   ├── meta/             how to create a new skill
+│   └── template/         scaffold for a new skill
+└── models/      ← concrete per-project skills
     └── model_NNN/
-        ├── diagram/<type>/    vd: architecture
-        └── document/<type>/   vd: srs
+        ├── diagram/<type>/    e.g. architecture
+        └── document/<type>/   e.g. srs
 ```
 
-## Core Rule (bất biến)
+## Core Rule (invariant)
 
-Mọi model — dù input hay định dạng output khác nhau — đều tuân quy tắc 3 tầng:
+Every model — however different its input or output format — follows the 3-layer rule:
 
-1. **Input → `.md`** — phân tích input thô thành Markdown làm context
-2. **Agent layer** — chuẩn hóa format thành code Python (`.md` + Python = nguồn sự thật)
-3. **User layer** — `.docx` / `.drawio`: khi sửa, **luôn grep `.md` trước**, rồi mới chỉnh sửa bằng cross-reference
+1. **Input → `.md`** — analyze raw input into Markdown as context
+2. **Agent layer** — normalize format into Python code (`.md` + Python = source of truth)
+3. **User layer** — `.docx` / `.drawio`: when editing, **always grep `.md` first**, then edit via cross-reference
 
-Chi tiết: [`core/core-rule/`](core/core-rule/).
+Details: [`core/core-rule/`](core/core-rule/).
 
-## Dùng repo
+## Using the repo
 
-- **Áp dụng skill có sẵn** → mở `models/model_NNN/<bộ>/<skill>/SKILL.md`
-- **Tạo skill mới** → đọc [`core/meta/SKILL.md`](core/meta/SKILL.md), scaffold từ [`core/template/`](core/template/), đặt vào `models/model_NNN/`
-- **Hiểu phần lõi** → [`core/README.md`](core/README.md)
+- **Apply an existing skill** → open `models/model_NNN/<category>/<skill>/SKILL.md`
+- **Create a new skill** → read [`core/meta/SKILL.md`](core/meta/SKILL.md), scaffold from [`core/template/`](core/template/), place it under `models/model_NNN/`
+- **Understand the core** → [`core/README.md`](core/README.md)
 
 ## License
 

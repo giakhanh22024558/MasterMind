@@ -1,30 +1,30 @@
 ---
 name: document
-description: Khung lõi (core framework) cho các skill sinh tài liệu văn bản — .docx và các định dạng tương tự. Định nghĩa phần bất biến: nội dung ở .md, format ở code Python, tuân Core Rule 3 tầng. Skill document cụ thể (srs...) sống trong models/model_NNN/document/.
+description: Core framework for document-generation skills — .docx and similar text formats. Defines the invariant part: content in .md, format in Python code, following the 3-layer Core Rule. Concrete document skills (srs...) live in models/model_NNN/document/.
 ---
 
-# Document — khung lõi sinh tài liệu
+# Document — core document-generation framework
 
-`core/document/` giữ phần **bất biến** của mọi skill sinh tài liệu văn bản (`.docx`...). Skill document **cụ thể** sống trong từng model tại `models/model_NNN/document/<type>/` (ví dụ: `srs`).
+`core/document/` holds the **invariant** part of every text-document generation skill (`.docx`...). **Concrete** document skills live inside a model at `models/model_NNN/document/<type>/` (for example: `srs`).
 
-> **Trạng thái:** khung + stub. Phần lõi sẽ được tách dần (defer-then-promote) khi có từ 2 skill document trở lên.
+> **Status:** framework + stub. The core will be extracted incrementally (defer-then-promote) once there are two or more document skills.
 
-## Nguyên tắc bất biến
+## Invariant principles
 
-Mọi skill document phải tuân:
+Every document skill must follow:
 
-1. **[Core Rule](../core-rule/)** — input → `.md` context → Python format (agent layer) → `.docx` (user layer). Sửa user layer phải grep agent layer trước.
-2. **Tách content / format** — nội dung ở `.md`, hình thức ở code Python; không trộn lẫn.
-3. **[Cross-reference](../cross-reference/)** — kỹ thuật áp dụng khi chỉnh sửa `.docx` đã sinh.
-4. **[Atomic edits](../meta/atomic-edits-pattern/)** — `.docx` là file sync-prone: đóng Word trước khi ghi, đọc/ghi một lần.
-5. **[Conventions as data](../meta/conventions-as-data-pattern/)** — quy ước dự án ở `<project>/<skill>-conventions.md`.
+1. **[Core Rule](../core-rule/)** — input → `.md` context → Python format (agent layer) → `.docx` (user layer). Editing the user layer requires grepping the agent layer first.
+2. **Content / format separation** — content in `.md`, presentation in Python code; never mixed.
+3. **[Cross-reference](../cross-reference/)** — the technique applied when editing an already-generated `.docx`.
+4. **[Atomic edits](../meta/atomic-edits-pattern/)** — `.docx` is a sync-prone file: close Word before writing, read/write once.
+5. **[Conventions as data](../meta/conventions-as-data-pattern/)** — project conventions live in `<project>/<skill>-conventions.md`.
 
-## Skill document hiện có
+## Existing document skills
 
-| Model | Skill | Vị trí |
+| Model | Skill | Location |
 |---|---|---|
-| model_001 | `srs` — sinh tài liệu IEEE SRS `.docx` | [`models/model_001/document/srs/`](../../models/model_001/document/srs/) |
+| model_001 | `srs` — generates IEEE SRS `.docx` documents | [`models/model_001/document/srs/`](../../models/model_001/document/srs/) |
 
-## Tạo skill document mới
+## Creating a new document skill
 
-Tạo trong một model: `models/model_NNN/document/<type>/`, theo uniform structure ([`uniform-skill-structure`](../meta/uniform-skill-structure/)) và tuân toàn bộ nguyên tắc bất biến ở trên.
+Create it inside a model at `models/model_NNN/document/<type>/`, following the uniform structure ([`uniform-skill-structure`](../meta/uniform-skill-structure/)) and all the invariant principles above.

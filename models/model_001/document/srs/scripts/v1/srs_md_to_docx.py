@@ -1,21 +1,21 @@
 # -*- coding: utf-8 -*-
 """
-srs_md_to_docx.py — Sinh file .docx SRS từ Markdown nội dung + chuẩn srs_format.
+srs_md_to_docx.py — Generate an SRS .docx file from Markdown content + the srs_format standard.
 
-Dùng:
+Usage:
     python srs_md_to_docx.py <input.md> <output.docx>
-    (mặc định: SRS_Sample.md -> SRS_Sample.docx)
+    (default: SRS_Sample.md -> SRS_Sample.docx)
 
-Xử lý:
-  - Frontmatter -> trang bìa (logo + tiêu đề) + Mục lục (TOC native) + ngắt trang
-  - Heading 1 đầu tiên (Lịch sử Phiên bản) -> không numbering (frontmatter)
-  - #..#####       -> Heading 1..5 (numbering tự động 1, 1.1, 1.1.1...)
-  - | ... |        -> bảng SRS; hàng có các ô GIỐNG NHAU -> merge thành 1 ô
-  - STT/ID rỗng của bảng Đặc tả thành phần -> COM-<heading>-<NNN>
-  - Mã BR rỗng     -> BR-<heading>-<NNN>
-  - "Hình ..."     -> caption căn giữa, đánh số Hình <heading>-<n>
-  - {{LEGEND}}     -> chèn bảng chú giải Loại & Thuộc tính
-  - **text**       -> in đậm · <br> -> xuống dòng trong ô
+Handles:
+  - Frontmatter -> cover page (logo + title) + table of contents (native TOC) + page break
+  - First Heading 1 (Lịch sử Phiên bản) -> no numbering (frontmatter)
+  - #..#####       -> Heading 1..5 (automatic numbering 1, 1.1, 1.1.1...)
+  - | ... |        -> SRS table; a row whose cells are ALL IDENTICAL -> merged into one cell
+  - empty STT/ID in a component-specification table -> COM-<heading>-<NNN>
+  - empty BR code  -> BR-<heading>-<NNN>
+  - "Hình ..."     -> centered caption, numbered Hình <heading>-<n>
+  - {{LEGEND}}     -> insert the Loại & Thuộc tính legend tables
+  - **text**       -> bold · <br> -> line break inside a cell
 """
 import re
 import sys
@@ -106,13 +106,13 @@ def add_runs(paragraph, text, size_pt=None, color=None, force_bold=False):
 
 # ---------- table rendering ----------
 def _row_all_same(cells):
-    """Row có mọi ô (khác rỗng) giống hệt nhau -> cần merge."""
+    """A row whose cells (all non-empty) are identical -> needs merging."""
     vals = [c.strip() for c in cells if c and c.strip()]
     return len(vals) == len(cells) and len(set(vals)) == 1 and len(cells) > 1
 
 
 def _merge_row(table, ri):
-    """Merge toàn bộ ô của hàng ri thành 1 ô; trả về ô đã merge."""
+    """Merge every cell of row ri into one cell; return the merged cell."""
     cells = table.rows[ri].cells
     merged = cells[0]
     for c in cells[1:]:
@@ -121,8 +121,9 @@ def _merge_row(table, ri):
 
 
 def render_table(doc, headers, rows, id_prefix=None, id_heading="", id_start=0):
-    """Render bảng SRS. Nếu id_prefix set: tự sinh ID cột đầu, đánh số tiếp
-    từ id_start. Trả về số thứ tự ID cuối cùng đã dùng (để caller nối tiếp)."""
+    """Render an SRS table. If id_prefix is set: auto-generate the first-column
+    ID, numbering onward from id_start. Returns the last ID sequence number
+    used (so the caller can continue)."""
     ncols = len(headers)
     table = doc.add_table(rows=1 + len(rows), cols=ncols)
     table.alignment = WD_TABLE_ALIGNMENT.CENTER
@@ -149,7 +150,7 @@ def render_table(doc, headers, rows, id_prefix=None, id_heading="", id_start=0):
     # ----- body rows -----
     id_seq = id_start
     for ri, row in enumerate(rows, start=1):
-        # group row (mọi ô giống nhau) -> merge
+        # group row (all cells identical) -> merge
         if _row_all_same(row):
             cell = _merge_row(table, ri)
             cell.text = ""
@@ -174,7 +175,7 @@ def render_table(doc, headers, rows, id_prefix=None, id_heading="", id_start=0):
 
 
 def _id_column_prefix(header0, component_area):
-    """Xác định prefix ID dựa trên ô header đầu tiên."""
+    """Determine the ID prefix from the first header cell."""
     h = header0.strip().lower().replace("*", "")
     if component_area and ("stt" in h or h in ("id", "stt / id", "stt/id")):
         return "COM"
@@ -187,7 +188,7 @@ def _id_column_prefix(header0, component_area):
 def build(md_path, docx_path):
     blocks = parse_md(md_path)
 
-    # ===== frontmatter — parse TRƯỚC để lấy tên dự án cho footer =====
+    # ===== frontmatter — parse FIRST to get the project name for the footer =====
     idx = 0
     fm_paras, fm_table = [], None
     while idx < len(blocks) and blocks[idx][0] != "heading":
@@ -202,31 +203,31 @@ def build(md_path, docx_path):
     subtitle = strip_md(fm_paras[1]) if len(fm_paras) > 1 else ""
     version = strip_md(fm_paras[2]) if len(fm_paras) > 2 else ""
 
-    # Tên dự án = tiêu đề trang bìa -> truyền vào footer (không hard-code)
+    # Project name = cover-page title -> passed into the footer (not hard-coded)
     doc = new_srs_document(project_name=title)
 
     add_cover_header(doc, title, subtitle, version)
     if fm_table:
         render_table(doc, fm_table[0], fm_table[1])
-    add_page_break(doc)          # trang bìa đứng độc lập
+    add_page_break(doc)          # cover page stands alone
     add_toc(doc)
-    add_page_break(doc)          # Mục lục tách khỏi "Lịch sử Phiên bản"
+    add_page_break(doc)          # TOC separated from "Lịch sử Phiên bản"
 
-    # ===== nội dung chính =====
+    # ===== main content =====
     counter = [0] * 6
-    last_h4_number = ""          # số của Heading 4 gần nhất (cho ID & Hình)
+    last_h4_number = ""          # number of the nearest Heading 4 (for IDs & figures)
     first_heading_done = False
-    pending_history_break = False  # cờ: chèn page break trước heading sau Lịch sử PB
+    pending_history_break = False  # flag: insert a page break before the heading after Lịch sử PB
     component_area = False
-    figure_area = False           # True trong mục Wireframe HOẶC Sơ đồ luồng
+    figure_area = False           # True inside the Wireframe OR Flow-diagram section
     fig_seq = 0
-    id_counters = {}             # (prefix, h4) -> số thứ tự ID cuối cùng
+    id_counters = {}             # (prefix, h4) -> last ID sequence number
 
     for kind, a, b in blocks[idx:]:
 
         if kind == "heading":
             level, text = a, b
-            # heading đầu tiên = frontmatter "Lịch sử Phiên bản" -> không numbering
+            # first heading = frontmatter "Lịch sử Phiên bản" -> no numbering
             if not first_heading_done:
                 first_heading_done = True
                 pending_history_break = True
@@ -234,18 +235,18 @@ def build(md_path, docx_path):
                 suppress_numbering(p)
                 component_area = figure_area = False
                 continue
-            # ngắt trang để "Lịch sử Phiên bản" đứng độc lập (trước "Giới thiệu")
+            # page break so "Lịch sử Phiên bản" stands alone (before "Giới thiệu")
             if pending_history_break:
                 add_page_break(doc)
                 pending_history_break = False
-            # heading có numbering
+            # numbered heading
             counter[level - 1] += 1
             for k in range(level, 6):
                 counter[k] = 0
             if level == 4:
                 last_h4_number = ".".join(str(counter[k]) for k in range(4))
             doc.add_paragraph(text, style=HEADING_STYLE.get(level, "Heading 6"))
-            # cập nhật vùng (chỉ heading cấp <=4 mới đổi vùng)
+            # update area (only headings of level <=4 change the area)
             if level <= 4:
                 low = text.lower()
                 component_area = text.strip().startswith("Đặc tả các thành phần")
@@ -255,13 +256,13 @@ def build(md_path, docx_path):
 
         if kind == "table":
             headers, rows = a, b
-            # bảng 1 cột -> callout (nền kem) — vd placeholder Sơ đồ luồng
+            # single-column table -> callout (cream fill) — e.g. Flow-diagram placeholder
             if len(headers) == 1:
                 add_callout(doc, strip_md(headers[0]))
                 continue
             prefix = _id_column_prefix(headers[0], component_area)
             if prefix:
-                # mã code lấy theo Heading 4; đánh số nối tiếp trong cùng H4
+                # the code is derived from Heading 4; numbered continuously within the same H4
                 h4 = last_h4_number.replace(".", "")
                 key = (prefix, h4)
                 start = id_counters.get(key, 0)
@@ -279,11 +280,11 @@ def build(md_path, docx_path):
 
         if kind == "para":
             text = a if isinstance(a, str) else b
-            # marker chèn legend
+            # legend insertion marker
             if text.strip() == "{{LEGEND}}":
                 add_legend_section(doc)
                 continue
-            # caption Hình trong vùng wireframe -> căn giữa + đánh số lại
+            # Hình caption inside the wireframe area -> centered + renumbered
             if figure_area and re.match(r"^Hình\b", text.strip()):
                 fig_seq += 1
                 desc = re.sub(r"^Hình\s*[\w.\-]*\.?\s*", "", text.strip())
@@ -291,7 +292,7 @@ def build(md_path, docx_path):
                 p.alignment = WD_ALIGN_PARAGRAPH.CENTER
                 add_runs(p, f"Hình {last_h4_number}-{fig_seq}. {desc}")
                 continue
-            # paragraph thường
+            # normal paragraph
             p = doc.add_paragraph()
             add_runs(p, text)
             continue
@@ -301,7 +302,7 @@ def build(md_path, docx_path):
 
 
 if __name__ == "__main__":
-    # Mặc định: lấy file mẫu trong examples/v1/, xuất .docx ra thư mục hiện tại.
+    # Default: take the sample file in examples/v1/, output the .docx to the current folder.
     _default_md = os.path.normpath(
         os.path.join(HERE, "..", "..", "examples", "v1", "SRS_Sample.md"))
     md = sys.argv[1] if len(sys.argv) > 1 else _default_md

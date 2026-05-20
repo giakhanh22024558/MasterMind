@@ -1,19 +1,19 @@
 # model_001_srs · patterns
 
-Pattern tái sử dụng cho việc sinh tài liệu SRS.
+Reusable patterns for SRS document generation.
 
 ## Available patterns
 
-| Pattern | Mục đích |
+| Pattern | Purpose |
 |---|---|
-| [`content-format-separation.md`](content-format-separation.md) | Tách nội dung (.md) khỏi hình thức (Python); kéo theo các quy ước tự sinh (mã ID, số hình, numbering) |
+| [`content-format-separation.md`](content-format-separation.md) | Separate content (`.md`) from presentation (Python); this also enables the auto-generated conventions (ID codes, figure numbers, numbering) |
 
 ## How to add a new pattern
 
-1. Tạo `<pattern-name>.md` trong thư mục này
-2. Theo cấu trúc: **Problem → Solution → Trade-offs → Worked example → When NOT to use → Cross-references**
-3. Nếu pattern là instantiation của một [meta-pattern](../../../../../../core/meta/), reference ngược về meta-pattern thay vì lặp lại
+1. Create `<pattern-name>.md` in this folder
+2. Follow the structure: **Problem → Solution → Trade-offs → Worked example → When NOT to use → Cross-references**
+3. If the pattern is an instantiation of a [meta-pattern](../../../../../../core/meta/), reference back to the meta-pattern instead of repeating it
 
 ## When to promote a pattern to `meta/`
 
-Nếu một pattern xuất hiện ở 3+ skill → không còn skill-specific. Promote lên [`meta/`](../../../../../../core/meta/) theo [defer-then-promote pattern](../../../../../../core/meta/defer-then-promote-pattern/).
+If a pattern appears in 3+ skills → it is no longer skill-specific. Promote it to [`meta/`](../../../../../../core/meta/) per the [defer-then-promote pattern](../../../../../../core/meta/defer-then-promote-pattern/).

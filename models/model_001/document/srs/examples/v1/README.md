@@ -1,16 +1,16 @@
 # model_001_srs · examples
 
-Worked walkthrough cho việc sinh tài liệu SRS.
+Worked walkthroughs for SRS document generation.
 
 ## Available examples
 
-| Example | Kịch bản |
+| Example | Scenario |
 |---|---|
-| [`roombooking-walkthrough.md`](roombooking-walkthrough.md) | Sinh SRS `.docx` đầy đủ cho hệ thống đặt phòng họp — 1 module, 3 tính năng |
-| [`SRS_Sample.md`](SRS_Sample.md) | File nội dung mẫu (input cho walkthrough) — dùng làm khuôn để soạn SRS mới |
+| [`roombooking-walkthrough.md`](roombooking-walkthrough.md) | Generate a complete SRS `.docx` for a meeting-room booking system — 1 module, 3 features |
+| [`SRS_Sample.md`](SRS_Sample.md) | Sample content file (input for the walkthrough) — kept in Vietnamese as a template for authoring a new SRS |
 
 ## How to add a new example
 
-1. Tạo `<example-name>.md` trong thư mục này
-2. Theo cấu trúc: **Setup → Step-by-step → Patterns demonstrated → What went right / what to avoid**
-3. Dùng placeholder generic, không định danh client thật
+1. Create `<example-name>.md` in this folder
+2. Follow the structure: **Setup → Step-by-step → Patterns demonstrated → What went right / what to avoid**
+3. Use generic placeholders, no real client identifiers

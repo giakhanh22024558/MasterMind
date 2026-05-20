@@ -1,60 +1,60 @@
-# Example · Sinh SRS hoàn chỉnh cho hệ thống "RoomBooking"
+# Example · Generating a complete SRS for the "RoomBooking" system
 
-Walkthrough sinh một tài liệu SRS `.docx` đầy đủ từ file Markdown, dùng skill `model_001_srs`. File nội dung mẫu: [`SRS_Sample.md`](SRS_Sample.md).
+A walkthrough of generating a full SRS `.docx` document from a Markdown file using the `model_001_srs` skill. Sample content file: [`SRS_Sample.md`](SRS_Sample.md).
 
-## Setup · kịch bản
+## Setup · scenario
 
-Cần tạo SRS cho hệ thống `RoomBooking` — quản lý đặt phòng họp nội bộ. Phạm vi: 1 module (`Quản lý đặt phòng họp`) với 3 tính năng (`FEAT-001` xem lịch, `FEAT-002` tạo booking, `FEAT-003` hủy booking).
+We need to create an SRS for `RoomBooking` — an internal meeting-room booking system. Scope: 1 module (`Quản lý đặt phòng họp`) with 3 features (`FEAT-001` view calendar, `FEAT-002` create a booking, `FEAT-003` cancel a booking).
 
 ## Step-by-step
 
 ### 1 · Discover conventions
 
-Tìm `<project-root>/model_001_srs-conventions.md`. Dự án demo này không có → dùng toàn bộ default từ [`../../conventions-defaults/`](../../conventions-defaults/). Tên dự án lấy từ tiêu đề trang bìa trong `.md` (`RoomBooking`).
+Look for `<project-root>/model_001_srs-conventions.md`. This demo project has none → use all defaults from [`conventions-defaults/`](../../conventions-defaults/). The project name is taken from the cover-page title in the `.md` (`RoomBooking`).
 
-### 2 · Soạn nội dung `.md`
+### 2 · Author the `.md` content
 
-Theo cấu trúc tại [`../../srs-structure/`](../../srs-structure/):
+Following the structure in [`srs-structure/`](../../srs-structure/):
 
-- **Frontmatter** — tên dự án, phụ đề, version, bảng metadata → generator dựng trang bìa
-- **6 phần cấp 1** — Lịch sử Phiên bản · Giới thiệu · Mô tả Tổng quan · Yêu cầu Cụ thể · Yêu cầu Phi chức năng
-- **Mỗi tính năng** = `### Đặc tả Chi tiết — … (FEAT-XXX)` gồm 5 khối con: Use Case · Sơ đồ luồng · Wireframe · Đặc tả thành phần · Business Rules
-- Ô **STT/ID để trống**, caption ghi `Hình [mô tả]` không số, marker `{{LEGEND}}` cho bảng chú giải
+- **Frontmatter** — project name, subtitle, version, metadata table → the generator builds the cover page
+- **6 level-1 parts** — Lịch sử Phiên bản · Giới thiệu · Mô tả Tổng quan · Yêu cầu Cụ thể · Yêu cầu Phi chức năng
+- **Each feature** = `### Đặc tả Chi tiết — … (FEAT-XXX)` with 5 sub-blocks: Use Case · Flow diagram · Wireframe · Component specification · Business Rules
+- Leave the **STT/ID cells empty**, write captions as `Hình [description]` with no number, use the `{{LEGEND}}` marker for the legend tables
 
-### 3 · Chạy generator
+### 3 · Run the generator
 
 ```bash
 python ../../scripts/v1/srs_md_to_docx.py SRS_Sample.md RoomBooking_SRS.docx
 ```
 
-Output mong đợi:
+Expected output:
 
 ```
 Built: .../RoomBooking_SRS.docx
   headings=40, tables=21, total blocks=92
 ```
 
-### 4 · Mở & verify
+### 4 · Open & verify
 
-Mở `.docx` trong Word — field Mục lục tự cập nhật. Đối chiếu:
+Open the `.docx` in Word — the table-of-contents field updates automatically. Cross-check:
 
-- Trang bìa độc lập (logo + "RoomBooking" + version + metadata)
-- Mục lục độc lập, cấp 1-3
-- "Lịch sử Phiên bản" độc lập 1 trang, không numbering
-- Heading numbering: `1 Giới thiệu` … `3.1.2.1 Sơ đồ luồng`; sub-mục `A. / B.`
-- Bảng Use Case có header merge 1 ô; bảng thành phần có STT/ID `COM-3123-001`…
-- Hình căn giữa, đánh số `Hình 3.1.2.2-1`
+- The cover page stands alone (logo + "RoomBooking" + version + metadata)
+- The TOC stands alone, levels 1-3
+- "Lịch sử Phiên bản" stands alone on one page, not numbered
+- Heading numbering: `1 Giới thiệu` … `3.1.2.1 Sơ đồ luồng`; sub-items `A. / B.`
+- The Use Case table has a single merged header cell; component tables have STT/ID codes `COM-3123-001`…
+- Figures are centered, numbered `Hình 3.1.2.2-1`
 - Footer `RoomBooking · Software Requirements Specification    Trang X / Y`
 
 ## Patterns demonstrated
 
-- [`content-format-separation`](../../patterns/v1/content-format-separation.md) — nội dung `.md` thuần, format do `srs_format.py` áp, generator lo mã ID & số hình & numbering & merge ô.
+- [`content-format-separation`](../../patterns/v1/content-format-separation.md) — pure content in the `.md`, formatting applied by `srs_format.py`, the generator handles ID codes & figure numbers & numbering & cell merging.
 
 ## What went right · what to avoid
 
-| ✅ Nên | ❌ Tránh |
+| ✅ Do | ❌ Avoid |
 |---|---|
-| Để trống ô STT/ID — generator tự sinh | Điền sẵn `COM-…` trong .md (sẽ bị ghi đè / trùng) |
-| Ghi caption `Hình [mô tả]` không số | Đánh số hình thủ công `Hình 1.` |
-| Đóng Word trước khi chạy generator | Chạy generator khi `.docx` đang mở (lỗi Permission denied) |
-| Dùng giá trị Loại/Thuộc tính trong Legend | Tự chế Loại component mới ngoài Legend |
+| Leave STT/ID cells empty — the generator fills them | Pre-filling `COM-…` in the `.md` (it will be overwritten / duplicated) |
+| Write captions as `Hình [description]` with no number | Numbering figures manually like `Hình 1.` |
+| Close Word before running the generator | Running the generator while the `.docx` is open (`Permission denied` error) |
+| Use Loại/Thuộc tính values from the Legend | Inventing new component types outside the Legend |
