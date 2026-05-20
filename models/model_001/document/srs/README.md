@@ -18,7 +18,7 @@ Philosophy: **content is written in `.md` · presentation lives in Python code**
 ## Generate an SRS file — 3 steps
 
 1. **Author content** in a `.md` file following the structure in [`srs-structure/`](srs-structure/)
-2. **Run**: `python scripts/v1/srs_md_to_docx.py <input.md> <output.docx>`
+2. **Run**: `python scripts/srs_md_to_docx.py <input.md> <output.docx>`
 3. **Open** the `.docx` in Word → the table-of-contents field updates automatically
 
 ## What the toolkit does for you
@@ -39,12 +39,12 @@ Philosophy: **content is written in `.md` · presentation lives in Python code**
 srs/
 ├── SKILL.md                       ← agent-facing entry
 ├── README.md                      ← this file
-├── conventions-schema/v1/         ← conventions a project must declare
-├── conventions-defaults/v1/       ← default formatting (decoded from a standard SRS)
-├── srs-structure/v1/              ← specification of SRS content structure
-├── patterns/v1/                   ← reusable patterns
-├── examples/v1/                   ← walkthrough + sample file
-└── scripts/v1/                    ← srs_format.py + srs_md_to_docx.py + assets/
+├── conventions-schema/         ← conventions a project must declare
+├── conventions-defaults/       ← default formatting (decoded from a standard SRS)
+├── srs-structure/              ← specification of SRS content structure
+├── patterns/                   ← reusable patterns
+├── examples/                   ← walkthrough + sample file
+└── scripts/                    ← srs_format.py + srs_md_to_docx.py + assets/
 ```
 
 ## Adoption guide for a project
@@ -57,7 +57,7 @@ srs/
 
 - **Markdown** for content + documentation
 - **Python** (`python-docx`) for the generator — install: `pip install python-docx`
-- **One binary asset**: `scripts/v1/assets/srs_logo.png` (cover-page logo)
+- **One binary asset**: `scripts/assets/srs_logo.png` (cover-page logo)
 
 ## License
 

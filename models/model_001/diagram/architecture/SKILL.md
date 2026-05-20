@@ -7,8 +7,6 @@ description: Build, audit, and maintain master architecture diagrams (C4-style).
 
 For master architecture diagrams in the C4 style — system landscape, zones, components, the edges connecting them, and the conventions governing their visualization.
 
-> **Versioning** — all content modules under this sub-skill are versioned at the leaf-folder level (`v1/`, `v2/`, …). Default behavior: use the highest `vN`. See top-level [`VERSIONING.md`](../../../../core/diagram/VERSIONING.md) for the full model.
-
 ## When to use this sub-skill
 
 Invoke when the user asks you to:
@@ -30,9 +28,9 @@ For Data Flow Diagrams, use the `dfd/` sub-skill (not yet implemented). For cros
 3. **Fall back to** [`conventions-defaults/`](conventions-defaults/) for anything unspecified
 4. **Acknowledge sources** when explaining choices to the user
 
-## Sub-skill content modules (all versioned)
+## Sub-skill content modules
 
-| Module (leaf folder · pick latest `vN`) | Purpose |
+| Module | Purpose |
 |---|---|
 | [`conventions-schema/`](conventions-schema/) | What an architecture-diagram convention must define (used as checklist when reading project file or asking user) |
 | [`conventions-defaults/`](conventions-defaults/) | Sensible defaults used when project doesn't specify |
@@ -83,4 +81,3 @@ See [`patterns/`](patterns/).
 - ❌ Applying gap fixes without user choice → bypasses architectural review
 - ❌ Component-level edges everywhere → defeats layer-level hybrid
 - ❌ Using sub-skill defaults when project file specifies different conventions → project always wins
-- ❌ Mixing versions arbitrarily — if you pin one module to v1, decide whether siblings should also be pinned

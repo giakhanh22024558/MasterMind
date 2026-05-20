@@ -22,4 +22,4 @@ Each model holds skill categories (`diagram`, `document`...); inside each catego
 
 ## Rule
 
-However different the input context or output format, **every model must follow the [Core Rule](../core/core-rule/)**. A model holds only the *specific* part; the *shared* part (methodology, versioning, meta) always references back to [`../core/`](../core/).
+However different the input context or output format, **every model must follow the [Core Rule](../core/core-rule/)**. A model holds only the *specific* part; the *shared* part (methodology, meta) always references back to [`../core/`](../core/).

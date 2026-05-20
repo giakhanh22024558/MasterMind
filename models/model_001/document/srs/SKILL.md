@@ -7,8 +7,6 @@ description: Generate IEEE 830 / ISO-IEC-IEEE 29148 Software Requirements Specif
 
 A skill that packages the workflow for producing **Software Requirements Specification** documents to the IEEE standard in `.docx` format. Core principle: **content is written in Markdown, presentation lives in Python code** — the author focuses only on content, and the generator applies all formatting (font, color, numbering, cover page, table of contents, ID codes...).
 
-> Every content module of this skill is versioned at the leaf-folder level (`v1/`, `v2/`...). The highest `vN` is used by default. See [`versioning-pattern`](../../../../core/meta/versioning-pattern/).
-
 ## When to use this skill
 
 Invoke when the user asks to:
@@ -26,7 +24,7 @@ Invoke when the user asks to:
 3. **Fall back to** [`conventions-defaults/`](conventions-defaults/) for every item not declared
 4. **Acknowledge the source** when explaining a choice ("per project conventions" / "using default")
 
-## Content modules (all versioned)
+## Content modules
 
 | Module | Purpose |
 |---|---|
@@ -47,7 +45,7 @@ Invoke when the user asks to:
    - 6 level-1 parts; each feature = one `### Đặc tả Chi tiết — … (FEAT-XXX)` block with 5 sub-blocks
    - Leave the STT/ID and BR-code cells **empty** — the generator fills them
    - Write figure captions as `Hình [description]` — the generator numbers them
-3. **Run the generator**: `python scripts/v1/srs_md_to_docx.py <input.md> <output.docx>`
+3. **Run the generator**: `python scripts/srs_md_to_docx.py <input.md> <output.docx>`
 4. **Verify**: open the `.docx`, let Word refresh the table-of-contents field; cross-check the formatting against [`conventions-defaults/`](conventions-defaults/)
 
 ### Workflow B · Check whether an SRS matches the standard
@@ -59,8 +57,7 @@ Invoke when the user asks to:
 ### Workflow C · Update / extend the format standard
 
 1. Edit the format logic in [`scripts/`](scripts/) → `srs_format.py` (do NOT edit content)
-2. If the change breaks compatibility → bump the module version per [`versioning-pattern`](../../../../core/meta/versioning-pattern/)
-3. Update [`conventions-defaults/`](conventions-defaults/) to match
+2. Update [`conventions-defaults/`](conventions-defaults/) to match
 
 ## Core principles
 
@@ -82,11 +79,10 @@ Invoke when the user asks to:
 | Meta-pattern | This skill uses it when |
 |---|---|
 | [Uniform skill structure](../../../../core/meta/uniform-skill-structure/) | The skill follows the mandatory Shape A layout |
-| [Versioning pattern](../../../../core/meta/versioning-pattern/) | Every content module is versioned at leaf-folder grain |
 | [Conventions as data](../../../../core/meta/conventions-as-data-pattern/) | Project conventions live in `<project>/model_001_srs-conventions.md` |
 | [Atomic edits](../../../../core/meta/atomic-edits-pattern/) | The generator writes a `.docx` (a sync-prone file) — read once / write once, close Word before running |
 | [Defer-then-promote](../../../../core/meta/defer-then-promote-pattern/) | When a new `Loại`/`Thuộc tính` value recurs → consider adding it to the canonical Legend |
 
 ## Stack note
 
-This skill deviates slightly from the repo's default stack (markdown + plain text): the [`scripts/v1/assets/`](scripts/v1/assets/) folder contains **one binary image file** (`srs_logo.png`) — the mandatory cover-page logo. This is a necessary asset, similar to a diagram export.
+This skill deviates slightly from the repo's default stack (markdown + plain text): the [`scripts/assets/`](scripts/assets/) folder contains **one binary image file** (`srs_logo.png`) — the mandatory cover-page logo. This is a necessary asset, similar to a diagram export.

@@ -8,9 +8,9 @@ The **invariant core** of MasterMind. Everything in `core/` is shared across all
 |---|---|
 | [`core-rule/`](core-rule/) | The 3-layer core rule (input → `.md` → Python → `.docx`/`.drawio`) — every model must follow it |
 | [`cross-reference/`](cross-reference/) | The cross-reference technique for editing user-layer files *(stub — pending details)* |
-| [`diagram/`](diagram/) | Diagram-skill framework — `_shared/` methodology, versioning, project template |
+| [`diagram/`](diagram/) | Diagram-skill framework — `_shared/` methodology, project template |
 | [`document/`](document/) | Document-skill framework for `.docx` generation |
-| [`meta/`](meta/) | Meta-skill — how to create a new skill (folder structure, versioning, patterns) |
+| [`meta/`](meta/) | Meta-skill — how to create a new skill (folder structure, patterns) |
 | [`template/`](template/) | Scaffold for bootstrapping a new skill |
 
 ## Principles

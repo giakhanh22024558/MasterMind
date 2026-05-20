@@ -1,55 +1,37 @@
-# Skill template
+# <skill-name>
 
-Copy-paste starter scaffold for creating a new skill in `models/`.
+(Human-facing overview of this skill — what it covers, who uses it, and how to adopt it.)
 
-## How to use
+## Quick start
 
-### Option A · Use the scaffolding script (recommended)
+| If you want to… | Read |
+|---|---|
+| Understand this skill in one page | [`SKILL.md`](SKILL.md) |
+| Set conventions for using this skill in your project | [`conventions-schema/`](conventions-schema/) |
+| See defaults | [`conventions-defaults/`](conventions-defaults/) |
+| See reusable patterns | [`patterns/`](patterns/) |
+| See worked walkthroughs | [`examples/`](examples/) |
+| Use helper scripts | [`scripts/`](scripts/) |
 
-```bash
-# Edit CONFIG block first, then run:
-python core/meta/scripts/v1/scaffold-new-skill.py
-```
-
-Output: a new skill folder under `models/model_NNN/<category>/` with the uniform structure, placeholders renamed, and a list of next steps.
-
-### Option B · Manual copy
-
-```bash
-cp -r core/template/v1 models/model_NNN/<category>/<your-skill-name>
-```
-
-Then manually find-and-replace placeholders:
-- `<skill-name>` → your skill name (snake_case, e.g. `business_analysis`)
-- `<SKILL_NAME>` → your skill name (display form, e.g. `Business Analysis`)
-- `<skill description here>` → your skill's description
-
-## What you get
+## Folder layout
 
 ```
-<your-skill-name>/
-├── SKILL.md                                       agent-facing entry
-├── README.md                                      human-facing overview
-├── conventions-schema/v1/conventions-schema.md    checklist of conventions
-├── conventions-defaults/v1/conventions-defaults.md  defaults
-├── patterns/v1/README.md                          placeholder + how to add patterns
-├── examples/v1/README.md                          placeholder + how to add examples
-└── scripts/v1/README.md                           placeholder + when to add scripts
+<skill-name>/
+├── SKILL.md                 ← agent-facing entry
+├── README.md                ← this file
+├── conventions-schema/
+├── conventions-defaults/
+├── patterns/
+├── examples/
+└── scripts/
 ```
 
-Each module starts with at minimum a README that:
-- Explains what the module should contain
-- Notes the convention for adding new items
-- Cross-references the meta-patterns
+## How to adopt in a project
 
-## What to do next
+1. **Copy the project-conventions template** (if this skill provides one) or fill in based on [`conventions-schema/`](conventions-schema/)
+2. **Save** as `<project-root>/<skill-name>-conventions.md`
+3. **Fill in** what applies · leave defaults for the rest
 
-1. Fill in `SKILL.md` workflow templates with your skill's actual workflows
-2. Define your conventions in `conventions-schema/v1/conventions-schema.md`
-3. Set sensible defaults in `conventions-defaults/v1/conventions-defaults.md`
-4. Add at least one pattern in `patterns/v1/`
-5. Add at least one worked walkthrough in `examples/v1/`
-6. (If applicable) Add scripts in `scripts/v1/`
-7. Update the model's `README.md` to add your skill to its skill table
+## License
 
-See [`meta/skill-creation-guide/`](../meta/skill-creation-guide/) for the full step-by-step guide.
+(Adapt as needed for your skill.)
