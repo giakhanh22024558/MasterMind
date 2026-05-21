@@ -25,6 +25,7 @@ core/diagram/
 | Model | Sub-skill | Location |
 |---|---|---|
 | model_001 | architecture | [`models/model_001/diagram/architecture/`](../../models/model_001/diagram/architecture/) |
+| model_001 | erd | [`models/model_001/diagram/erd/`](../../models/model_001/diagram/erd/) |
 
 ## Creating a new diagram sub-skill
 

@@ -24,6 +24,8 @@ Every document skill must follow:
 | Model | Skill | Location |
 |---|---|---|
 | model_001 | `srs` — generates IEEE SRS `.docx` documents | [`models/model_001/document/srs/`](../../models/model_001/document/srs/) |
+| model_001 | `requirements` — consolidates any input into a requirements table | [`models/model_001/document/requirements/`](../../models/model_001/document/requirements/) |
+| model_001 | `features` — derives a feature list from a requirements table | [`models/model_001/document/features/`](../../models/model_001/document/features/) |
 
 ## Creating a new document skill
 

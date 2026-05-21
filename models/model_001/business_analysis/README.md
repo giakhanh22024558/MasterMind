@@ -1,56 +1,23 @@
 # business_analysis — README
 
-A skill that turns any raw project input into a structured business analysis: a **consolidated requirements table**, an **ERD**, and a **feature list**.
+The end-to-end **business-analysis pipeline**. It produces no artifact of its own — it orchestrates three stage skills into one workflow.
 
-Philosophy: whatever the input, everything reduces to **one requirements table** — and the ERD and feature list both derive from it.
+## The three stages
 
-## Quick start
-
-| If you want to… | Read |
-|---|---|
-| Understand the skill in one page | [`SKILL.md`](SKILL.md) |
-| Know the requirements table structure | [`requirements-table/`](requirements-table/) |
-| Know the feature list structure | [`feature-list/`](feature-list/) |
-| Know the ERD conventions | [`erd-conventions/`](erd-conventions/) |
-| Know what a project must declare | [`conventions-schema/`](conventions-schema/) |
-| See a worked example | [`examples/`](examples/) |
-| Generate the pilot `.xlsx` | [`scripts/`](scripts/) |
-
-## The three artifacts
-
-| Artifact | Form | Where |
+| Stage | Skill | Produces |
 |---|---|---|
-| Requirements table | `.md` (timestamp-batched table) + `.xlsx` | `context/` + `output/` |
-| ERD | Mermaid in `.md`; `.drawio` on request | `context/` + (on request) `output/` |
-| Feature list | `.md` table + `.xlsx` | `context/` + `output/` |
+| 1 | [`requirements`](../document/requirements/) | the requirements table |
+| 2a | [`erd`](../diagram/erd/) | the ERD |
+| 2b | [`features`](../document/features/) | the feature list |
 
-## Workflow in three steps
+## Pipeline at a glance
 
-1. **Consolidate** — ingest the input, write the requirements table (grouped by analysis-run timestamp).
-2. **In parallel** — derive the ERD (entities + relationships) and the feature list from the requirements.
-3. **Render** — save each table as `.md` (context) + `.xlsx` (pilot); render the ERD `.drawio` only on request.
+1. Ingest `input/` → `context/` (Core Rule).
+2. **Stage 1** — consolidate the requirements table (always first).
+3. **Stages 2a + 2b in parallel** — derive the ERD and the feature list from the requirements table.
+4. Deliverables written to `output/`.
 
-## Folder layout
-
-```
-business_analysis/
-├── SKILL.md                     ← agent-facing entry
-├── README.md                    ← this file
-├── conventions-schema/          ← what a project must declare
-├── conventions-defaults/        ← defaults
-├── requirements-table/          ← requirements table spec
-├── feature-list/                ← feature list spec
-├── erd-conventions/             ← ERD crow's-foot conventions
-├── patterns/                    ← requirements-as-single-source pattern
-├── examples/                    ← worked walkthrough
-└── scripts/                     ← ba_md_to_xlsx.py + README
-```
-
-## Stack
-
-- **Markdown** for content + the `.md` context tables
-- **Mermaid** (`erDiagram`) for the ERD
-- **Python** (`openpyxl`) for the `.xlsx` generator — install: `pip install openpyxl`
+See [`SKILL.md`](SKILL.md) for the agent-facing entry and [`pipeline/`](pipeline/) for the full definition.
 
 ## License
 

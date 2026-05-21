@@ -1,88 +1,57 @@
 ---
 name: business_analysis
-description: Turn any project input (documents, notes, transcripts, spreadsheets, diagrams...) into a structured business analysis — one consolidated requirements table, an ERD (entities + relationships, crow's-foot notation), and a derived feature list. Every table artifact is saved as a .md context file plus a pilotable .xlsx. Use when analyzing requirements, modeling system entities, or building a feature backlog from raw material.
+description: The end-to-end business-analysis pipeline. Orchestrates three skills — requirements (document), erd (diagram), features (document) — into one workflow: ingest any input, consolidate a requirements table, then in parallel derive an ERD and a feature list. Use to run a full business analysis from raw material to deliverables.
 ---
 
-# business_analysis — requirements → ERD + feature list
+# business_analysis — the BA pipeline
 
-Packages the business-analysis workflow: ingest any input, consolidate it into **one requirements table**, then **in parallel** derive an **ERD** and a **feature list**.
+This skill is a **pipeline**. It produces no artifact of its own — it **orchestrates three stage skills** into one coherent business-analysis workflow, and owns only the **sequencing and the hand-offs** between them.
 
-This skill follows the [Core Rule](../../../core/core-rule/):
+| Stage | Skill | Category | Artifact |
+|---|---|---|---|
+| 1 | [`requirements`](../document/requirements/) | document | the consolidated requirements table |
+| 2a | [`erd`](../diagram/erd/) | diagram | the Entity-Relationship Diagram |
+| 2b | [`features`](../document/features/) | document | the feature list / backlog |
 
-- **Input → Context** — the user's raw material is ingested into `context/` as `context.md` files.
-- **Agent layer** — this skill's logic + the `scripts/` Python normalize content into the requirements table, the ERD, and the feature list. The `.md` artifacts are the source of truth.
-- **User layer** — the pilotable `.xlsx` files and (on request) the `.drawio` ERD are written to `output/`.
+Each stage skill owns its own structure, conventions, and rules — read them there.
 
 ## When to use this skill
 
-Invoke when the user asks to:
+Invoke when the user wants a **full business analysis** — from raw input all the way to requirements + ERD + feature list. For a single artifact, go straight to the relevant stage skill.
 
-- **Analyze** raw project material (specs, meeting notes, emails, existing documents, spreadsheets) into structured requirements
-- **Build or update** the consolidated requirements table
-- **Model** the system's entities and relationships as an ERD
-- **Derive or update** the feature list / backlog
-- **Re-run** analysis on new input — appended as a new timestamped batch
+## The pipeline
 
-## First step in any task
+See [`pipeline/`](pipeline/) for the full definition. In brief:
 
-1. **Session setup** — per the Core Rule, ensure `input/`, `context/`, `output/` exist; the user's `input/` is ingested into `context/`.
-2. **Discover conventions** — look for `<project-root>/business_analysis-conventions.md` per [`conventions-as-data-pattern`](../../../core/meta/conventions-as-data-pattern/); fall back to [`conventions-defaults/`](conventions-defaults/).
-3. **Acknowledge the source** when explaining choices ("per project conventions" / "using default").
-
-## Workflow
-
-### Step 1 — Consolidate requirements (always first)
-
-Whatever the input format, produce **one consolidated requirements table**. Columns: `Req code`, `Topic`, `Criteria`, `Description`, `Ref. Docs`, `Q&A`, `Remarks`. Rows are grouped by **analysis-run timestamp** (the moment the user requested the analysis) for traceability. See [`requirements-table/`](requirements-table/).
-
-### Step 2 — In parallel, from the requirements table
-
-#### 2a · ERD
-
-Model the system's entities and relationships with **crow's-foot notation**. Authored as **Mermaid inside a `.md`** context file; rendered to `.drawio` **only when the user explicitly asks**. The ERD is later used to spot edge cases and business rules, and to explain to the user how parts of the system affect each other. See [`erd-conventions/`](erd-conventions/).
-
-#### 2b · Feature list
-
-Derive features from the requirements. Columns: `Feature ID`, `Feature Name`, `Ref. Req (Feature)`, `Description (Feature)`, `User Story`, `Ref. Req (Story)`, `Description (Story)`, `Priority`, `Ready?`, `Done?`, `In Scope`. See [`feature-list/`](feature-list/).
-
-### Output rule
-
-Every **table** artifact (requirements, feature list) is saved twice: a `.md` in `context/` (the source of truth) **and** an `.xlsx` in `output/` for the user to pilot manually. The ERD is a Mermaid `.md`; a `.drawio` is produced in `output/` only on explicit request. Generate the `.xlsx` with [`scripts/ba_md_to_xlsx.py`](scripts/).
+1. **Session setup** (Core Rule) — `input/` is ingested into `context/`.
+2. **Stage 1 · requirements** — run the [`requirements`](../document/requirements/) skill: consolidate all input into the requirements table. **Always first** — it is the single source for both later stages.
+3. **Stages 2a + 2b · in parallel, from the requirements table:**
+   - **2a · ERD** — run the [`erd`](../diagram/erd/) skill.
+   - **2b · feature list** — run the [`features`](../document/features/) skill.
+4. **Deliverables** — each table → `.md` (context) + `.xlsx` (`output/`); the ERD → Mermaid `.md` (+ `.drawio` on request).
 
 ## Content modules
 
 | Module | Purpose |
 |---|---|
-| [`requirements-table/`](requirements-table/) | The consolidated requirements table — columns, `REQ-xxxx` codes, timestamp batching |
-| [`feature-list/`](feature-list/) | The feature list — columns, `FEAT-xxxx` codes, INVEST user stories |
-| [`erd-conventions/`](erd-conventions/) | ERD crow's-foot conventions, Mermaid form, when to render `.drawio` |
-| [`conventions-schema/`](conventions-schema/) | What a project must declare (code prefixes, Priority + In Scope value lists) |
-| [`conventions-defaults/`](conventions-defaults/) | Defaults applied when the project doesn't specify |
-| [`patterns/`](patterns/) | Reusable pattern — the requirements table as single source |
-| [`examples/`](examples/) | Worked walkthrough — raw input to all three artifacts |
-| [`scripts/`](scripts/) | `ba_md_to_xlsx.py` — generate the pilot `.xlsx` from a table `.md` |
+| [`pipeline/`](pipeline/) | The pipeline definition — stages, ordering, hand-offs |
+| [`patterns/`](patterns/) | The cross-skill pattern — the requirements table as single source |
+| [`examples/`](examples/) | End-to-end worked walkthrough |
+| [`scripts/`](scripts/) | `ba_md_to_xlsx.py` — the shared `.xlsx` renderer for both table skills |
 
-## Core principles
+## Conventions
 
-- **Input-agnostic** — any input format reduces to the one requirements table.
-- **Requirements first, single source** — the ERD and the feature list both derive from the requirements table.
-- **Codes are auto-generated** — `REQ-xxxx` and `FEAT-xxxx` are sequential, never reused, never hand-assigned.
-- **Timestamp traceability** — every requirement belongs to a dated analysis run.
-- **`.md` is truth, `.xlsx` is the pilot copy** — never treat the `.xlsx` as the source.
+This pipeline has **no conventions of its own** — each stage skill carries its own `conventions-schema/` + `conventions-defaults/`. The project's per-skill conventions files (`requirements-conventions.md`, `features-conventions.md`, `diagram-conventions.md`) are loaded by their respective stage. (A pipeline is an orchestration skill; it deliberately omits the conventions modules of the uniform structure.)
 
 ## Anti-patterns
 
-- ❌ Skipping the requirements table and jumping straight to features or an ERD — the table is the single source.
-- ❌ Hand-assigning `REQ-`/`FEAT-` codes — they are generated sequentially.
-- ❌ Rendering the ERD to `.drawio` without an explicit request — Mermaid `.md` is the default.
-- ❌ Editing the `.xlsx` and expecting it to flow back to the `.md` — the `.md` is the source of truth.
-- ❌ Inventing `In Scope` / `Priority` values outside the project's declared lists.
+- ❌ Running stage 2 before stage 1 — the requirements table is the single source.
+- ❌ Duplicating a stage skill's rules here — this pipeline only sequences and hands off.
+- ❌ Building the ERD or the feature list from raw input instead of from the requirements table.
 
-## Cross-references to meta-patterns
+## Cross-references
 
-| Meta-pattern | This skill uses it when |
+| Reference | Used for |
 |---|---|
-| [Core Rule](../../../core/core-rule/) | Input → context `.md` → agent layer → `.xlsx`/`.drawio` in `output/` |
-| [Uniform skill structure](../../../core/meta/uniform-skill-structure/) | The skill follows the mandatory Shape A layout |
-| [Conventions as data](../../../core/meta/conventions-as-data-pattern/) | Code prefixes + Priority/In Scope lists live in `<project>/business_analysis-conventions.md` |
-| [Atomic edits](../../../core/meta/atomic-edits-pattern/) | The generator writes `.xlsx` (a sync-prone file) — close Excel before running |
+| [Core Rule](../../../core/core-rule/) | Input → context → agent layer → `output/` |
+| [`requirements`](../document/requirements/) · [`erd`](../diagram/erd/) · [`features`](../document/features/) | The three orchestrated stage skills |

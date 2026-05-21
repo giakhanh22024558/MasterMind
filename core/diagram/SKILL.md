@@ -16,7 +16,8 @@ A modular toolkit for software diagrams. Each diagram type gets its own sub-skil
 | User asks about… | Sub-skill | Entry point |
 |---|---|---|
 | Master architecture (C4-style) · system landscape · zone boundaries · edges between components | **architecture** | [`models/model_001/diagram/architecture/SKILL.md`](../../models/model_001/diagram/architecture/SKILL.md) |
-| DFD · activity · BPMN · sequence · state · ERD · … | *(not yet implemented)* | Add a new sub-skill following the **uniform folder structure** below |
+| Entity-Relationship Diagram · entities + relationships · crow's-foot notation | **erd** | [`models/model_001/diagram/erd/SKILL.md`](../../models/model_001/diagram/erd/SKILL.md) |
+| DFD · activity · BPMN · sequence · state · … | *(not yet implemented)* | Add a new sub-skill following the **uniform folder structure** below |
 
 Cross-cutting concerns (any diagram type):
 
