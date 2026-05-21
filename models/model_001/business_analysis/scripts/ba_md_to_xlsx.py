@@ -11,9 +11,10 @@ output/ directory.
 
   - requirements: the .md has one table per "## <timestamp>" section; the
     .xlsx flattens them into one sheet and prepends a "Run" column.
-  - features: the .md has one table; the .xlsx adds dropdowns (Priority,
-    In Scope), checkbox-style cells (Ready?, Done?) and merges the
-    feature-level cells across each feature's story rows.
+  - features: the .md has one table (Epic -> Feature -> User Story); the
+    .xlsx adds dropdowns (Priority, In Scope), checkbox-style cells
+    (Ready?, Done?) and merges the epic-level and feature-level cells
+    across their rows.
 
 Requires: pip install openpyxl
 """
@@ -38,6 +39,7 @@ HEADER_FONT = "FFFFFF"
 
 REQ_HEADERS = ["Req code", "Topic", "Criteria", "Description",
                "Ref. Docs", "Q&A", "Remarks"]
+EPIC_COLS = ["Epic ID", "Epic Name"]
 FEATURE_COLS = ["Feature ID", "Feature Name", "Ref. Req (Feature)",
                 "Description (Feature)", "Ready?", "Done?", "In Scope"]
 
@@ -149,6 +151,25 @@ def build_requirements(tables, out):
     return n
 
 
+def _merge_by_key(ws, idx, key_name, col_names, last_row):
+    """Merge each column in col_names across consecutive rows that share a
+    group — a non-empty cell in the key column marks the start of a group."""
+    key = idx.get(key_name)
+    if not key:
+        return
+    starts = [r for r in range(2, last_row + 1)
+              if str(ws.cell(row=r, column=key).value or "").strip()]
+    starts.append(last_row + 1)
+    for i in range(len(starts) - 1):
+        s, e = starts[i], starts[i + 1] - 1
+        if e > s:
+            for name in col_names:
+                if name in idx:
+                    ci = idx[name]
+                    ws.merge_cells(start_row=s, start_column=ci,
+                                   end_row=e, end_column=ci)
+
+
 def build_features(tables, out):
     if not tables:
         raise SystemExit("No table found in the features .md")
@@ -163,9 +184,10 @@ def build_features(tables, out):
     for row in rows:
         ws.append(_pad(row, ncols))
     _style_header(ws, ncols)
+    # widths for the Epic -> Feature -> User Story columns
+    widths = [12, 16, 12, 18, 14, 28, 10, 34, 14, 26, 11, 9, 9, 14]
     _finish(ws, ncols, len(rows),
-            [12, 18, 16, 30, 34, 14, 30, 12, 9, 9, 14][:ncols]
-            + [16] * max(0, ncols - 11))
+            widths[:ncols] + [16] * max(0, ncols - len(widths)))
 
     last = len(rows) + 1
     if "Priority" in idx:
@@ -177,20 +199,10 @@ def build_features(tables, out):
     if "Done?" in idx:
         _add_dropdown(ws, idx["Done?"], last, CHECK_VALUES)
 
-    # merge feature-level cells across each feature's story rows
-    fid = idx.get("Feature ID")
-    if fid:
-        starts = [r for r in range(2, last + 1)
-                  if str(ws.cell(row=r, column=fid).value or "").strip()]
-        starts.append(last + 1)
-        for i in range(len(starts) - 1):
-            s, e = starts[i], starts[i + 1] - 1
-            if e > s:
-                for name in FEATURE_COLS:
-                    if name in idx:
-                        ci = idx[name]
-                        ws.merge_cells(start_row=s, start_column=ci,
-                                       end_row=e, end_column=ci)
+    # merge epic-level cells, then feature-level cells, across their rows
+    _merge_by_key(ws, idx, "Epic ID", EPIC_COLS, last)
+    _merge_by_key(ws, idx, "Feature ID", FEATURE_COLS, last)
+
     wb.save(out)
     return len(rows)
 

@@ -1,6 +1,6 @@
-# Example · feature list walkthrough
+# Example · feature backlog walkthrough
 
-A short worked example — deriving features from a requirements table. Generic "RoomBooking" scenario.
+A short worked example — deriving an Epic → Feature → User Story backlog from a requirements table. Generic "RoomBooking" scenario.
 
 ## Input — the requirements table
 
@@ -10,29 +10,37 @@ A short worked example — deriving features from a requirements table. Generic 
 | REQ-0002 | Booking | Cancel a booking |
 | REQ-0003 | Rooms | Room catalogue |
 
-## Step 1 · Group requirements into features
+## Step 1 · Group into epics
 
-- `REQ-0001` + `REQ-0002` (both `Booking`) → one feature, "Booking management".
-- `REQ-0003` → "Room catalogue".
+Both `Booking` and `Rooms` topics serve one capability area → epic `EPIC-0001` "Booking".
 
-## Step 2 · Write the feature list
+## Step 2 · Define features under the epic
 
-One row per user story; feature-level cells filled on the feature's first row.
+- `REQ-0001` + `REQ-0002` → `FEAT-0001` "Booking management".
+- `REQ-0003` → `FEAT-0002` "Room catalogue".
+
+## Step 3 · Write user stories under each feature
+
+Each story gets a `US-xxxx` code and cites its `REQ-xxxx`.
+
+## Step 4 · Write the feature list
+
+One row per user story; epic-level and feature-level cells filled on the first row.
 
 ```markdown
-| Feature ID | Feature Name | Ref. Req (Feature) | Description (Feature) | User Story | Ref. Req (Story) | Description (Story) | Priority | Ready? | Done? | In Scope |
-|---|---|---|---|---|---|---|---|---|---|---|
-| FEAT-0001 | Booking management | REQ-0001, REQ-0002 | Members create and cancel bookings. | A member can book an available room. | REQ-0001 | Pick a room + slot. | High | ☑ | ☐ | In scope |
-| | | | | A member can cancel their booking. | REQ-0002 | Before start time only. | Medium | ☑ | ☐ | |
-| FEAT-0002 | Room catalogue | REQ-0003 | Admin maintains rooms. | An admin can add or edit a room. | REQ-0003 | Name + capacity. | Medium | ☐ | ☐ | Next phase |
+| Epic ID | Epic Name | Feature ID | Feature Name | Ref. Req (Feature) | Description (Feature) | Story ID | User Story | Ref. Req (Story) | Description (Story) | Priority | Ready? | Done? | In Scope |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| EPIC-0001 | Booking | FEAT-0001 | Booking management | REQ-0001, REQ-0002 | Members create and cancel bookings. | US-0001 | A member can book an available room. | REQ-0001 | Pick a room + slot. | High | ☑ | ☐ | In scope |
+| | | | | | | US-0002 | A member can cancel their booking. | REQ-0002 | Before start time only. | Medium | | | |
+| | | FEAT-0002 | Room catalogue | REQ-0003 | Admin maintains the room list. | US-0003 | An admin can add or edit a room. | REQ-0003 | Name + capacity. | Medium | ☐ | ☐ | Next phase |
 ```
 
-## Step 3 · Render
+## Step 5 · Render
 
-`features.xlsx` is generated into `output/`: `Priority` and `In Scope` as dropdowns, `Ready?` / `Done?` as `☐`/`☑` checkboxes, and the feature-level cells merged across each feature's story rows.
+`features.xlsx` is generated into `output/`: `Priority` / `In Scope` dropdowns, `Ready?` / `Done?` checkboxes, epic-level and feature-level cells merged across their rows.
 
 ## Recap
 
-- ✅ Every feature cites its `REQ-` codes.
+- ✅ Three-level hierarchy — `EPIC-0001` → two features → three stories.
+- ✅ Every level coded; every feature/story cites its `REQ-` codes.
 - ✅ User stories kept short — `[User] can [Action]`.
-- ✅ `FEAT-` codes sequential.

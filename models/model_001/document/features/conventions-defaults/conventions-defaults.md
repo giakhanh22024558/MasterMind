@@ -8,7 +8,9 @@ Defaults applied when `<project-root>/features-conventions.md` does not specify 
 
 | Item | Default |
 |---|---|
+| Epic code | `EPIC-` + 4 digits, sequential from `EPIC-0001`, never reused |
 | Feature code | `FEAT-` + 4 digits, sequential from `FEAT-0001`, never reused |
+| User story code | `US-` + 4 digits, sequential from `US-0001`, never reused |
 | Priority values | `Low` · `Medium` · `High` · `Very high` (lowest → highest) |
 | In Scope values | `In scope` · `Out of scope` · `Next phase` · `Undecided` |
 | Checkbox display (`.xlsx`) | `Ready?` and `Done?` render as a two-value dropdown: `☐` (default) and `☑` |

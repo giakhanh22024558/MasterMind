@@ -4,3 +4,7 @@ __pycache__/
 
 # Generated SRS output / smoke tests
 _srs_format_smoketest.docx
+
+# Editor / IDE config
+.vscode/
+.idea/

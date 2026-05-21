@@ -1,6 +1,6 @@
 # features — README
 
-A skill that derives a **feature list / backlog** from a requirements table.
+A skill that derives a **feature backlog** from a requirements table, organized as **Epic → Feature → User Story**.
 
 ## Quick start
 
@@ -15,12 +15,16 @@ A skill that derives a **feature list / backlog** from a requirements table.
 
 | Form | Where |
 |---|---|
-| Feature list `.md` (one row per user story) — source of truth | `context/` |
+| Feature list `.md` (Epic → Feature → User Story; one row per story) — source of truth | `context/` |
 | `features.xlsx` — manual pilot copy, with dropdowns + checkboxes | `output/` |
+
+## The hierarchy
+
+`EPIC-xxxx` → `FEAT-xxxx` → `US-xxxx` — every level coded for exact traceability.
 
 ## Columns
 
-`Feature ID` (FEAT-xxxx) · `Feature Name` · `Ref. Req (Feature)` · `Description (Feature)` · `User Story` · `Ref. Req (Story)` · `Description (Story)` · `Priority` · `Ready?` · `Done?` · `In Scope`
+`Epic ID` · `Epic Name` · `Feature ID` · `Feature Name` · `Ref. Req (Feature)` · `Description (Feature)` · `Story ID` · `User Story` · `Ref. Req (Story)` · `Description (Story)` · `Priority` · `Ready?` · `Done?` · `In Scope`
 
 ## Stack
 

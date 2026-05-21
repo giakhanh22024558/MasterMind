@@ -80,7 +80,7 @@ A 4-column table, one row per version:
 
 ## 6. `# Yêu cầu Cụ thể` (Specific Requirements) — the core part
 
-Organized by **Module / Epic**. Each module is a `##` subsection:
+Organized by **Module / Epic** — each module **corresponds to an Epic** (`EPIC-xxxx`) from the [feature list](../../features/feature-list/). The `FEAT-xxxx` codes used throughout are the feature codes **from that feature list** — the SRS *references* the feature list, it never invents codes. Each module is a `##` subsection:
 
 ```
 ## [Module name]                          (e.g. Quản lý người dùng)
@@ -115,6 +115,8 @@ Each feature specification has **5 sub-blocks in a fixed order**:
 | Luồng ngoại lệ / Xử lý lỗi (Exception flow / Error handling) | Error branches, each separated by `<br>` |
 | Hậu điều kiện (Postcondition) | System state after completion |
 
+> **`Mã tính năng`** is the `FEAT-xxxx` code from the [feature list](../../features/feature-list/) — every detailed use-case spec references that list, so each spec traces back to a feature, its epic, and its requirements. **Edge cases** discovered from the ERD (business_analysis pipeline, stage 3) populate the `Luồng ngoại lệ / Xử lý lỗi` field.
+
 #### (b) `#### Sơ đồ luồng` (Flow diagram)
 
 A section holding the **business flow diagram** (activity / flow diagram) visualizing the Main flow + Exception flow. When no diagram exists yet, place a single-cell callout placeholder: `| [ Sơ đồ luồng — sẽ được bổ sung ] |`. Later, append the diagram with a `Hình [description]` caption (the generator numbers and centers it, same as the Wireframe section).
@@ -136,10 +138,28 @@ One or more component tables. Each table may have a `#####` sub-heading (e.g. "P
 
 #### (e) `#### Business Rules / System Behavior`
 
-A 2-column table — add it only when the feature has business constraints. Leave the "Mã BR" column empty — the generator produces `BR-<heading H4>-<NNN>`:
+A 2-column table — add it when the feature has business constraints. Leave the "Mã BR" column empty — the generator produces `BR-<heading H4>-<NNN>`:
 
 | Mã BR | Mô tả |
 |---|---|
+
+**What a Business Rule is.** A BR states **WHAT must always be true** — not **HOW** something is done, and not **WHEN** something is triggered.
+
+- It is **invariant**: if you completely change the UI, completely change the tech stack, or completely change the flow, the BR must still hold.
+- **HOW** belongs in the Main flow; **WHEN** belongs in the Trigger / Exception flow — neither is a Business Rule.
+
+**How to write a Business Rule:**
+
+- **One rule per BR.** Never combine several ideas into one row — one BR = one rule, so it is easy to reference, test, and update.
+- **Declarative, not procedural.** State it as an assertion of truth, not as a sequence of steps.
+
+| ❌ Not a Business Rule | ✅ Business Rule |
+|---|---|
+| "When the user clicks Save, validate the form" — a WHEN / HOW | "A booking is valid only if its room is free for the whole slot" |
+| "Show an error dialog if the room is taken" — a HOW | "A room cannot hold two overlapping bookings" |
+| "A member can book a room, gets an email, and earns points" — three rules in one | split into three BRs, one rule each |
+
+Business rules are **discovered from the ERD** — by walking entity relationships and cardinalities — see the [business_analysis pipeline](../../../business_analysis/pipeline/), stage 3.
 
 ---
 
@@ -153,7 +173,7 @@ Each NFR type is a `##` subsection: Hiệu năng (Performance) · Độ tin cậ
 
 | Convention | Description |
 |---|---|
-| Feature code | `FEAT-XXX` (3 digits). One specification may combine several codes: `(FEAT-001, FEAT-002)` |
+| Feature code | `FEAT-xxxx` — the code taken from the [feature list](../../features/feature-list/), never invented here. One specification may combine several: `(FEAT-0001, FEAT-0002)` |
 | Line break inside a table cell | Use `<br>` — do not split into multiple markdown lines |
 | Default-criterion tag | `[Mặc định]` placed after the value (e.g. search field, sort field) |
 | Character limit | `Max_N_char` in the Thuộc tính column |
@@ -194,6 +214,8 @@ The following conventions **do not need to be hand-written in the `.md`** — th
 - [ ] Each module has a "Danh sách Yêu cầu Chức năng" before its detailed specifications
 - [ ] Each `### Đặc tả Chi tiết` has all of: Use Case table (8 fields) → Wireframe → Component specification → (Business Rules if needed)
 - [ ] Every FEAT code in a specification also appears in the module's "Danh sách Yêu cầu Chức năng"
+- [ ] Every FEAT code traces to a feature in the [feature list](../../features/feature-list/)
+- [ ] Each Business Rule states WHAT must always be true (declarative · one rule per BR), not HOW or WHEN
 - [ ] Component tables use the standard columns (STT/ID, Tên/Label, Loại, [Thuộc tính], Mô tả)
 - [ ] Line breaks inside cells all use `<br>`
 - [ ] A "Yêu cầu Phi chức năng" part exists at the end

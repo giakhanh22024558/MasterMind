@@ -19,7 +19,7 @@ pip install openpyxl
 python ba_md_to_xlsx.py requirements <context>/requirements/context.md <output>/requirements.xlsx
 
 # Feature list -> xlsx (Priority / In Scope dropdowns, Ready?/Done? checkboxes,
-# feature-level cells merged across story rows)
+# epic-level + feature-level cells merged across their rows)
 python ba_md_to_xlsx.py features <context>/features/context.md <output>/features.xlsx
 ```
 

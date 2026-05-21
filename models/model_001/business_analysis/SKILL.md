@@ -1,34 +1,45 @@
 ---
 name: business_analysis
-description: The end-to-end business-analysis pipeline. Orchestrates three skills — requirements (document), erd (diagram), features (document) — into one workflow: ingest any input, consolidate a requirements table, then in parallel derive an ERD and a feature list. Use to run a full business analysis from raw material to deliverables.
+description: The end-to-end business-analysis pipeline. Orchestrates four skills — requirements, erd, features, srs — into one workflow: ingest any input, decode requirements, derive an ERD and a feature backlog, use the ERD to find business rules and edge cases for each feature, then write everything into an IEEE SRS document. Use to run a full business analysis from raw material to a finished SRS.
 ---
 
 # business_analysis — the BA pipeline
 
-This skill is a **pipeline**. It produces no artifact of its own — it **orchestrates three stage skills** into one coherent business-analysis workflow, and owns only the **sequencing and the hand-offs** between them.
+This skill is a **pipeline**. It produces no artifact of its own — it **orchestrates four stage skills** into one coherent business-analysis workflow, and owns only the **sequencing and the hand-offs** between them.
 
-| Stage | Skill | Category | Artifact |
+```
+input → decode requirements → (ERD ‖ feature backlog)
+      → use the ERD to find business rules + edge cases for each feature
+      → write everything into the SRS
+```
+
+| Stage | Skill | Category | Produces |
 |---|---|---|---|
 | 1 | [`requirements`](../document/requirements/) | document | the consolidated requirements table |
 | 2a | [`erd`](../diagram/erd/) | diagram | the Entity-Relationship Diagram |
-| 2b | [`features`](../document/features/) | document | the feature list / backlog |
+| 2b | [`features`](../document/features/) | document | the feature backlog (Epic → Feature → User Story) |
+| 3 | *(uses the [`erd`](../diagram/erd/) skill)* | — | business rules + edge cases for each feature |
+| 4 | [`srs`](../document/srs/) | document | the IEEE SRS document |
 
 Each stage skill owns its own structure, conventions, and rules — read them there.
 
 ## When to use this skill
 
-Invoke when the user wants a **full business analysis** — from raw input all the way to requirements + ERD + feature list. For a single artifact, go straight to the relevant stage skill.
+Invoke when the user wants a **full business analysis** — from raw input all the way to a finished SRS. For a single artifact, go straight to the relevant stage skill.
 
 ## The pipeline
 
 See [`pipeline/`](pipeline/) for the full definition. In brief:
 
 1. **Session setup** (Core Rule) — `input/` is ingested into `context/`.
-2. **Stage 1 · requirements** — run the [`requirements`](../document/requirements/) skill: consolidate all input into the requirements table. **Always first** — it is the single source for both later stages.
-3. **Stages 2a + 2b · in parallel, from the requirements table:**
-   - **2a · ERD** — run the [`erd`](../diagram/erd/) skill.
-   - **2b · feature list** — run the [`features`](../document/features/) skill.
-4. **Deliverables** — each table → `.md` (context) + `.xlsx` (`output/`); the ERD → Mermaid `.md` (+ `.drawio` on request).
+2. **Stage 1 · requirements** — consolidate all input into the requirements table. **Always first** — it is the single source.
+3. **Stages 2a + 2b · parallel** — derive the ERD and the feature backlog from the requirements table.
+4. **Stage 3 · business rules + edge cases** — for **each feature**, walk the ERD to discover business rules (WHAT must always be true) and edge cases.
+5. **Stage 4 · SRS** — write everything into the IEEE SRS document: epics → modules, features → detailed use-case specs, business rules + edge cases into each spec.
+
+## Traceability
+
+The whole chain is held together by **codes** — `REQ-xxxx` → `EPIC-xxxx` / `FEAT-xxxx` / `US-xxxx` → the SRS use-case specs. Every artifact references the previous by code, never by name, so the origin of anything is exact.
 
 ## Content modules
 
@@ -37,21 +48,22 @@ See [`pipeline/`](pipeline/) for the full definition. In brief:
 | [`pipeline/`](pipeline/) | The pipeline definition — stages, ordering, hand-offs |
 | [`patterns/`](patterns/) | The cross-skill pattern — the requirements table as single source |
 | [`examples/`](examples/) | End-to-end worked walkthrough |
-| [`scripts/`](scripts/) | `ba_md_to_xlsx.py` — the shared `.xlsx` renderer for both table skills |
+| [`scripts/`](scripts/) | `ba_md_to_xlsx.py` — the shared `.xlsx` renderer for the table skills |
 
 ## Conventions
 
-This pipeline has **no conventions of its own** — each stage skill carries its own `conventions-schema/` + `conventions-defaults/`. The project's per-skill conventions files (`requirements-conventions.md`, `features-conventions.md`, `diagram-conventions.md`) are loaded by their respective stage. (A pipeline is an orchestration skill; it deliberately omits the conventions modules of the uniform structure.)
+This pipeline has **no conventions of its own** — each stage skill carries its own `conventions-schema/` + `conventions-defaults/`. (A pipeline is an orchestration skill; it deliberately omits the conventions modules of the uniform structure.)
 
 ## Anti-patterns
 
-- ❌ Running stage 2 before stage 1 — the requirements table is the single source.
+- ❌ Running a later stage before stage 1 — the requirements table is the single source.
+- ❌ Skipping stage 3 — the SRS's business rules and edge cases come from walking the ERD.
 - ❌ Duplicating a stage skill's rules here — this pipeline only sequences and hands off.
-- ❌ Building the ERD or the feature list from raw input instead of from the requirements table.
+- ❌ Referencing anything by name instead of by code.
 
 ## Cross-references
 
 | Reference | Used for |
 |---|---|
 | [Core Rule](../../../core/core-rule/) | Input → context → agent layer → `output/` |
-| [`requirements`](../document/requirements/) · [`erd`](../diagram/erd/) · [`features`](../document/features/) | The three orchestrated stage skills |
+| [`requirements`](../document/requirements/) · [`erd`](../diagram/erd/) · [`features`](../document/features/) · [`srs`](../document/srs/) | The four orchestrated stage skills |

@@ -1,54 +1,75 @@
 # Feature list — structure
 
-The feature backlog **derived from the requirements table**. Each feature is justified by one or more requirements; each feature carries one or more user stories.
+The feature backlog, organized as a three-level hierarchy: **Epic → Feature → User Story**. Derived from the requirements table; consumed by the SRS.
+
+## The hierarchy
+
+| Level | What it is | Code |
+|---|---|---|
+| **Epic** | A large area of capability — groups related features. | `EPIC-xxxx` |
+| **Feature** | A deliverable capability within an epic, justified by one or more requirements. | `FEAT-xxxx` |
+| **User Story** | An INVEST-style story within a feature, short form `[User] can [Action]`. | `US-xxxx` |
+
+Every level carries a **code** (4 digits) — sequential, globally unique, never reused, **auto-generated**. The codes are what every other artifact references, so traceability is exact.
 
 ## Columns
 
 | Column | Level | Meaning |
 |---|---|---|
-| **Feature ID** | Feature | Identifier, format `FEAT-xxxx` (4 digits). Sequential, unique. **Auto-generated.** |
-| **Feature Name** | Feature | Short name of the feature. |
-| **Ref. Req (Feature)** | Feature | The `REQ-xxxx` code(s) the feature answers to. |
-| **Description (Feature)** | Feature | Description of the feature. |
-| **User Story** | Story | INVEST-style story, written **short**: `[User] can [Action]`. The full standard form is not required — the requirements table is the backup context. |
-| **Ref. Req (Story)** | Story | The `REQ-xxxx` code(s) the story answers to. |
-| **Description (Story)** | Story | Description of the story. |
-| **Priority** | Story | Dropdown: `Low`, `Medium`, `High`, `Very high`. |
-| **Ready?** | Feature | Checkbox — marks whether the feature item is ready to be developed. |
-| **Done?** | Feature | Checkbox — marks whether the feature has been fully developed. |
-| **In Scope** | Feature | Selection — whether the feature is within the scope to complete now. The value list is **project-defined** (see [`conventions-schema/`](../conventions-schema/)). |
-
-> The user's spec lists `Ref. Req` and `Description` twice — once for the feature, once for the story. They are disambiguated above as `(Feature)` / `(Story)`.
+| **Epic ID** | Epic | `EPIC-xxxx` |
+| **Epic Name** | Epic | Short name of the epic |
+| **Feature ID** | Feature | `FEAT-xxxx` |
+| **Feature Name** | Feature | Short name of the feature |
+| **Ref. Req (Feature)** | Feature | The `REQ-xxxx` code(s) the feature answers to |
+| **Description (Feature)** | Feature | Description of the feature |
+| **Story ID** | Story | `US-xxxx` |
+| **User Story** | Story | INVEST, written **short**: `[User] can [Action]`. The requirements table is the backup context, so the full standard form is not required. |
+| **Ref. Req (Story)** | Story | The `REQ-xxxx` code(s) the story answers to |
+| **Description (Story)** | Story | Description of the story |
+| **Priority** | Story | Dropdown: `Low`, `Medium`, `High`, `Very high` |
+| **Ready?** | Feature | Checkbox — whether the feature is ready to be developed |
+| **Done?** | Feature | Checkbox — whether the feature has been fully developed |
+| **In Scope** | Feature | Selection — whether the feature is within the current scope. Value list is **project-defined**. |
 
 ## Row model — one row per user story
 
-- **One row = one user story.**
-- A feature with several stories spans several rows.
-- **Feature-level** columns (`Feature ID`, `Feature Name`, `Ref. Req (Feature)`, `Description (Feature)`, `Ready?`, `Done?`, `In Scope`) are **merged** vertically across that feature's story rows.
-- **Story-level** columns (`User Story`, `Ref. Req (Story)`, `Description (Story)`, `Priority`) carry one value per row.
+- **One row = one User Story.**
+- **Epic-level** cells (`Epic ID`, `Epic Name`) are merged across all of the epic's rows.
+- **Feature-level** cells (`Feature ID`, `Feature Name`, `Ref. Req (Feature)`, `Description (Feature)`, `Ready?`, `Done?`, `In Scope`) are merged across the feature's rows.
+- **Story-level** cells (`Story ID`, `User Story`, `Ref. Req (Story)`, `Description (Story)`, `Priority`) carry one value per row.
+- In the `.md`, a higher-level cell is filled on its **first** row and left blank on continuation rows; the `.xlsx` generator merges them.
 
-In the `.md` context file, feature-level cells are filled on the feature's **first** story row and left blank on continuation rows; the `.xlsx` generator merges them.
+## Traceability chain
+
+Every level references the next by **code** — never by name — so the origin of anything is exact:
+
+```
+REQ-xxxx ──(Ref. Req)──▶ FEAT-xxxx ──(belongs to)──▶ EPIC-xxxx
+REQ-xxxx ──(Ref. Req)──▶ US-xxxx   ──(belongs to)──▶ FEAT-xxxx
+                                      FEAT-xxxx  ◀──(referenced by)── SRS detailed use-case spec
+```
 
 ## File form — `context/.../features/context.md`
 
 ```markdown
 # Feature list
 
-| Feature ID | Feature Name | Ref. Req (Feature) | Description (Feature) | User Story | Ref. Req (Story) | Description (Story) | Priority | Ready? | Done? | In Scope |
-|---|---|---|---|---|---|---|---|---|---|---|
-| FEAT-0001 | Sign in | REQ-0001, REQ-0002 | Account access via email + password. | A user can sign in with email and password. | REQ-0001 | Standard credential login. | High | ☑ | ☐ | In scope |
-| | | | | A user can reset a forgotten password. | REQ-0002 | Emailed reset link. | Medium | ☑ | ☐ | |
-| FEAT-0002 | Monthly invoice | REQ-0003 | Automatic monthly billing. | A user can view the monthly invoice. | REQ-0003 | One invoice per account per month. | Medium | ☐ | ☐ | Next phase |
+| Epic ID | Epic Name | Feature ID | Feature Name | Ref. Req (Feature) | Description (Feature) | Story ID | User Story | Ref. Req (Story) | Description (Story) | Priority | Ready? | Done? | In Scope |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| EPIC-0001 | Booking | FEAT-0001 | Booking management | REQ-0001, REQ-0002 | Members create and cancel bookings. | US-0001 | A member can book an available room. | REQ-0001 | Pick a room + slot. | High | ☑ | ☐ | In scope |
+| | | | | | | US-0002 | A member can cancel their booking. | REQ-0002 | Before start time only. | Medium | | | |
+| | | FEAT-0002 | Room catalogue | REQ-0003 | Admin maintains the room list. | US-0003 | An admin can add or edit a room. | REQ-0003 | Name + capacity. | Medium | ☐ | ☐ | Next phase |
 ```
 
 ## Output
 
 - **Context (`.md`)** — the file above; the source of truth.
-- **Pilot (`.xlsx`)** — generated by the pipeline's renderer [`ba_md_to_xlsx.py`](../../../business_analysis/scripts/) into `output/`, with: `Priority` as a dropdown, `In Scope` as a project-value dropdown, `Ready?` / `Done?` as `☐`/`☑` checkbox-style dropdowns, and feature-level cells merged across each feature's rows.
+- **Pilot (`.xlsx`)** — generated by the pipeline's renderer [`ba_md_to_xlsx.py`](../../../business_analysis/scripts/) into `output/`, with: `Priority` / `In Scope` as dropdowns, `Ready?` / `Done?` as `☐`/`☑` checkbox-style dropdowns, and epic-level + feature-level cells merged across their rows.
 
 ## Rules
 
-- Every feature must cite at least one `REQ-xxxx` in `Ref. Req (Feature)` — no feature without a requirement.
-- Keep `Feature Name` and the `User Story` short. Detail goes in the `Description` columns.
-- Never hand-write `Feature ID` — the generator assigns the next sequential code.
+- Every feature belongs to exactly one epic; every user story belongs to exactly one feature.
+- Every feature cites at least one `REQ-xxxx` in `Ref. Req (Feature)` — no feature without a requirement.
+- Keep `Epic Name`, `Feature Name`, and the `User Story` short. Detail goes in the `Description` columns.
+- Never hand-write `EPIC-`/`FEAT-`/`US-` codes — they are assigned sequentially.
 - Use only the project's declared `Priority` and `In Scope` values.
