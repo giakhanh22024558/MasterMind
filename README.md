@@ -10,6 +10,7 @@ Clone MasterMind into a **working folder**. Two sibling folders — created at s
 <working-folder>/
 ├── MasterMind/   ← this repo (the skills)
 ├── input/        ← raw context files the user provides (any format)
+├── context/      ← analyzed context.md mirror of input/ (built by the model)
 └── output/       ← finished deliverables (.docx, .xlsx, .drawio...)
 ```
 
@@ -26,10 +27,11 @@ MasterMind/
 │   └── template/         scaffold for a new skill
 └── models/      ← concrete per-project skills
     └── model_NNN/
-        ├── context/          runtime — built from input/ (git-ignored)
         ├── diagram/<type>/    e.g. architecture
         └── document/<type>/   e.g. srs
 ```
+
+A model holds **only its skill definition** — no runtime data. The user's `input/`, the analyzed `context/`, and the `output/` all live outside MasterMind.
 
 ## Core Rule (invariant)
 
@@ -47,7 +49,7 @@ When a session begins in a working folder containing MasterMind:
 
 1. Ensure `input/` and `output/` exist (create if missing).
 2. Choose a model under `models/` — or create a new one per the Core Rule.
-3. The model ingests `input/` → mirrors it into `models/model_NNN/context/` as `context.md` files.
+3. The model ingests `input/` → mirrors it into the `context/` folder as `context.md` files.
 4. Deliverables are written to `output/`.
 
 ## Using the repo

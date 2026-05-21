@@ -6,14 +6,13 @@ The **models** — each `model_NNN/` is a cluster of concrete skills for one pro
 
 ```
 models/model_NNN/
-├── context/           ← runtime — the user's input/ ingested as context.md (git-ignored)
 ├── diagram/
 │   └── <type>/        ← concrete diagram skill (e.g. architecture)
 └── document/
     └── <type>/        ← concrete document skill (e.g. srs)
 ```
 
-Each model holds skill categories (`diagram`, `document`...); inside each category are more specific skills (`architecture`, `srs`...). The `context/` folder is created at runtime when the model ingests the user's `input/` — see the [Core Rule](../core/core-rule/).
+Each model holds skill categories (`diagram`, `document`...); inside each category are more specific skills (`architecture`, `srs`...). A model holds **only its skill definition** — runtime data (the user's `input/`, the analyzed `context/`, the `output/`) lives outside MasterMind; see the [Core Rule](../core/core-rule/).
 
 ## Existing models
 

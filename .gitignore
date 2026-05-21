@@ -2,8 +2,5 @@
 __pycache__/
 *.pyc
 
-# Per-session runtime context — each model's context/ is populated from the user's input/
-context/
-
 # Generated SRS output / smoke tests
 _srs_format_smoketest.docx
