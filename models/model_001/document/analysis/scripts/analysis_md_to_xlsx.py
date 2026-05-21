@@ -113,55 +113,64 @@ def build_gap(headers, rows, out):
 
 # --- IMPACT mode -------------------------------------------------------------
 def build_impact(headers, rows, out):
-    """headers kỳ vọng 9 cột; cột 2-4 = Implementation, 5-7 = Estimation."""
+    """
+    Bảng phẳng 10 cột:
+      CR ID | CR Content (gốc + Note KH) | Impl BA/FE/BE | Est BA/FE/BE
+            | Impacted Module | Decision
+    -> dựng header 2 tầng (Implementation / Estimation merge).
+    """
     wb = Workbook()
     ws = wb.active
     ws.title = "Impact Analysis"
-    NC = 9
+    NC = 10
 
     # ----- header 2 tầng -----
     ws.merge_cells("A1:A2"); ws["A1"] = "CR ID"
-    ws.merge_cells("B1:D1"); ws["B1"] = "Implementation (nội dung task)"
-    ws.merge_cells("E1:G1"); ws["E1"] = "Estimation (man-hours)"
-    ws.merge_cells("H1:H2"); ws["H1"] = "Impacted Module"
-    ws.merge_cells("I1:I2"); ws["I1"] = "Decision"
-    for col, val in [("B2", "BA"), ("C2", "FE"), ("D2", "BE"),
-                     ("E2", "BA"), ("F2", "FE"), ("G2", "BE")]:
+    ws.merge_cells("B1:B2"); ws["B1"] = "Nội dung CR (gốc + Note KH)"
+    ws.merge_cells("C1:E1"); ws["C1"] = "Implementation (nội dung task)"
+    ws.merge_cells("F1:H1"); ws["F1"] = "Estimation (man-hours)"
+    ws.merge_cells("I1:I2"); ws["I1"] = "Impacted Module"
+    ws.merge_cells("J1:J2"); ws["J1"] = "Decision"
+    for col, val in [("C2", "BA"), ("D2", "FE"), ("E2", "BE"),
+                     ("F2", "BA"), ("G2", "FE"), ("H2", "BE")]:
         ws[col] = val
-    for ref in ("A1", "B1", "E1", "H1", "I1", "B2", "C2", "D2",
-                "E2", "F2", "G2"):
+    for ref in ("A1", "B1", "C1", "F1", "I1", "J1",
+                "C2", "D2", "E2", "F2", "G2", "H2"):
         X.style_header_cell(ws[ref])
+
+    def _num(x):
+        m = re.search(r"-?\d+(?:\.\d+)?", str(x))
+        return float(m.group()) if m else 0
 
     # ----- data rows -----
     sum_ba = sum_fe = sum_be = 0
     r = 3
     for row in rows:
         row = (list(row) + [""] * NC)[:NC]
-        cr, ba, fe, be, eba, efe, ebe, module, decision = row
-        # implementation: bullet -> nhiều dòng
+        cr, content, ba, fe, be, eba, efe, ebe, module, decision = row
         ws.cell(row=r, column=1, value=cr)
-        for cidx, raw in [(2, ba), (3, fe), (4, be)]:
+        # CR Content: giữ nguyên cấu trúc, chỉ đổi <br> thành xuống dòng
+        ws.cell(row=r, column=2,
+                value="\n".join(p.strip() for p in str(content).split("<br>")))
+        # implementation: bullet -> nhiều dòng
+        for cidx, raw in [(3, ba), (4, fe), (5, be)]:
             lines = _cell_lines(raw)
             ws.cell(row=r, column=cidx,
                     value="\n".join("•  " + ln for ln in lines if ln))
         # estimation
-        def _num(x):
-            m = re.search(r"-?\d+(?:\.\d+)?", str(x))
-            return float(m.group()) if m else 0
         e_ba, e_fe, e_be = _num(eba), _num(efe), _num(ebe)
         sum_ba += e_ba; sum_fe += e_fe; sum_be += e_be
-        ws.cell(row=r, column=5, value=e_ba)
-        ws.cell(row=r, column=6, value=e_fe)
-        ws.cell(row=r, column=7, value=e_be)
-        ws.cell(row=r, column=8, value=module)
-        dc = ws.cell(row=r, column=9, value=decision)
+        ws.cell(row=r, column=6, value=e_ba)
+        ws.cell(row=r, column=7, value=e_fe)
+        ws.cell(row=r, column=8, value=e_be)
+        ws.cell(row=r, column=9, value=module)
+        dc = ws.cell(row=r, column=10, value=decision)
         if decision in DECISION_FILL:
             dc.fill = PatternFill("solid", fgColor=DECISION_FILL[decision])
             dc.font = Font(bold=True)
-        # alignment
         for c in range(1, NC + 1):
             ws.cell(row=r, column=c).alignment = X.body_alignment(
-                center=c in (1, 5, 6, 7, 9))
+                center=c in (1, 6, 7, 8, 10))
         ws.cell(row=r, column=1).font = Font(bold=True)
         r += 1
 
@@ -169,17 +178,17 @@ def build_impact(headers, rows, out):
 
     # ----- dòng TỔNG -----
     total = r
-    ws.merge_cells(start_row=total, start_column=1, end_row=total, end_column=4)
+    ws.merge_cells(start_row=total, start_column=1, end_row=total, end_column=5)
     tc = ws.cell(row=total, column=1, value="TỔNG CỘNG (man-hours)")
     tc.font = Font(bold=True)
     tc.alignment = Alignment(horizontal="right", vertical="center")
-    for cidx, val in [(5, sum_ba), (6, sum_fe), (7, sum_be)]:
+    for cidx, val in [(6, sum_ba), (7, sum_fe), (8, sum_be)]:
         cell = ws.cell(row=total, column=cidx, value=val)
         cell.font = Font(bold=True)
         cell.alignment = X.body_alignment(center=True)
         cell.fill = X.total_fill()
-    ws.merge_cells(start_row=total, start_column=8, end_row=total, end_column=9)
-    gc = ws.cell(row=total, column=8,
+    ws.merge_cells(start_row=total, start_column=9, end_row=total, end_column=10)
+    gc = ws.cell(row=total, column=9,
                  value=f"Tổng: {sum_ba + sum_fe + sum_be:g} man-hours")
     gc.font = Font(bold=True, color="1F3864")
     gc.alignment = Alignment(horizontal="center", vertical="center")
@@ -187,7 +196,7 @@ def build_impact(headers, rows, out):
 
     # ----- viền + width + freeze + filter -----
     X.apply_borders(ws, 1, total, NC)
-    X.set_widths(ws, [X.W_ID, X.W_WIDE, X.W_WIDE, X.W_WIDE,
+    X.set_widths(ws, [X.W_ID, X.W_WIDE, X.W_WIDE, X.W_WIDE, X.W_WIDE,
                       X.W_NARROW, X.W_NARROW, X.W_NARROW, X.W_XWIDE, X.W_SHORT])
     X.finish(ws, NC, last_data, header_rows=2)
 
@@ -198,7 +207,7 @@ def build_impact(headers, rows, out):
                         showErrorMessage=True)
     dv.error = "Chỉ chấp nhận giá trị trong danh sách Decision"
     dv.errorTitle = "Giá trị không hợp lệ"
-    dv.add(f"I3:I{last_data}")
+    dv.add(f"J3:J{last_data}")
     ws.add_data_validation(dv)
 
     wb.save(out)
