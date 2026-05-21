@@ -73,6 +73,17 @@ When an agent is asked to edit a `.docx`, `.xlsx`, or `.drawio` file in `output/
 2. **Only then edit** the deliverable, using the **cross-reference technique** — see [`cross-reference`](../cross-reference/).
 3. **Never** edit the `output/` file directly and expect the change to sync back into the context. The source of truth is always the Agent layer.
 
+## Format conventions — user-defined, binding on every skill
+
+Layer 2 normalizes presentation into Python — but **the format itself is not the agent's to invent**. No matter which skill or model produces it, every User-layer deliverable MUST follow the **format conventions defined by the user / project**, never a per-skill ad-hoc style.
+
+1. **The user / project owns the format standard.** A project may define its format conventions — colours, fonts, table & heading styles, document structure, ID schemes — in its `<skill>-conventions.md` files (see [`meta/conventions-as-data-pattern`](../meta/conventions-as-data-pattern/)). Every skill MUST read and apply them.
+2. **No skill invents its own format** when a user / project standard exists. A skill's built-in defaults apply ONLY to what the user left unspecified.
+3. **A shared format standard is codified once and reused** — e.g. one canonical `.xlsx` style module, one SRS `.docx` format module — imported across every skill that produces that file type, never re-derived or restyled per skill.
+4. **Project conventions always win** over a skill's defaults; when they conflict, surface it to the user rather than overriding silently.
+
+This is what keeps every deliverable MasterMind produces — across all models and skills — visually and structurally consistent for the user.
+
 ## Why
 
 - Separating **content** (`.md`) from **presentation** (Python) means changing one never disturbs the other.
@@ -86,4 +97,5 @@ Every skill under `models/model_NNN/` — diagram, document, or a new type — m
 
 - State in its `SKILL.md` what the `context.md` input is, what the Python format code is, and what the `output/` deliverable is.
 - Follow the session flow above: ingest `input/` into the `context/` folder, work from the Agent layer, write every deliverable to `output/`.
+- Apply the user / project format conventions — never invent a per-skill format when a user standard exists (see *Format conventions* above).
 - Follow the 3-layer flow without exception.

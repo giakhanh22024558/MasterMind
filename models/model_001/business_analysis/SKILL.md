@@ -23,9 +23,18 @@ input → decode requirements → (ERD ‖ feature backlog)
 
 Each stage skill owns its own structure, conventions, and rules — read them there.
 
+### Change-request branch
+
+When the project **already has an SRS** and the client sends **change requests (CRs)**, the pipeline takes a side branch using the [`analysis`](../document/analysis/) skill before re-entering the main flow:
+
+```
+CRs + current SRS → gap analysis → impact analysis → user approval
+                  → features (approved CRs) → back to stage 2 (erd / BR / srs updates)
+```
+
 ## When to use this skill
 
-Invoke when the user wants a **full business analysis** — from raw input all the way to a finished SRS. For a single artifact, go straight to the relevant stage skill.
+Invoke when the user wants a **full business analysis** — from raw input all the way to a finished SRS. When the user sends **change requests** against an existing SRS, run the change-request branch (gap analysis → impact analysis → approval → features). For a single artifact, go straight to the relevant stage skill.
 
 ## The pipeline
 
@@ -67,3 +76,4 @@ This pipeline has **no conventions of its own** — each stage skill carries its
 |---|---|
 | [Core Rule](../../../core/core-rule/) | Input → context → agent layer → `output/` |
 | [`requirements`](../document/requirements/) · [`erd`](../diagram/erd/) · [`features`](../document/features/) · [`srs`](../document/srs/) | The four orchestrated stage skills |
+| [`analysis`](../document/analysis/) | The change-request branch — gap analysis → impact analysis → approval |

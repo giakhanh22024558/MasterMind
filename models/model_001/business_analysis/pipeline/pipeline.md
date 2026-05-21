@@ -53,6 +53,43 @@ The [`srs`](../../document/srs/) skill writes the SRS document; the pipeline fee
 - Stage 3's **business rules** → the feature's `#### Business Rules / System Behavior` table.
 - Stage 3's **edge cases** → the feature's `Luồng ngoại lệ / Xử lý lỗi` (Exception flow) field.
 
+## Change-request flow (khi dự án ĐÃ có SRS)
+
+Luồng trên dành cho phân tích **mới từ đầu**. Khi dự án đã có SRS và khách gửi **yêu cầu thay đổi (Change Request)**, dùng nhánh sau — orchestrate skill [`analysis`](../../document/analysis/):
+
+```
+Change Requests + SRS hiện tại
+        │
+        ▼
+[CR-1] Gap Analysis      — so sánh từng CR với SRS hiện tại (As-Is → To-Be)
+        │
+        ▼
+[CR-2] Impact Analysis   — phân rã task BA/FE/BE · estimation · impacted module · decision
+        │
+        ▼
+[CR-3] Người dùng / PM PHÊ DUYỆT Impact Analysis
+        │
+        ▼
+[CR-4] CR được duyệt  ──▶  features  ──▶  feature list cho sprint
+        │
+        ▼
+       quay lại pipeline chính từ stage 2 (erd / BR / srs) cho các feature mới
+```
+
+| # | Bước | Skill | Reads | Writes |
+|---|---|---|---|---|
+| CR-1 | Gap Analysis | [`analysis`](../../document/analysis/) | danh sách CR + SRS hiện tại | bảng gap analysis `.md` + `gap_analysis.xlsx` |
+| CR-2 | Impact Analysis | [`analysis`](../../document/analysis/) | bảng gap analysis | bảng impact analysis `.md` + `impact_analysis.xlsx` |
+| CR-3 | Phê duyệt | *(người dùng / PM)* | impact analysis | quyết định Decision từng CR |
+| CR-4 | Feature hóa | [`features`](../../document/features/) | các CR được duyệt | feature list cho sprint |
+
+**Quy tắc nhánh CR:**
+
+- **Gap trước, Impact sau** — không ước lượng tác động khi chưa rõ khoảng cách (xem [`analysis` skill](../../document/analysis/patterns/gap-then-impact.md)).
+- **Không tự quyết sprint** — cột Decision ở Impact Analysis chỉ là đề xuất; bước CR-3 (người dùng phê duyệt) là bắt buộc trước khi feature hóa.
+- **Sau khi feature hóa**, các feature mới quay lại pipeline chính từ stage 2 — cập nhật ERD, business rules + edge cases, và các section SRS bị ảnh hưởng (re-run incremental).
+- CR loại `No Change` (hệ thống đã đáp ứng) hoặc Decision `Invalid / Out-of-scope` → dừng, không đi tiếp CR-4.
+
 ## Ordering rules
 
 - **Stage 1 always first** — the ERD and the feature list both derive from the requirements table; see [`../patterns/requirements-as-single-source.md`](../patterns/requirements-as-single-source.md).
