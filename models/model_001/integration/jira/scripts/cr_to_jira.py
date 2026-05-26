@@ -4,9 +4,11 @@ Backlog + Acceptance Criteria.
 
 USAGE:
   python cr_to_jira.py <gap.xlsx> <backlog.xlsx> <out_dir>
-                       [--no-feature-tag]      # tắt [FEAT-XXX] prefix
-                       [--no-cr-tag]           # tắt [CR-XX] prefix
-                       [--extra-tag TAG ...]   # thêm custom tag (vd MVP-1, BETA)
+                       [--no-feature-tag]            # tắt [FEAT-XXX] prefix
+                       [--no-cr-tag]                 # tắt [CR-XX] prefix
+                       [--extra-tag TAG ...]         # thêm custom tag (vd MVP-1, BETA)
+                       [--roles BA,FE,BE]            # role list (default BA,FE,BE)
+                       [--subtask-mode auto|all]     # auto = skip role 0h; all = đủ
   # produces: <out_dir>/cr-XX-task.json + cr-XX-task.md cho mỗi CR đã approve
 
 Tag block trên title:
@@ -14,6 +16,11 @@ Tag block trên title:
   - [FEAT-XXX] mặc định ON; tắt bằng --no-feature-tag
   - [CR-XX] mặc định ON cho CR-derived task; tắt bằng --no-cr-tag
   - Extra tag: --extra-tag MVP-1 --extra-tag BETA → prepend [MVP-1] [BETA]
+
+Sub-task tạo linh hoạt:
+  - mode `auto` (default): role có impl rỗng AND est=0 → KHÔNG tạo sub-task
+  - mode `all`: luôn tạo đủ mọi role trong --roles list (kể cả 0h, body
+    ghi placeholder "Không có công việc cho role này")
 
 Requires: pip install openpyxl
 """
@@ -24,6 +31,8 @@ PRIORITY_MAP = {"P0": "Highest", "P1": "High", "P2": "Medium"}
 SKIP_DECISIONS = {"Invalid / Out-of-scope", "Another Sprint", ""}
 ALLOW_DECISIONS = {"This Sprint", "Next Sprint"}
 SKIP_LIFECYCLES = {"Done", "Archived"}
+ROLE_FIELDS = {"BA": ("impl_ba", "est_ba"), "FE": ("impl_fe", "est_fe"),
+               "BE": ("impl_be", "est_be")}
 
 def slugify(s):
     s = re.sub(r"[^\w\s-]", "", str(s or "").lower())
@@ -172,6 +181,13 @@ def build_sub_desc(role, impl_text, est, ac_ids, parent_key):
         "- AC liên quan: " + (", ".join(a for a, _ in ac_ids) if ac_ids else "(chưa có AC)"),
     ])
 
+def role_has_work(cr, role):
+    """True nếu role có impl text hoặc estimation > 0."""
+    impl_key, est_key = ROLE_FIELDS[role]
+    impl = (cr.get(impl_key) or "").strip()
+    est = float(cr.get(est_key) or 0)
+    return bool(impl) or est > 0
+
 def build_task_tree(cr, story, ac_list, cfg, project_key="<PROJECT>"):
     main_title = build_main_title(cr, story, cfg)
     ac_ids = [(a, t) for a, t in ac_list]
@@ -193,11 +209,15 @@ def build_task_tree(cr, story, ac_list, cfg, project_key="<PROJECT>"):
         }
     }
     subs = []
-    for role, impl, est in [
-        ("BA", cr["impl_ba"], cr["est_ba"]),
-        ("FE", cr["impl_fe"], cr["est_fe"]),
-        ("BE", cr["impl_be"], cr["est_be"]),
-    ]:
+    for role in cfg["roles"]:
+        if role not in ROLE_FIELDS:
+            continue  # custom role chưa map vào Gap cột — skill mở rộng có thể xử lý
+        impl_key, est_key = ROLE_FIELDS[role]
+        impl = cr.get(impl_key, "")
+        est = cr.get(est_key, 0)
+        # mode auto: skip nếu role không có việc
+        if cfg["subtask_mode"] == "auto" and not role_has_work(cr, role):
+            continue
         subs.append({
             "fields": {
                 "project": {"key": project_key},
@@ -235,14 +255,20 @@ def parse_args():
     p.add_argument("--no-cr-tag", action="store_true", help="Tắt [CR-XX] prefix")
     p.add_argument("--extra-tag", action="append", default=[],
                    help="Thêm custom tag (repeat để thêm nhiều, vd: --extra-tag MVP-1 --extra-tag BETA)")
+    p.add_argument("--roles", default="BA,FE,BE",
+                   help="Comma-sep role list (default BA,FE,BE)")
+    p.add_argument("--subtask-mode", default="auto", choices=["auto", "all"],
+                   help="auto = skip role không có việc; all = đủ mọi role")
     return p.parse_args()
 
 def main():
     args = parse_args()
     cfg = {
-        "feature_tag": not args.no_feature_tag,
-        "cr_tag":      not args.no_cr_tag,
-        "extra_tags":  list(args.extra_tag),
+        "feature_tag":  not args.no_feature_tag,
+        "cr_tag":       not args.no_cr_tag,
+        "extra_tags":   list(args.extra_tag),
+        "roles":        [r.strip().upper() for r in args.roles.split(",") if r.strip()],
+        "subtask_mode": args.subtask_mode,
     }
     os.makedirs(args.out_dir, exist_ok=True)
 
@@ -272,6 +298,9 @@ def main():
         generated.append(cid)
 
     print("Generated: %d CR" % len(generated), generated)
+    print("Config:    roles=%s · subtask_mode=%s · feature_tag=%s · cr_tag=%s · extra=%s"
+          % (",".join(cfg["roles"]), cfg["subtask_mode"], cfg["feature_tag"],
+             cfg["cr_tag"], cfg["extra_tags"] or "-"))
     print("Skipped:   %d CR" % len(skipped))
     for cid, reason in skipped:
         print(" ", cid, "—", reason)

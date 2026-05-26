@@ -1,6 +1,6 @@
 ---
 name: jira
-description: Generate Jira issues + sub-tasks from any task source (Change Requests, planned stories, bugs, refactors, hotfixes…). Each main task carries a configurable tag block — `[FEAT-XXX]` by default, plus optional `[CR-XX]` when derived from a Change Request, plus custom tags the project defines. Body contains context + AC table with codes; always emits 3 sub-tasks `[BA]` / `[FE]` / `[BE]` each listing only that role's concrete work. Reads Gap Analysis + Backlog + Acceptance Criteria sheets. Use this skill whenever the team needs to push refined backlog items onto Jira.
+description: Generate Jira issues + sub-tasks from any task source (Change Requests, planned stories, bugs, refactors, hotfixes…). Each main task carries a configurable tag block — `[FEAT-XXX]` by default, plus optional `[CR-XX]` when derived from a Change Request, plus custom tags the project defines. Body contains context + AC table with codes. Sub-tasks are emitted flexibly per role (default `[BA]` / `[FE]` / `[BE]`, configurable): mode `auto` only creates a sub-task for roles that actually have work (skipping zero-work roles); mode `all` always emits the full role list. Reads Gap Analysis + Backlog + Acceptance Criteria sheets. Use this skill whenever the team needs to push refined backlog items onto Jira.
 ---
 
 # jira — sinh Jira task từ backlog
@@ -31,7 +31,9 @@ Mỗi title bắt đầu bằng dãy **tag**. Tag report *nguồn gốc* / *lo�
 
 → Đầy đủ rule ở [`conventions-defaults/`](conventions-defaults/).
 
-## Cấu trúc output — 1 main task + 3 sub-task
+## Cấu trúc output — 1 main task + sub-task linh hoạt
+
+Số lượng sub-task **theo nội dung task**, không cố định. Mode mặc định `auto`: chỉ tạo sub-task cho role có công việc thật. Role list mặc định `[BA, FE, BE]` (project có thể thêm `QA`, `Design`, `Mobile`, `DevOps`…).
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────┐
@@ -39,14 +41,15 @@ Mỗi title bắt đầu bằng dãy **tag**. Tag report *nguồn gốc* / *lo�
 │  context: As-Is / To-Be / Client Note (bỏ section nếu không có data)       │
 │  AC table: AC-133-01, AC-133-02, …                                         │
 │                                                                            │
-│  ├─ [BA] [FEAT-001] [CR-01] Bổ sung view mode … — Dashboard — View mode    │  ← Sub-task 1
-│  │      Chỉ liệt kê công việc của BA                                       │
-│  │                                                                         │
-│  ├─ [FE] [FEAT-001] [CR-01] Bổ sung view mode … — Dashboard — View mode    │  ← Sub-task 2
-│  │      Chỉ liệt kê công việc của FE                                       │
-│  │                                                                         │
-│  └─ [BE] [FEAT-001] [CR-01] Bổ sung view mode … — Dashboard — View mode    │  ← Sub-task 3
-│         Chỉ liệt kê công việc của BE                                       │
+│  ├─ [BA] …    (4h) — có việc → có sub-task                                 │
+│  ├─ [FE] …   (16h) — có việc → có sub-task                                 │
+│  └─ [BE] …    (3h) — có việc → có sub-task                                 │
+└────────────────────────────────────────────────────────────────────────────┘
+
+┌────────────────────────────────────────────────────────────────────────────┐
+│ [FEAT-019] [BUG-512] Xóa tài liệu trả 500                                   │  ← Backend-only fix
+│                                                                             │
+│  └─ [BE] …    (3h) — chỉ BE có việc → chỉ 1 sub-task                       │
 └────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -85,8 +88,9 @@ Project override trong `<project-root>/jira-conventions.md` (Jira project key, i
 ## Anti-patterns
 
 - ❌ Tạo Jira task **trước khi** story được refined đủ (AC trống, estimation chưa có)
-- ❌ Nhồi tất cả role-work vào main task — phải tách thành 3 sub-task để dev claim riêng
-- ❌ Sub-task có description trống — phải có ít nhất 1 bullet công việc theo role (hoặc ghi `Không có công việc cho role này`)
+- ❌ Nhồi tất cả role-work vào main task — phải tách thành sub-task để dev claim riêng
+- ❌ Cứng nhắc luôn tạo đủ 3 sub-task kể cả role không có việc — mặc định `auto` skip để tránh sub-task ma
+- ❌ Sub-task có description trống — phải có ít nhất 1 bullet công việc theo role (hoặc dùng mode `all` với placeholder rõ ràng)
 - ❌ Title sub-task khác title main task — phải **cùng** title, chỉ thêm prefix `[BA]/[FE]/[BE]` ở đầu
 - ❌ Quên tag — title không có `[FEAT-XXX]` thì dev không biết task thuộc đâu (trừ khi project chủ động tắt feature tag)
 - ❌ Trộn nguồn vào tag — `[CR-XX]` chỉ khi task thực sự từ CR; đừng gán bừa cho task planned

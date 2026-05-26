@@ -73,7 +73,9 @@ Sub BE:     [BE] [FEAT-XXX] [CR-XX]? [custom]? <task title> — <scope?>
 | Sub-task issue type | `Sub-task` |
 | Priority mapping | `P0 → Highest` · `P1 → High` · `P2 → Medium` · không có → `Medium` |
 | Status mặc định khi tạo | `To Do` |
-| Role prefix (sub-task) | `[BA]` · `[FE]` · `[BE]` (luôn 3 cái) |
+| Role list (sub-task) | `[BA]` · `[FE]` · `[BE]` (default; project có thể thêm QA / Design / Mobile / DevOps) |
+| Sub-task creation mode | `auto` — chỉ tạo sub-task cho role có công việc; `all` — luôn tạo đủ mọi role trong list |
+| Ngưỡng "không có công việc" | `impl text rỗng` AND `estimation == 0` |
 | Estimation field | `customfield_10016` (Story Points) — tuỳ instance |
 | Estimation unit | `man-hours` (số trực tiếp, không convert sang Story Point) |
 | Label "from CR" | `from-gap-analysis` (chỉ gắn nếu CR tag bật) |
@@ -88,10 +90,39 @@ Sub BE:     [BE] [FEAT-XXX] [CR-XX]? [custom]? <task title> — <scope?>
 
 | Rule | Bắt buộc |
 |---|---|
-| Luôn tạo đủ 3 sub-task (BA / FE / BE) | ✅ — kể cả role có 0h work, description ghi `Không có công việc` |
+| **Sub-task tạo linh hoạt theo nội dung** | ✅ — không phải task nào cũng cần đủ 3 role. Mặc định `mode: auto` → chỉ tạo sub-task cho role thực sự có công việc. |
 | Sub-task title = main task title + prefix role | ✅ — không paraphrase, không rút gọn |
 | Body sub-task chỉ chứa công việc của role | ✅ — không lặp lại context của main task |
-| Sub-task estimate = Est của role tương ứng | ✅ — lấy từ Impact Analysis (cột J/K/L của Gap_Analysis.xlsx) hoặc estimation field của story |
+| Sub-task có nội dung thực (body không rỗng) | ✅ — nếu vô tình tạo sub-task không có gì → phải xoá hoặc fill manual |
+| Sub-task estimate = Est của role tương ứng | ✅ — lấy từ Impact Analysis hoặc estimation field của story |
+
+### Mode quyết định tạo sub-task
+
+| Mode | Hành vi | Khi dùng |
+|---|---|---|
+| `auto` *(default)* | Skip role nếu **cả** impl text rỗng **và** estimation = 0 | Hầu hết case — để tránh sub-task ma |
+| `all` | Luôn tạo đủ mọi role trong list (kể cả 0h) | Project muốn checklist đủ 3 role để dev tự confirm "no work needed" |
+| `explicit` | Chỉ tạo các role list ra qua flag `--roles` / config | Khi BA muốn lock cứng |
+
+### Override mặc định trong `jira-conventions.md`
+
+```yaml
+sub_tasks:
+  roles: [BA, FE, BE]          # list role mặc định. Project có thể thêm: [BA, FE, BE, QA, Design]
+  mode: auto                   # auto / all / explicit
+  zero_work_label: "Không có công việc cho role này"   # text khi force-tạo sub-task rỗng
+```
+
+### Ví dụ skip role
+
+| Task | Est BA · FE · BE | Sub-task được tạo |
+|---|---|---|
+| CR-01 (Bổ sung view mode) | 4 · 16 · 3 | **BA + FE + BE** (cả 3 có work) |
+| CR-06 (Ẩn 6 option dropdown — UI fix) | 1 · 2 · 0 | **BA + FE** (skip BE vì 0h) |
+| Backend-only: refactor cache layer | 0 · 0 · 8 | **BE** only |
+| Frontend bug fix | 0 · 4 · 0 | **FE** only |
+| Spike research | 4 · 0 · 0 | **BA** only |
+| Cross-cutting (mode `all`) | 4 · 16 · 0 | **BA + FE + BE** (BE description = "Không có công việc cho role này") |
 
 ## AC table trong main description
 

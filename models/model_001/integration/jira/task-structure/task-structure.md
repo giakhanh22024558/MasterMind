@@ -80,9 +80,13 @@ Xem 3 sub-task: `[BA]`, `[FE]`, `[BE]`.
 
 > Section nào không có data (vd As-Is/To-Be với planned story) thì **bỏ section đó** thay vì để trống.
 
-## Sub-tasks (3 issue / task — luôn đủ cả 3)
+## Sub-tasks (linh hoạt theo nội dung — không bắt buộc đủ 3)
 
-Mỗi sub-task:
+**Không phải task nào cũng cần đủ 3 role.** Default mode `auto`: chỉ tạo sub-task cho role thực sự có công việc (impl text non-empty HOẶC estimation > 0). Nếu một role không có gì → bỏ luôn sub-task của role đó.
+
+Project có thể chuyển mode `all` (luôn đủ mọi role) hoặc thêm/bớt role trong list (vd thêm `QA`, `Design`). Xem [`conventions-defaults`](../conventions-defaults/conventions-defaults.md#mode-quyết-định-tạo-sub-task).
+
+Mỗi sub-task được tạo:
 
 | Field | Giá trị |
 |---|---|
@@ -110,11 +114,13 @@ Mỗi sub-task:
 - AC liên quan: AC-XXX-01, AC-XXX-02, …
 ```
 
-### Quy tắc về 3 sub-task
+### Quy tắc về sub-task
 
-- **Luôn tạo đủ 3** — kể cả role có 0h work (description = `Không có công việc cho role này`). Tránh role bị bỏ sót.
+- **Linh hoạt theo nội dung** (mode `auto`): role nào không có việc thì không tạo. Role nào có việc thì tạo đúng 1 sub-task.
+- **Mode `all`** (tuỳ chọn): vẫn tạo đủ mọi role trong list — sub-task của role 0h ghi `Không có công việc cho role này`. Dùng khi muốn checklist đầy đủ cho dev confirm "no work needed".
 - Title sub-task **phải giống** title main task, chỉ khác prefix `[<ROLE>]`. Đừng paraphrase, đừng bỏ tag.
 - Body sub-task **chỉ chứa** công việc của role đó — không nhồi context (đã có ở main task).
+- Không tạo sub-task với body rỗng (mode `auto` đã loại; mode `all` có placeholder text).
 
 ## Output file format
 

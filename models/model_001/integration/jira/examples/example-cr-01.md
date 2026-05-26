@@ -182,3 +182,28 @@ Xem 3 sub-task: `[BA]`, `[FE]`, `[BE]`.
 | Tắt CR tag (`cr_tag: off`, hiếm) | `[FEAT-001] Bổ sung … — Dashboard — View mode` |
 | Thêm `[MVP-1]` custom | `[FEAT-001] [CR-01] [MVP-1] Bổ sung … — Dashboard — View mode` |
 | Tắt cả 2 default, chỉ custom | `[MVP-1] Bổ sung … — Dashboard — View mode` |
+
+## Variations theo sub-task config
+
+CR-01 có Est BA=4 / FE=16 / BE=3 — cả 3 role đều có công việc thật, nên cả 3 mode đều tạo đủ 3 sub-task.
+
+**Ví dụ task khác — CR giả định BE=0** (vd chỉ ẩn dropdown UI):
+
+| Mode | Sub-task được tạo |
+|---|---|
+| `auto` *(default)* | `[BA]` + `[FE]` — **skip BE** vì impl rỗng & est=0 |
+| `all` | `[BA]` + `[FE]` + `[BE]` (body `[BE]` ghi `Không có công việc cho role này`) |
+
+**Ví dụ backend-only refactor** (BA=0, FE=0, BE=8):
+
+| Mode | Sub-task được tạo |
+|---|---|
+| `auto` | Chỉ `[BE]` |
+| `all` | `[BA]` + `[FE]` + `[BE]` (placeholder cho BA, FE) |
+
+CLI tương ứng:
+```
+python cr_to_jira.py gap.xlsx backlog.xlsx out/ --subtask-mode auto    # default
+python cr_to_jira.py gap.xlsx backlog.xlsx out/ --subtask-mode all     # đủ 3
+python cr_to_jira.py gap.xlsx backlog.xlsx out/ --roles BA,FE,BE,QA    # thêm QA role
+```
