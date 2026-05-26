@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-"""CRUD cho hierarchical backlog (Epic → Feature → Story).
+"""CRUD for a hierarchical backlog (Epic → Feature → Story).
 
-Project có thể:
-- DÙNG NGUYÊN nếu schema giống template (9 cột chuẩn)
-- CUSTOMIZE classify_row() + column refs trong config.py nếu schema khác
-- COPY pattern này để viết module cho entity khác (Task, Ticket, …)
+A project can:
+- USE AS-IS if the schema matches the template (9 standard columns)
+- CUSTOMIZE classify_row() + column refs in config.py if the schema differs
+- COPY this pattern to build a module for other entities (Task, Ticket, …)
 """
 from .auth import get_client
 from . import config as C
@@ -13,9 +13,9 @@ from .helpers import (
     find_row_index, find_section_end,
 )
 
-# ─── Row classifier (KHỚP với schema trong config.py) ────────────────────────
+# ─── Row classifier (MUST match the schema in config.py) ─────────────────────
 def classify_row(row):
-    """Trả ('epic' | 'feature' | 'story' | 'other', dict|None)."""
+    """Return ('epic' | 'feature' | 'story' | 'other', dict|None)."""
     pad = list(row) + [""] * 9
     if pad[C.B_EPIC_ID - 1] and pad[C.B_EPIC - 1] and not pad[C.B_FEAT_ID - 1]:
         return "epic", {"id": pad[C.B_EPIC_ID - 1], "name": pad[C.B_EPIC - 1]}
@@ -32,7 +32,7 @@ def classify_row(row):
 
 
 class BacklogAPI:
-    """CRUD trên sheet Backlog."""
+    """CRUD on the Backlog sheet."""
 
     def __init__(self):
         self.gc = get_client()
@@ -101,13 +101,13 @@ class BacklogAPI:
 
     def create_feature(self, epic_id, name):
         if not self.find_epic(epic_id):
-            raise ValueError(f"Epic {epic_id} không tồn tại")
+            raise ValueError(f"Epic {epic_id} does not exist")
         epic_row = find_row_index(self._all(),
                                   lambda r: r and r[0] == epic_id)
         insert_at = find_section_end(self._all(), epic_row, classify_row,
                                      allow_types={"feature", "story"}) + 1
         new_id = next_sequential_id(C.FEAT_PREFIX, C.FEAT_DIGITS, self.features())
-        # Row trên thường là story → wrong inherit. Copy từ feature template.
+        # The row above is usually a story → wrong inherit. Copy from the feature template instead.
         template = self._template_row_of("feature")
         values = ["", "", new_id, name] + [""] * 5
         insert_inheriting(self.ws, insert_at, values, template_row=template)
@@ -120,7 +120,7 @@ class BacklogAPI:
         validate_dropdown(status,    C.STATUS_VALUES,    "status")
         validate_dropdown(lifecycle, C.LIFECYCLE_VALUES, "lifecycle")
         if not self.find_feature(feature_id):
-            raise ValueError(f"Feature {feature_id} không tồn tại")
+            raise ValueError(f"Feature {feature_id} does not exist")
 
         feat_row = find_row_index(self._all(),
                                   lambda r: len(r) > 2 and r[C.B_FEAT_ID - 1] == feature_id)
@@ -130,7 +130,7 @@ class BacklogAPI:
 
         values = ["", "", "", "", new_id, name, priority, status, lifecycle]
 
-        # Quyết định strategy theo type của row trên
+        # Pick the strategy based on the type of the row above
         prev_type = classify_row(self._all()[insert_at - 2])[0] if insert_at >= 2 else None
         if prev_type == "story":
             insert_inheriting(self.ws, insert_at, values)  # inherit from before

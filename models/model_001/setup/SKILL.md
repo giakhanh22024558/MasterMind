@@ -5,45 +5,44 @@ description: Bootstrap a brand-new BA project workspace using model_001. Trigger
 
 # setup — `/set-up` command
 
-Một-lệnh scaffold cho project mới dùng model_001.
+One-command scaffold for a new project using model_001.
 
-## Khi nào dùng
+## When to use
 
-- User vừa clone MasterMind vào working folder mới
-- User type `/set-up` (hoặc "setup project", "bootstrap", "init workspace")
-- Project hiện chưa có `input/`, `context/`, `output/` hoặc templates
+- User has just cloned MasterMind into a fresh working folder
+- User types `/set-up` (or "setup project", "bootstrap", "init workspace")
+- Project has no `input/`, `context/`, `output/`, or templates yet
 
-## Skill làm gì
+## What the skill does
 
-1. **Phát hiện working folder** — folder cha của `MasterMind/`
-2. **Tạo folder structure** theo Core Rule:
-   - `input/` — user drop raw materials (SRS docx, CR files, screenshots…)
+1. **Detect working folder** — the parent folder of `MasterMind/`
+2. **Create folder structure** per Core Rule:
+   - `input/` — user drops raw materials (SRS docx, CR files, screenshots…)
    - `context/` — agent-managed `.md` sidecars
    - `output/` — deliverables (.docx, .xlsx, .drawio…)
-   - `docs/` — artifact templates user làm việc trực tiếp
+   - `docs/` — artifact templates the user works on directly
    - `conventions/` — project-level convention overrides
-3. **Drop CLAUDE.md** tại working folder root — onboarding doc cho agent + user
-4. **Copy artifact templates** vào `docs/`:
-   - `requirements.md` — bảng requirements
+3. **Drop CLAUDE.md** at working-folder root — onboarding doc for agent + user
+4. **Copy artifact templates** into `docs/`:
+   - `requirements.md` — requirements table
    - `backlog.md` — Epic / Feature / Story / AC skeleton
-   - `gap-analysis.md` — Gap + Impact Analysis (17 cột chuẩn)
-   - `impact-analysis.md` — nếu tách riêng
+   - `gap-analysis.md` — Gap + Impact Analysis (17-column standard)
    - `erd.md` — Mermaid ERD skeleton
-5. **Copy convention skeleton** vào `conventions/`:
+5. **Copy convention skeletons** into `conventions/`:
    - `features-conventions.md`, `analysis-conventions.md`, `jira-conventions.md`
-   - User fill khi muốn override defaults; bỏ trống → defaults áp dụng
+   - User fills these to override defaults; leave empty → skill defaults apply
 
-Idempotent: chạy lại không ghi đè file đã có (trừ khi `--force`).
+Idempotent: re-running does not overwrite existing files (unless `--force`).
 
-## Cách invoke
+## How to invoke
 
-### Cách 1 — Type `/set-up` trong chat
-Agent recognize keyword (qua skill description) → chạy `bootstrap.py`.
+### Option 1 — Type `/set-up` in chat
+Agent recognizes the keyword (via skill description) and runs `bootstrap.py`.
 
-### Cách 2 — Slash command file (cho Claude Code)
-Copy [`commands/set-up.md`](commands/set-up.md) vào `~/.claude/commands/set-up.md` (global) hoặc `<working-folder>/.claude/commands/set-up.md` (project).
+### Option 2 — Slash command file (for Claude Code)
+Copy [`commands/set-up.md`](commands/set-up.md) into `~/.claude/commands/set-up.md` (global) or `<working-folder>/.claude/commands/set-up.md` (per-project).
 
-### Cách 3 — Direct CLI
+### Option 3 — Direct CLI
 ```bash
 cd <working-folder>
 python skills/MasterMind/models/model_001/setup/scripts/bootstrap.py
@@ -53,7 +52,7 @@ Flags:
 - `--force` — overwrite existing template files
 - `--workdir <path>` — override working folder detection
 
-## Output mẫu
+## Sample output
 
 ```
 Working folder: C:\Users\Admin\NewProject
@@ -83,16 +82,16 @@ Working folder: C:\Users\Admin\NewProject
 |---|---|
 | [`commands/set-up.md`](commands/set-up.md) | Claude Code slash command file |
 | [`scripts/bootstrap.py`](scripts/bootstrap.py) | Scaffolding logic (Python, no deps) |
-| [`templates/`](templates/) | Tất cả file template được copy |
+| [`templates/`](templates/) | All template files that get copied |
 
 ## Anti-patterns
 
-- ❌ Chạy `/set-up` trong folder đã có project khác — bootstrap không phá data nhưng có thể trộn convention; chạy ở folder mới
-- ❌ Edit template trong MasterMind repo — sửa version ở project (sau khi bootstrap copy)
-- ❌ Commit `input/`, `context/`, `output/` vào MasterMind repo — chúng là per-project, không phải của repo MasterMind
+- ❌ Running `/set-up` in a folder that already hosts a different project — the bootstrap won't destroy data but can mix conventions; run it in a fresh folder
+- ❌ Editing templates inside the MasterMind repo — edit the project-level copy (the one created after bootstrap)
+- ❌ Committing `input/`, `context/`, `output/` into the MasterMind repo — they are per-project, not part of the MasterMind library
 
 ## Cross-references
 
-- [Core Rule](../../../core/core-rule/) — định nghĩa folder layout
-- [`document/requirements/`](../document/requirements/) · [`document/features/`](../document/features/) · [`document/analysis/`](../document/analysis/) · [`diagram/erd/`](../diagram/erd/) — skills tạo từng artifact (templates trỏ về)
-- [`business_analysis/`](../business_analysis/) — pipeline orchestrate tất cả
+- [Core Rule](../../../core/core-rule/) — defines the folder layout
+- [`document/requirements/`](../document/requirements/) · [`document/features/`](../document/features/) · [`document/analysis/`](../document/analysis/) · [`diagram/erd/`](../diagram/erd/) — skills that produce each artifact (templates point back to them)
+- [`business_analysis/`](../business_analysis/) — pipeline that orchestrates all of the above

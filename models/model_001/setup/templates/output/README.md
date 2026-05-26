@@ -1,24 +1,24 @@
 # output/
 
-**Deliverables** — file binary phức tạp được sinh từ artifact templates trong `docs/`.
+**Deliverables** — complex binary files generated from the artifact templates in `docs/`.
 
-## File types phổ biến
+## Common file types
 
 - `.docx` — SRS, reports
-- `.xlsx` — backlog rendered, Gap/Impact Analysis, Jira CSV import
-- `.drawio` — ERD / architecture diagrams (rendered từ Mermaid)
+- `.xlsx` — rendered backlog, Gap/Impact Analysis, Jira CSV import
+- `.drawio` — ERD / architecture diagrams (rendered from Mermaid)
 - `.pdf` — exported reports
 - `.json` — Jira REST API payloads
-- `jira/*.md` — task descriptions để paste vào Jira UI
+- `jira/*.md` — task descriptions to paste into the Jira UI
 
-## Convention
+## Conventions
 
-- ✅ Agent ghi file deliverable
-- ✅ Agent đồng thời tạo `.md` sidecar trong `context/` (đọc tiết kiệm token)
-- ✅ User có thể download / share file ở đây
-- ❌ Đừng edit binary trong folder này thủ công — re-render từ source trong `docs/` hoặc artifact md
+- ✅ Agent writes deliverable files
+- ✅ Agent also creates a `.md` sidecar in `context/` (cheap to read)
+- ✅ User can download / share files from here
+- ❌ Do not edit binaries in this folder by hand — re-render from the source in `docs/` or the artifact md
 
-## Sub-folders phổ biến
+## Common sub-folders
 
 ```
 output/
@@ -32,4 +32,4 @@ output/
     └── cr-01-task.md
 ```
 
-Agent tự tạo sub-folder khi cần.
+The agent creates sub-folders as needed.

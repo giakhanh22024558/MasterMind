@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
-"""Authorize gspread client. Ưu tiên Service Account, fallback OAuth Desktop.
+"""Authorize a gspread client. Prefer Service Account, fall back to OAuth Desktop.
 
-Drop-in — không cần sửa cho project bình thường (paths config qua biến môi trường nếu cần).
+Drop-in — no edits required for a typical project (paths can be configured via
+environment variables if needed).
 """
 import os
 import gspread
@@ -14,7 +15,7 @@ SA_FILE    = os.environ.get("GS_SERVICE_ACCOUNT",os.path.join(_ROOT, "service_ac
 _client = None
 
 def get_client():
-    """Return gspread client (singleton)."""
+    """Return a gspread client (singleton)."""
     global _client
     if _client is not None:
         return _client
@@ -27,9 +28,9 @@ def get_client():
         )
     else:
         raise FileNotFoundError(
-            "❌ Chưa có credentials. Cần một trong 2 file ở project root:\n"
+            "❌ No credentials found. One of the following files is required at project root:\n"
             f"   {SA_FILE}   (Service Account JSON)\n"
             f"   {CREDS_FILE}   (OAuth Desktop App credentials)\n"
-            "👉 Xem sheets_api/SETUP.md."
+            "👉 See sheets_api/SETUP.md."
         )
     return _client

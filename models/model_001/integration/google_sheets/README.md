@@ -1,6 +1,6 @@
 # google_sheets — README
 
-Edit Google Sheet **live qua API**, giữ comment / history / dropdown / conditional formatting.
+Edit Google Sheets **live via API** while preserving comments / history / dropdowns / conditional formatting.
 
 ## TL;DR
 
@@ -8,29 +8,29 @@ Edit Google Sheet **live qua API**, giữ comment / history / dropdown / conditi
 # 1. Copy templates
 cp -r templates/ <project-root>/sheets_api/
 
-# 2. Sửa config.py (IDs, cols, dropdowns)
-# 3. Sửa backlog.py (entity CRUD theo schema project)
+# 2. Edit config.py (IDs, cols, dropdowns)
+# 3. Edit backlog.py (entity CRUD per project schema)
 # 4. pip install gspread
-# 5. Tạo OAuth credentials → đặt vào project root → run verify
+# 5. Create OAuth credentials → place in project root → run verify
 python -m sheets_api.verify_setup
 ```
 
-## Quy tắc vàng — luôn dùng `insertDimension(inheritFromBefore=True)`
+## Golden rule — always use `insertDimension(inheritFromBefore=True)`
 
-`gspread.Worksheet.insert_row()` thuần **mất format/DV**. Dùng helper trong [`templates/helpers.py`](templates/helpers.py):
+Vanilla `gspread.Worksheet.insert_row()` **loses format/DV**. Use the helper in [`templates/helpers.py`](templates/helpers.py):
 
 ```python
 from sheets_api.helpers import insert_inheriting
-insert_inheriting(ws, index=11, values=[...])  # ✓ giữ format
+insert_inheriting(ws, index=11, values=[...])  # ✓ preserves format
 ```
 
-Nếu row trên KHÔNG cùng type (vd insert STORY ngay sau FEAT row), fallback `copyPaste(PASTE_NORMAL)` từ template — xem [pattern insert-with-format-inheritance](patterns/insert-with-format-inheritance.md).
+If the row above is NOT the same type (e.g. inserting a STORY right after a FEAT row), fall back to `copyPaste(PASTE_NORMAL)` from a template — see [insert-with-format-inheritance pattern](patterns/insert-with-format-inheritance.md).
 
-## Đọc thêm
+## Read more
 
-- [`SKILL.md`](SKILL.md) — Entry point đầy đủ
-- [`patterns/cell-level-edit.md`](patterns/cell-level-edit.md) — Philosophy
-- [`patterns/insert-with-format-inheritance.md`](patterns/insert-with-format-inheritance.md) — Bug quan trọng nhất + fix
+- [`SKILL.md`](SKILL.md) — full entry point
+- [`patterns/cell-level-edit.md`](patterns/cell-level-edit.md) — philosophy
+- [`patterns/insert-with-format-inheritance.md`](patterns/insert-with-format-inheritance.md) — most important bug + fix
 - [`patterns/hierarchical-row-types.md`](patterns/hierarchical-row-types.md) — Backlog Epic→Feature→Story style
-- [`examples/lex-walkthrough.md`](examples/lex-walkthrough.md) — Worked example từ project LEX
-- [`templates/SETUP.md`](templates/SETUP.md) — Setup OAuth 5 phút
+- [`examples/lex-walkthrough.md`](examples/lex-walkthrough.md) — worked example from the LEX project
+- [`templates/SETUP.md`](templates/SETUP.md) — 5-minute OAuth setup

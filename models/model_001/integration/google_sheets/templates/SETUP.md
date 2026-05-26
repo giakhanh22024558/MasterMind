@@ -1,47 +1,47 @@
 # Setup — sheets_api template
 
-## 5 phút setup
+## 5-minute setup
 
-### 1. Install dep
+### 1. Install dependency
 
 ```bash
 pip install gspread
 ```
 
-### 2. Tạo Google OAuth credentials
+### 2. Create Google OAuth credentials
 
-1. Mở **https://console.cloud.google.com**
-2. Tạo project mới (hoặc dùng có sẵn)
-3. **APIs & Services → Library** → bật **2 API**:
+1. Open **https://console.cloud.google.com**
+2. Create a new project (or use an existing one)
+3. **APIs & Services → Library** → enable **2 APIs**:
    - Google Sheets API
    - Google Drive API
-4. (Lần đầu) Configure OAuth consent screen: `External` → fill name/email tối thiểu → Save
+4. (First time) Configure the OAuth consent screen: `External` → fill in minimal name/email → Save
 5. **Credentials → Create Credentials → OAuth client ID**:
    - Application type: **Desktop app**
-   - Name: bất kỳ
-6. Download JSON → rename **`credentials.json`** → đặt vào project root:
+   - Name: anything
+6. Download the JSON → rename to **`credentials.json`** → place at project root:
    ```
    <project-root>/credentials.json
    ```
 
-### 3. Copy template vào project
+### 3. Copy the template into the project
 
 ```bash
 cp -r <mastermind>/models/model_001/integration/google_sheets/templates/ <project-root>/sheets_api/
-rm <project-root>/sheets_api/SETUP.md  # docs này không cần trong project
+rm <project-root>/sheets_api/SETUP.md  # docs not needed inside the project
 ```
 
-### 4. Sửa `config.py`
+### 4. Edit `config.py`
 
-Mở `<project-root>/sheets_api/config.py`, điền:
-- `SPREADSHEET_ID` (lấy từ URL Sheet)
+Open `<project-root>/sheets_api/config.py` and fill in:
+- `SPREADSHEET_ID` (from the Sheet URL)
 - `SHEET_NAME` (tab name)
 - Column indexes
 - Dropdown allowed values
 
-### 5. Sửa `backlog.py` (hoặc tên khác)
+### 5. Edit `backlog.py` (or another name)
 
-Class CRUD cho entity của project. Xem template để hiểu pattern.
+CRUD class for the project's entity. Study the template to learn the pattern.
 
 ### 6. Verify
 
@@ -50,7 +50,7 @@ cd <project-root>
 python -m sheets_api.verify_setup
 ```
 
-Lần đầu → browser tự mở → sign in Google account có quyền edit Sheet → cho phép → tạo `token.json`, lần sau không cần auth lại.
+First time → a browser opens automatically → sign in with the Google account that has edit access → approve → `token.json` is created; subsequent runs need no auth.
 
 ### 7. `.gitignore`
 
@@ -60,20 +60,20 @@ token.json
 service_account.json
 ```
 
-## Alternative — Service Account (cho automation, không cần browser)
+## Alternative — Service Account (for automation, no browser needed)
 
 1. Cloud Console → Credentials → **Create Service Account**
-2. Create key (JSON) → download → rename **`service_account.json`** → đặt vào project root
-3. Mở Google Sheet → **Share** → invite email service account (`xxx@yyy.iam.gserviceaccount.com`) với quyền Editor
+2. Create a key (JSON) → download → rename to **`service_account.json`** → place at project root
+3. Open the Google Sheet → **Share** → invite the service account email (`xxx@yyy.iam.gserviceaccount.com`) with Editor permission
 
-Code tự ưu tiên Service Account nếu file tồn tại.
+The code automatically prefers Service Account when the file exists.
 
 ## Troubleshooting
 
-| Lỗi | Giải pháp |
+| Error | Fix |
 |---|---|
-| `FileNotFoundError: credentials.json` | Chưa tải OAuth JSON; xem bước 2 |
-| `gspread.exceptions.APIError: 403` | Account login chưa có quyền edit Sheet → share email với role Editor |
-| `gspread.exceptions.WorksheetNotFound` | `SHEET_NAME` trong `config.py` không khớp; check tên tab trên Sheet |
-| Token expired (vài tháng 1 lần) | Xóa `token.json` → chạy lại → reauthorize |
-| Lỗi `redirect_uri_mismatch` | OAuth client phải là **Desktop app** (không phải Web app) |
+| `FileNotFoundError: credentials.json` | OAuth JSON not downloaded yet; see step 2 |
+| `gspread.exceptions.APIError: 403` | The logged-in account has no edit access to the Sheet → share the Sheet with that email as Editor |
+| `gspread.exceptions.WorksheetNotFound` | `SHEET_NAME` in `config.py` doesn't match; check the tab name on the Sheet |
+| Token expired (every few months) | Delete `token.json` → re-run → reauthorize |
+| `redirect_uri_mismatch` error | The OAuth client must be **Desktop app** (not Web app) |

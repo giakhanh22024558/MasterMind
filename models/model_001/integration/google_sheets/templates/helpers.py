@@ -1,38 +1,38 @@
 # -*- coding: utf-8 -*-
-"""Generic helpers — KHÔNG cần sửa cho hầu hết project.
+"""Generic helpers — DO NOT need to be edited for most projects.
 
-Cung cấp:
-- `insert_inheriting()`        — insert row giữ format/DV/condFmt (xem pattern insert-with-format-inheritance.md)
-- `copy_row_format()`          — copy format từ row template tới row đích
-- `validate_dropdown()`        — check value thuộc allowed list trước khi push
-- `next_sequential_id()`       — auto-gen ID kiểu "PREFIX-NNN"
-- `find_row_index()`           — search row theo predicate
+Provides:
+- `insert_inheriting()`        — insert a row preserving format/DV/condFmt (see pattern insert-with-format-inheritance.md)
+- `copy_row_format()`          — copy format from a template row to a target row
+- `validate_dropdown()`        — check a value is in the allowed list before pushing
+- `next_sequential_id()`       — auto-generate IDs of the form "PREFIX-NNN"
+- `find_row_index()`           — search for a row by predicate
 """
 from gspread.utils import rowcol_to_a1
 
-# ─── INSERT row với format inheritance ────────────────────────────────────────
+# ─── INSERT row with format inheritance ───────────────────────────────────────
 def insert_inheriting(ws, index_1based, values, template_row=None):
-    """Insert row tại index (1-based), giữ format / DV / conditional formatting.
+    """Insert a row at `index_1based`, preserving format / DV / conditional formatting.
 
     Strategy:
-    - Nếu `template_row` None: `insertDimension(inheritFromBefore=True)` — kế thừa từ row trên.
-      Dùng khi row trên CÙNG TYPE với row sắp insert.
-    - Nếu `template_row` cho trước: insert blank + `copyPaste(PASTE_NORMAL)` từ template.
-      Dùng khi row trên KHÁC TYPE (vd insert story sau feature header).
+    - If `template_row` is None: `insertDimension(inheritFromBefore=True)` — inherits from the row above.
+      Use when the row above is the SAME TYPE as the row being inserted.
+    - If `template_row` is provided: insert a blank row + `copyPaste(PASTE_NORMAL)` from the template.
+      Use when the row above is a DIFFERENT TYPE (e.g. inserting a story after a feature header).
 
-    Sau đó write values vào row mới.
+    Then writes `values` into the new row.
 
     Args:
         ws: gspread.Worksheet
-        index_1based: int — vị trí insert (1-based)
-        values: list[str] — giá trị mỗi cột
-        template_row: Optional[int] — row 1-based để copy format
+        index_1based: int — insert position (1-based)
+        values: list[str] — value per column
+        template_row: Optional[int] — 1-based row to copy format from
     """
     sheet_id = ws.id
     start_0 = index_1based - 1
     inherit = (index_1based >= 2 and template_row is None)
 
-    # Bước 1: insert blank row
+    # Step 1: insert a blank row
     ws.spreadsheet.batch_update({
         "requests": [{
             "insertDimension": {
@@ -43,26 +43,26 @@ def insert_inheriting(ws, index_1based, values, template_row=None):
         }]
     })
 
-    # Bước 2: copy format từ template (nếu cung cấp)
+    # Step 2: copy format from template (if provided)
     if template_row is not None:
-        # Sau insert, template row >= insert sẽ bị shift +1
+        # After insert, a template row at or below the insert point is shifted +1
         src = template_row + 1 if template_row >= index_1based else template_row
         copy_row_format(ws, src_row=src, dst_row=index_1based, ncols=len(values))
 
-    # Bước 3: write values (overwrite content nhưng giữ format)
+    # Step 3: write values (overwrites template content but preserves format)
     end_col = _col_letter(len(values))
     ws.update(f"A{index_1based}:{end_col}{index_1based}",
               [values], value_input_option="USER_ENTERED")
 
 
 def copy_row_format(ws, src_row, dst_row, ncols, paste_type="PASTE_NORMAL"):
-    """Copy format + DV + conditional formatting từ src_row → dst_row.
+    """Copy format + DV + conditional formatting from src_row → dst_row.
 
     paste_type options:
-      - PASTE_NORMAL: tất cả (format + value + DV + condFmt)  ← default
-      - PASTE_FORMAT: chỉ format (cell color, font, border)
-      - PASTE_DATA_VALIDATION: chỉ dropdown
-      - PASTE_CONDITIONAL_FORMATTING: chỉ rule format
+      - PASTE_NORMAL: everything (format + value + DV + condFmt)  ← default
+      - PASTE_FORMAT: format only (cell color, font, border)
+      - PASTE_DATA_VALIDATION: dropdowns only
+      - PASTE_CONDITIONAL_FORMATTING: format rules only
     """
     sheet_id = ws.id
     src_0 = src_row - 1
@@ -84,7 +84,7 @@ def copy_row_format(ws, src_row, dst_row, ncols, paste_type="PASTE_NORMAL"):
 
 # ─── VALIDATION ───────────────────────────────────────────────────────────────
 def validate_dropdown(value, allowed, field_name="value"):
-    """Raise ValueError nếu value không thuộc allowed list. Skip nếu value is None."""
+    """Raise ValueError if value is not in the allowed list. Skip if value is None."""
     if value is None: return
     if value not in allowed:
         raise ValueError(f"{field_name}={value!r}; allowed: {allowed}")
@@ -92,10 +92,10 @@ def validate_dropdown(value, allowed, field_name="value"):
 
 # ─── ID generation ────────────────────────────────────────────────────────────
 def next_sequential_id(prefix, digits, existing_items, id_key="id"):
-    """Auto-gen next ID kiểu PREFIX + zero-padded number.
+    """Auto-generate the next ID as PREFIX + zero-padded number.
 
-    existing_items: list of dicts có key 'id' (vd [{"id": "STORY-005"}, ...])
-    Trả về vd "STORY-006" (max+1).
+    existing_items: list of dicts that have an 'id' key (e.g. [{"id": "STORY-005"}, ...])
+    Returns e.g. "STORY-006" (max+1).
     """
     nums = []
     for item in existing_items:
@@ -108,7 +108,7 @@ def next_sequential_id(prefix, digits, existing_items, id_key="id"):
 
 # ─── Row search ───────────────────────────────────────────────────────────────
 def find_row_index(rows, predicate):
-    """Return 1-based row index of first row matching predicate(row). None nếu không có."""
+    """Return the 1-based row index of the first row matching predicate(row). None if not found."""
     for i, row in enumerate(rows, start=1):
         if predicate(row):
             return i
@@ -116,8 +116,8 @@ def find_row_index(rows, predicate):
 
 
 def find_section_end(rows, start_row_1based, classify_fn, allow_types):
-    """Quét từ start_row+1, trả row cuối thuộc section (type ∈ allow_types).
-    Stop khi gặp row có type KHÁC (vd next epic/feature)."""
+    """Scan from start_row+1; return the last row that belongs to the section (type ∈ allow_types).
+    Stop when a row of a different type is encountered (e.g. the next epic/feature)."""
     last = start_row_1based
     for i in range(start_row_1based + 1, len(rows) + 1):
         t, _ = classify_fn(rows[i - 1])

@@ -1,37 +1,37 @@
 # Pattern · Cell-level edit (vs file-replace)
 
-## Vấn đề
+## Problem
 
-Project có data sống trên Google Sheets:
-- Khách / team edit hằng ngày qua UI
-- Có comment ô, version history, filter view, conditional formatting, dropdown
-- Claude / script cần update field theo lệnh user
+A project has live data in Google Sheets:
+- Client / team edit daily through the UI
+- The sheet has cell comments, version history, filter views, conditional formatting, dropdowns
+- Claude / scripts need to update fields on command
 
-**❌ Cách sai phổ biến:** download `.xlsx` → modify với openpyxl → upload đè qua Drive API → **MẤT TẤT CẢ** comment, history, filter view.
+**❌ Common wrong approach:** download `.xlsx` → modify with openpyxl → upload-overwrite via Drive API → **EVERYTHING IS LOST**: comments, history, filter views.
 
-**✅ Cách đúng:** Google Sheets API → edit từng ô (`update_cell`, `batch_update`) hoặc thao tác row (`insertDimension`, `deleteDimension`, `copyPaste`) → Sheet vẫn giữ nguyên mọi metadata UI.
+**✅ Right approach:** Google Sheets API → edit each cell (`update_cell`, `batch_update`) or perform row operations (`insertDimension`, `deleteDimension`, `copyPaste`) → the Sheet keeps all UI metadata intact.
 
-## So sánh
+## Comparison
 
-| Tiêu chí | File-replace (upload đè) | Cell-level (API) |
+| Criterion | File-replace (upload overwrite) | Cell-level (API) |
 |---|---|---|
-| Comment ô | ❌ Mất | ✅ Giữ |
-| Version history | ❌ Reset thành 1 version mới | ✅ Mỗi edit là 1 revision có thể restore |
-| Filter view | ❌ Mất | ✅ Giữ |
-| Conditional formatting | ❌ Mất nếu file không cùng schema | ✅ Giữ |
-| Data validation (dropdown) | ❌ Có thể mất nếu range mismatch | ✅ Giữ nếu insert đúng cách |
-| Setup | Không cần (chỉ Drive write) | OAuth 5 phút 1 lần |
-| Conflict với user đang edit | Risk: ghi đè edit live | An toàn — chỉ ô đụng |
+| Cell comments | ❌ Lost | ✅ Preserved |
+| Version history | ❌ Reset to a single new version | ✅ Each edit is one restorable revision |
+| Filter views | ❌ Lost | ✅ Preserved |
+| Conditional formatting | ❌ Lost if file schema doesn't match | ✅ Preserved |
+| Data validation (dropdowns) | ❌ May be lost if range mismatches | ✅ Preserved when inserted correctly |
+| Setup | None (Drive write only) | OAuth once, 5 min |
+| Conflict with live user edits | Risk: overwrites live edits | Safe — only touches affected cells |
 
-## Khi nào file-replace vẫn ổn
+## When file-replace is still acceptable
 
-- Sheet là output 1 chiều (generate từ data source khác, không ai edit thủ công)
-- Project chấp nhận mất history (lý do business)
-- Không có comment / filter view nào quan trọng
+- The Sheet is a one-way output (generated from another data source, never edited by hand)
+- The project accepts history loss (business reason)
+- No critical comments / filter views exist
 
-→ Các case khác **phải** dùng cell-level.
+→ Any other case **must** use cell-level.
 
-## Implementation tóm tắt
+## Implementation summary
 
 ```python
 import gspread
@@ -41,16 +41,16 @@ gc = gspread.oauth(credentials_filename='credentials.json',
 sh = gc.open_by_key('<spreadsheet_id>')
 ws = sh.worksheet('<sheet_name>')
 
-# Edit 1 ô
+# Edit one cell
 ws.update_cell(row=11, col=8, value='In Review')
 
-# Edit batch (nhiều ô 1 lần — đỡ quota)
+# Edit batch (multiple cells in one call — saves quota)
 ws.batch_update([
     {'range': 'H11', 'values': [['In Review']]},
     {'range': 'I11', 'values': [['Active']]},
 ])
 
-# Insert row (PHẢI dùng inheritFromBefore — xem pattern khác)
+# Insert row (MUST use inheritFromBefore — see the other pattern)
 sh.batch_update({'requests': [{
     'insertDimension': {
         'range': {'sheetId': ws.id, 'dimension': 'ROWS',
@@ -62,12 +62,12 @@ sh.batch_update({'requests': [{
 
 ## Pitfalls
 
-1. **`gspread.Worksheet.insert_row()` thuần làm mất format** — xem [`insert-with-format-inheritance.md`](insert-with-format-inheritance.md)
-2. **Quota 60 write/phút/user** — nếu bulk thì batch lại
-3. **Race condition với user đang edit** — API edit có thể trigger Apps Script `onEdit` của project; lưu ý loop
-4. **`value_input_option`** — dùng `USER_ENTERED` (Sheet parse formula/date) thay vì `RAW`; `RAW` bị treat as plain string
+1. **Vanilla `gspread.Worksheet.insert_row()` drops format** — see [`insert-with-format-inheritance.md`](insert-with-format-inheritance.md)
+2. **Quota 60 writes/minute/user** — batch them for bulk operations
+3. **Race condition with live user edits** — an API edit may trigger the project's Apps Script `onEdit`; watch for loops
+4. **`value_input_option`** — use `USER_ENTERED` (Sheet parses formulas/dates) instead of `RAW`; `RAW` is treated as a plain string
 
 ## Cross-references
 
-- [`insert-with-format-inheritance.md`](insert-with-format-inheritance.md) — bug critical khi insert row
-- [`../templates/helpers.py`](../templates/helpers.py) — code ready
+- [`insert-with-format-inheritance.md`](insert-with-format-inheritance.md) — critical bug when inserting rows
+- [`../templates/helpers.py`](../templates/helpers.py) — ready-to-use code

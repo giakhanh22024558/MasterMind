@@ -1,6 +1,6 @@
 # analysis-conventions.md
 
-Override defaults của skill [`document/analysis`](../MasterMind/models/model_001/document/analysis/conventions-defaults/).
+Overrides defaults of skill [`document/analysis`](../MasterMind/models/model_001/document/analysis/conventions-defaults/).
 
 ## Dropdown values
 
@@ -41,5 +41,5 @@ Override defaults của skill [`document/analysis`](../MasterMind/models/model_0
 
 ```yaml
 # auto_bump_p0:
-#   enabled: false               # nếu true: mọi CR P0 tự set Decision=This Sprint khi approve
+#   enabled: false               # if true: every P0 CR auto sets Decision=This Sprint on approval
 ```

@@ -1,26 +1,26 @@
 # Pattern · Insert row with format inheritance
 
-> **Đây là bug số 1 khi mới dùng gspread.** Read this trước khi viết bất kỳ insert/create method nào.
+> **This is the #1 bug for first-time gspread users.** Read this before writing any insert/create method.
 
-## Vấn đề
+## Problem
 
-`gspread.Worksheet.insert_row(values, index=N)` thuần — tưởng đơn giản nhưng:
+Vanilla `gspread.Worksheet.insert_row(values, index=N)` — looks simple, but:
 
-- ❌ Không kế thừa font / size / màu nền từ row trên
-- ❌ Không kế thừa data validation (dropdown biến mất)
-- ❌ Không kế thừa conditional formatting (chip màu biến mất)
+- ❌ Does not inherit font / size / background color from the row above
+- ❌ Does not inherit data validation (dropdowns disappear)
+- ❌ Does not inherit conditional formatting (color chips disappear)
 
-Kết quả: row mới hiện lên với format **default của Sheet** (thường khác hẳn các row cùng loại), trông như "rò" giữa dữ liệu sạch.
+Result: the new row shows up with the Sheet's **default format** (often very different from neighboring rows of the same kind), looking like a "leak" in otherwise clean data.
 
 ## Root cause
 
-`gspread.insert_row()` internally gọi `insertDimension` của Sheets API với `inheritFromBefore=False` (mặc định). Sheet API insert blank row, không apply bất kỳ format nào từ neighbor.
+`gspread.insert_row()` internally calls the Sheets API `insertDimension` with `inheritFromBefore=False` (the default). The Sheets API inserts a blank row and applies no format from neighbors.
 
-## Fix — 3 chiến lược
+## Fix — 3 strategies
 
-### Strategy 1: `insertDimension(inheritFromBefore=True)` — preferred khi row trên cùng type
+### Strategy 1: `insertDimension(inheritFromBefore=True)` — preferred when the row above is the same type
 
-Inherit toàn bộ format + DV + conditional formatting từ row ngay trên.
+Inherits all format + DV + conditional formatting from the row immediately above.
 
 ```python
 sheet_id = ws.id  # gid
@@ -40,21 +40,21 @@ ws.spreadsheet.batch_update({
     }]
 })
 
-# Sau đó write values vào row mới
+# Then write values into the new row
 ws.update(f"A{index_1based}:I{index_1based}",
           [values], value_input_option="USER_ENTERED")
 ```
 
-**Khi dùng:** row tại `index_1based - 1` cùng type với row sắp insert (vd insert story sau story khác).
+**Use when:** the row at `index_1based - 1` is the same type as the row being inserted (e.g. inserting a story after another story).
 
-**Không dùng khi:** row trên khác type (vd insert story sau feature header → inherit purple bg của feature → WRONG).
+**Do NOT use when:** the row above is a different type (e.g. inserting a story after a feature header → would inherit the feature's purple bg → WRONG).
 
-### Strategy 2: `copyPaste(PASTE_NORMAL)` — fallback từ template row cùng type
+### Strategy 2: `copyPaste(PASTE_NORMAL)` — fallback from a same-type template row
 
-Khi không inherit được từ row trên, copy format từ row template (vd story đầu tiên trong sheet).
+When inheriting from the row above is wrong, copy the format from a template row (e.g. the first story row in the sheet).
 
 ```python
-# Bước 1: insert blank row
+# Step 1: insert a blank row
 ws.spreadsheet.batch_update({"requests": [{
     "insertDimension": {
         "range": {"sheetId": sheet_id, "dimension": "ROWS",
@@ -63,9 +63,9 @@ ws.spreadsheet.batch_update({"requests": [{
     }
 }]})
 
-# Bước 2: copy format/DV/condFmt từ template
+# Step 2: copy format/DV/condFmt from the template
 template_0 = template_row_1based - 1
-# Nếu template ở dưới insert point, nó bị shift +1 sau bước 1
+# If the template is below the insert point, it was shifted +1 by step 1
 if template_row_1based >= index_1based:
     template_0 += 1
 
@@ -77,18 +77,18 @@ ws.spreadsheet.batch_update({"requests": [{
         "destination": {"sheetId": sheet_id,
                         "startRowIndex": start_0, "endRowIndex": start_0 + 1,
                         "startColumnIndex": 0, "endColumnIndex": ncols},
-        "pasteType": "PASTE_NORMAL",   # ← bao gồm format + DV + condFmt + value
+        "pasteType": "PASTE_NORMAL",   # ← includes format + DV + condFmt + value
     }
 }]})
 
-# Bước 3: write values (overwrite template values từ bước 2)
+# Step 3: write values (overwrites the template values from step 2)
 ws.update(f"A{index_1based}:{end_col}{index_1based}",
           [values], value_input_option="USER_ENTERED")
 ```
 
-### Strategy 3: Hybrid — `inheritFromBefore` ưu tiên, fallback copyPaste
+### Strategy 3: Hybrid — prefer `inheritFromBefore`, fall back to copyPaste
 
-Logic generic — tự quyết định dựa trên type của row trên:
+Generic logic — decides based on the type of the row above:
 
 ```python
 def _insert_inheriting(ws, index_1based, values, expected_type=None, classify_fn=None, template_finder=None):
@@ -106,9 +106,9 @@ def _insert_inheriting(ws, index_1based, values, expected_type=None, classify_fn
     _write_values(ws, index_1based, values)
 ```
 
-→ Xem implement đầy đủ trong [`../templates/helpers.py`](../templates/helpers.py).
+→ See the full implementation in [`../templates/helpers.py`](../templates/helpers.py).
 
-## `PASTE_NORMAL` paste type — bao gồm gì?
+## `PASTE_NORMAL` paste type — what does it include?
 
 | Paste type | Format | Value | DV | Cond. Format |
 |---|---|---|---|---|
@@ -118,17 +118,17 @@ def _insert_inheriting(ws, index_1based, values, expected_type=None, classify_fn
 | `PASTE_DATA_VALIDATION` | ❌ | ❌ | ✅ | ❌ |
 | `PASTE_CONDITIONAL_FORMATTING` | ❌ | ❌ | ❌ | ✅ |
 
-→ Dùng `PASTE_NORMAL` rồi overwrite values là cách đơn giản nhất để get all 4.
+→ Using `PASTE_NORMAL` and then overwriting values is the simplest way to get all 4.
 
-## Verify đã fix
+## Verify the fix
 
-Sau khi insert, check trên UI:
-- ✅ Font / size khớp với row cùng loại
-- ✅ Background color khớp (vd story rows đều white)
-- ✅ Dropdown chip xuất hiện (vd Priority có chip màu đỏ/cam/vàng)
-- ✅ Conditional formatting trigger đúng (chip Status đổi màu theo value)
+After inserting, check in the UI:
+- ✅ Font / size match other rows of the same kind
+- ✅ Background color matches (e.g. story rows are all white)
+- ✅ Dropdown chips appear (e.g. Priority has red/orange/yellow chips)
+- ✅ Conditional formatting triggers correctly (Status chips change color per value)
 
-Nếu thiếu bất kỳ thứ nào → strategy chưa đúng, debug bằng cách đọc format của row mới so với template:
+If any of those is missing → the strategy is wrong; debug by reading the format of the new row and comparing against the template:
 
 ```python
 fmt = ws.spreadsheet.fetch_sheet_metadata(params={'fields': 'sheets.data.rowData.values.userEnteredFormat'})
@@ -136,12 +136,12 @@ fmt = ws.spreadsheet.fetch_sheet_metadata(params={'fields': 'sheets.data.rowData
 
 ## Anti-patterns
 
-- ❌ `ws.insert_row(values, index=N)` thuần — mất format
-- ❌ Insert rồi update format thủ công từng cell — tốn API quota
-- ❌ Hard-code template row number — schema thay đổi là sai; dùng `template_finder()` dynamic
-- ❌ Bỏ bước "shift template_0 nếu template ≥ insert" — sau insertDimension, mọi row dưới bị +1
+- ❌ Vanilla `ws.insert_row(values, index=N)` — loses format
+- ❌ Inserting and then manually updating format cell-by-cell — burns API quota
+- ❌ Hard-coding the template row number — wrong as soon as the schema shifts; use a dynamic `template_finder()`
+- ❌ Skipping the "shift template_0 if template ≥ insert" step — after insertDimension, every row below is +1
 
 ## Cross-references
 
-- [`../templates/helpers.py`](../templates/helpers.py) — implement đầy đủ 3 strategies
-- [`hierarchical-row-types.md`](hierarchical-row-types.md) — classify row pattern (cần cho strategy 3)
+- [`../templates/helpers.py`](../templates/helpers.py) — full implementation of all 3 strategies
+- [`hierarchical-row-types.md`](hierarchical-row-types.md) — row classification pattern (needed by strategy 3)

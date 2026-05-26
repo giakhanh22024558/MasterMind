@@ -1,11 +1,11 @@
 # ERD — Entity Relationship Diagram
 
 > Backed by skill [`diagram/erd`](../MasterMind/models/model_001/diagram/erd/).
-> Source: derive từ `docs/requirements.md` + `docs/backlog.md`. Authored as Mermaid.
+> Source: derived from `docs/requirements.md` + `docs/backlog.md`. Authored as Mermaid.
 
 ## Domain groups
 
-| Domain | Entities (placeholder — agent fill) |
+| Domain | Entities (placeholder — agent fills) |
 |---|---|
 | Auth & People | `USER`, `DEPARTMENT`, `PERMISSION_GROUP` |
 | `<Domain 1>` | ... |
@@ -30,41 +30,41 @@ erDiagram
     string name UK
   }
 
-  DEPARTMENT ||--o{ USER : "thuộc"
+  DEPARTMENT ||--o{ USER : "belongs_to"
 
-  %% Thêm entities theo requirement / backlog
+  %% Add more entities as requirements / backlog grow
 ```
 
 ## Cardinality cheatsheet
 
-| Notation | Nghĩa |
+| Notation | Meaning |
 |---|---|
 | `||--||` | 1 : 1 |
 | `||--o{` | 1 : 0-or-many |
 | `||--|{` | 1 : 1-or-many |
 | `}o--o{` | many : many |
 
-## Edge cases từ cardinality
+## Edge cases from cardinality
 
-Khi viết relationship, walk qua từng cardinality để tìm BR + edge case:
+When writing a relationship, walk each cardinality to surface BRs + edge cases:
 
-| Quan hệ | Cardinality | Edge case / BR |
+| Relationship | Cardinality | Edge case / BR |
 |---|---|---|
-| `<Entity>` ↔ `<Entity>` | `||--|{` | Khi tạo Parent, bắt buộc ≥1 Child? |
+| `<Entity>` ↔ `<Entity>` | `||--|{` | When creating Parent, is ≥1 Child required? |
 
-## Render `.drawio` (chỉ khi cần)
+## Render `.drawio` (only when needed)
 
-Mặc định Mermaid `.md` là source of truth. Render sang `.drawio` chỉ khi:
-- Share với non-technical
-- Muốn edit visually
-- Export PDF
+By default the Mermaid `.md` is the source of truth. Render to `.drawio` only when:
+- Sharing with non-technical stakeholders
+- Wanting to edit visually
+- Exporting to PDF
 
-Render bằng `core/diagram/_shared/scripts/`.
+Render using `core/diagram/_shared/scripts/`.
 
 ## Workflow
 
-1. Agent đọc `docs/requirements.md` → identify entities (mỗi entity ≥ 1 requirement support)
-2. Agent vẽ relationships dựa trên hierarchy + dependencies trong backlog
-3. Walk cardinality → fill bảng "Edge cases" → surface BR cần đặc tả
-4. SRS (skill `srs`) reference entity ID từ đây cho use-case spec
-5. Khi CR thay đổi entity, update ERD trước (single source of truth cho data model)
+1. Agent reads `docs/requirements.md` → identifies entities (each entity must be supported by ≥1 requirement)
+2. Agent draws relationships based on hierarchy + dependencies in the backlog
+3. Walk cardinalities → fill the "Edge cases" table → surface BRs that need to be specified
+4. SRS (skill `srs`) references entity IDs from here in use-case specs
+5. When a CR changes an entity, update the ERD first (single source of truth for the data model)

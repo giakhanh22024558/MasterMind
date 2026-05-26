@@ -1,8 +1,8 @@
 # features-conventions.md
 
-Override defaults của skill [`document/features`](../MasterMind/models/model_001/document/features/conventions-defaults/).
+Overrides defaults of skill [`document/features`](../MasterMind/models/model_001/document/features/conventions-defaults/).
 
-> Bỏ trống = dùng defaults skill. Uncomment + fill các block dưới khi cần override.
+> Leave empty to use skill defaults. Uncomment + fill the blocks below to override.
 
 ## ID formats
 
@@ -18,7 +18,7 @@ Override defaults của skill [`document/features`](../MasterMind/models/model_0
 
 ```yaml
 # priority_values:
-#   - Very high     # default order: cao → thấp
+#   - Very high     # default order: highest → lowest
 #   - High
 #   - Medium
 #   - Low
@@ -45,13 +45,13 @@ Override defaults của skill [`document/features`](../MasterMind/models/model_0
 
 ```yaml
 # ac_writing:
-#   language: vi              # vi | en (default vi cho project tiếng Việt)
-#   format_vi: "Khi/Nếu… thì…"
+#   language: en              # en (default) | vi
 #   format_en: "Given/When/Then"
-#   max_per_story: 10         # gợi ý max AC mỗi story
+#   format_vi: "Khi/Nếu… thì…"
+#   max_per_story: 10         # suggested max ACs per story
 ```
 
-## Sheet layout (nếu render xlsx)
+## Sheet layout (when rendering xlsx)
 
 ```yaml
 # sheet_layout:

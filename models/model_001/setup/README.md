@@ -1,41 +1,41 @@
 # setup — README
 
-`/set-up` slash command — bootstrap BA project workspace 1 phát.
+`/set-up` slash command — bootstrap a BA project workspace in one shot.
 
 ## TL;DR
 
 ```bash
-# Trong working folder (cha của MasterMind/)
+# From the working folder (parent of MasterMind/)
 python skills/MasterMind/models/model_001/setup/scripts/bootstrap.py
 ```
 
-→ Tạo `input/`, `context/`, `output/`, `docs/`, `conventions/` + drop `CLAUDE.md` + templates.
+→ Creates `input/`, `context/`, `output/`, `docs/`, `conventions/` + drops `CLAUDE.md` + templates.
 
-Hoặc trong chat với Claude: type `/set-up`.
+Or in a chat with Claude: type `/set-up`.
 
-## Files được tạo
+## Files created
 
 ```
 <working-folder>/
-├── CLAUDE.md                        ← onboarding cho agent + user
-├── input/                           ← user drop raw materials
+├── CLAUDE.md                        ← onboarding for agent + user
+├── input/                           ← user drops raw materials
 ├── context/                         ← agent-managed .md sidecars
 ├── output/                          ← deliverables
 ├── docs/
-│   ├── requirements.md              ← template requirements
+│   ├── requirements.md              ← requirements table template
 │   ├── backlog.md                   ← Epic/Feature/Story skeleton
-│   ├── gap-analysis.md              ← Gap+Impact 17 cột
+│   ├── gap-analysis.md              ← 17-column Gap+Impact
 │   └── erd.md                       ← Mermaid ERD skeleton
 └── conventions/
     ├── README.md
-    ├── features-conventions.md       ← override defaults skill features
-    ├── analysis-conventions.md       ← override defaults skill analysis
-    └── jira-conventions.md           ← override defaults skill jira
+    ├── features-conventions.md       ← override defaults for features skill
+    ├── analysis-conventions.md       ← override defaults for analysis skill
+    └── jira-conventions.md           ← override defaults for jira skill
 ```
 
-## Đọc thêm
+## Read more
 
-- [`SKILL.md`](SKILL.md) — chi tiết skill + 3 cách invoke
-- [`commands/set-up.md`](commands/set-up.md) — Claude Code slash command file (copy vào `.claude/commands/`)
-- [`scripts/bootstrap.py`](scripts/bootstrap.py) — script chính
-- [`templates/`](templates/) — toàn bộ template được copy
+- [`SKILL.md`](SKILL.md) — skill details + 3 ways to invoke
+- [`commands/set-up.md`](commands/set-up.md) — Claude Code slash command file (copy into `.claude/commands/`)
+- [`scripts/bootstrap.py`](scripts/bootstrap.py) — main script
+- [`templates/`](templates/) — full set of templates copied

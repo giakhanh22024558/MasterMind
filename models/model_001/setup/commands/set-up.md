@@ -19,20 +19,20 @@ This will:
 3. Drop `CLAUDE.md` at working-folder root — agent + user onboarding
 4. Copy artifact templates into `docs/` — requirements, backlog, gap-analysis, ERD
 5. Copy convention skeletons into `conventions/` — features / analysis / jira
-6. Print summary of created/skipped items
+6. Print a summary of created/skipped items
 
-Idempotent — won't overwrite existing files unless `--force` passed.
+Idempotent — won't overwrite existing files unless `--force` is passed.
 
 After running:
 - Drop raw materials (SRS docx, CR files, screenshots…) into `input/`
-- Open `docs/<artifact>.md` and ask the agent to fill it — agent will pick the right skill
+- Open `docs/<artifact>.md` and ask the agent to fill it — the agent will pick the right skill
 - Optionally fill `conventions/<skill>-conventions.md` to override defaults
 
-## Installation (1 lần)
+## Installation (one-time)
 
-Copy this file to `~/.claude/commands/set-up.md` (global) or `<working-folder>/.claude/commands/set-up.md` (per-project) to make `/set-up` invokable directly from chat.
+Copy this file to `~/.claude/commands/set-up.md` (global) or `<working-folder>/.claude/commands/set-up.md` (per-project) so `/set-up` is invokable directly from chat.
 
 ## See
 
-- [`SKILL.md`](../SKILL.md) — chi tiết skill
+- [`SKILL.md`](../SKILL.md) — skill details
 - [`scripts/bootstrap.py`](../scripts/bootstrap.py) — logic

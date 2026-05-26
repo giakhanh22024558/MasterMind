@@ -1,12 +1,12 @@
 # Example — LEX project walkthrough
 
-Showcase đầy đủ skill `google_sheets` applied vào project LEX (legal case management). Project có 2 Sheet quản lý song song trên Drive: **Features list** (Backlog + AC) + **Gap Analysis** (CR tracking).
+Full showcase of the `google_sheets` skill applied to the LEX project (legal case management). The project keeps 2 Sheets in parallel on Drive: **Features list** (Backlog + AC) + **Gap Analysis** (CR tracking).
 
-## Schema project
+## Project schema
 
 **Sheet `Backlog`** — 3-level hierarchy:
 
-| Cột | Field | Type |
+| Col | Field | Type |
 |---|---|---|
 | A | Epic ID | `EPIC-XX` |
 | B | Epic name | text |
@@ -20,7 +20,7 @@ Showcase đầy đủ skill `google_sheets` applied vào project LEX (legal case
 
 **Sheet `Acceptance Criteria`** — polymorphic (story header rows + AC rows):
 
-| Cột | Story header row | AC row |
+| Col | Story header row | AC row |
 |---|---|---|
 | A | Story ID (bold) | Story ID |
 | B | (empty) | AC ID `AC-XXX-NN` |
@@ -31,13 +31,13 @@ Showcase đầy đủ skill `google_sheets` applied vào project LEX (legal case
 ## Setup
 
 ```bash
-# 1. Copy template từ MasterMind
+# 1. Copy template from MasterMind
 cp -r mastermind/models/model_001/integration/google_sheets/templates/ \
       LEX-SLI-SRS/sheets_api/
 
-# 2. Sửa config.py — điền SPREADSHEET_ID = "198n3cwq..." (Features list 2)
+# 2. Edit config.py — set SPREADSHEET_ID = "198n3cwq..." (Features list 2)
 
-# 3. Tạo OAuth credentials → credentials.json ở project root
+# 3. Create OAuth credentials → credentials.json at project root
 
 # 4. pip install gspread
 
@@ -47,9 +47,9 @@ python -m sheets_api.verify_setup
 # → Connected to sheet 'Backlog' — 11 epic · 43 feature · 136 story
 ```
 
-## Customize cho LEX
+## Customizations for LEX
 
-Vì LEX có thêm sheet `Acceptance Criteria` (không chuẩn template), thêm module `ac.py`:
+Because LEX has an extra `Acceptance Criteria` sheet (not in the template), add an `ac.py` module:
 
 ```python
 # sheets_api/ac.py
@@ -77,9 +77,9 @@ class ACAPI:
     # ... (similar pattern: _all, _template_row_of, list_for_story, create, update, delete)
 ```
 
-→ Full code trong [LEX project: `sheets_api/ac.py`](../../../../../../../sheets_api/ac.py).
+→ Full code in [LEX project: `sheets_api/ac.py`](../../../../../../../sheets_api/ac.py).
 
-## Usage examples trong project
+## Usage examples in the project
 
 ### Update story status
 ```python
@@ -87,26 +87,26 @@ from sheets_api import BacklogAPI
 BacklogAPI().update_story("STORY-013", status="In Review")
 ```
 
-### Tạo story mới + AC trong 1 lệnh
+### Create a new story + ACs in one command
 ```python
 from sheets_api import BacklogAPI, ACAPI
 bk, ac = BacklogAPI(), ACAPI()
 
 new_id = bk.create_story("FEAT-001",
-    "[CR-19] User filter vụ việc theo Tag",
+    "[CR-19] User filters matters by Tag",
     priority="High", status="Ready", lifecycle="Active")
 
-ac.create_story_header(new_id, "[CR-19] User filter vụ việc theo Tag")
-ac.create(new_id, "Khi user chọn ≥1 Tag, thì list lọc theo logic OR giữa các Tag")
-ac.create(new_id, "Nếu chọn 0 Tag, thì filter Tag không áp dụng (giữ kết quả filter khác)")
+ac.create_story_header(new_id, "[CR-19] User filters matters by Tag")
+ac.create(new_id, "When the user picks ≥1 Tag, the list filters with OR logic between Tags")
+ac.create(new_id, "If 0 Tags are picked, the Tag filter does not apply (other filters remain)")
 ```
 
-### Mark AC pass sau QA
+### Mark an AC as passed after QA
 ```python
 ACAPI().update_test_status("AC-013-02", "Passed")
 ```
 
-### Bulk update — đổi tất cả story trong feature từ Backlog → Ready
+### Bulk update — flip every story in a feature from Backlog → Ready
 ```python
 bk = BacklogAPI()
 for s in bk.stories(feature_id="FEAT-001"):
@@ -114,20 +114,20 @@ for s in bk.stories(feature_id="FEAT-001"):
         bk.update_story(s["id"], status="Ready")
 ```
 
-## Kết quả
+## Result
 
-- ✅ Mỗi edit là **1 revision** trên Sheet (Drive Activity panel thấy đủ)
-- ✅ Comment, filter view, conditional formatting **giữ nguyên**
-- ✅ Dropdown chip màu (Very high = đỏ, Done = xám…) **giữ nguyên** khi insert row mới
-- ✅ Apps Script `onEdit` trigger → tự re-export `.xlsx` → Drive Desktop sync về local `~3s`
+- ✅ Every edit is **one revision** on the Sheet (visible in the Drive Activity panel)
+- ✅ Comments, filter views, conditional formatting **preserved**
+- ✅ Dropdown color chips (Very high = red, Done = gray, …) **preserved** on inserted rows
+- ✅ Apps Script `onEdit` triggers → auto re-exports `.xlsx` → Drive Desktop syncs to local in ~3s
 
-## Pitfalls đã hit trong LEX project
+## Pitfalls hit in the LEX project
 
 | Bug | Fix |
 |---|---|
-| Insert row mất dropdown + bg yellow | `insertDimension(inheritFromBefore=True)` + fallback `copyPaste(PASTE_NORMAL)` từ template — đã encode trong `helpers.insert_inheriting()` |
-| Apps Script `onEdit` tạo file `.xlsx (1)` duplicate | Thêm `Utilities.sleep(800)` giữa delete cũ + create mới trong script |
-| Token expired sau ~3 tháng | Xóa `token.json` → run lại verify_setup → re-authorize browser |
+| Inserted row loses dropdowns + has yellow bg | `insertDimension(inheritFromBefore=True)` + fallback `copyPaste(PASTE_NORMAL)` from template — encoded in `helpers.insert_inheriting()` |
+| Apps Script `onEdit` creates duplicate `.xlsx (1)` file | Added `Utilities.sleep(800)` between delete-old + create-new in the script |
+| Token expires after ~3 months | Delete `token.json` → re-run verify_setup → re-authorize in browser |
 
 ## Cross-references
 

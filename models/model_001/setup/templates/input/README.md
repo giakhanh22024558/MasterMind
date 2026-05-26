@@ -1,25 +1,25 @@
 # input/
 
-**User-managed** raw materials cho project. Drop file ở đây dưới mọi format:
+**User-managed** raw materials for the project. Drop files here in any format:
 
 - `.docx` — SRS, requirement docs, contracts
-- `.xlsx` — CR list, issue tracker, feature list
-- `.pdf` — specs scanned
+- `.xlsx` — CR lists, issue trackers, feature lists
+- `.pdf` — scanned specs
 - `.png` / `.jpg` — wireframe screenshots, UI mockups
-- `.drawio` / `.fig` — diagrams from designer
+- `.drawio` / `.fig` — diagrams from designers
 - `.csv` / `.txt` — data exports
 
 ## Core Rule
 
-- ✅ User drop file
-- ✅ Agent ĐỌC (qua python-docx / openpyxl / MCP read)
-- ❌ Agent KHÔNG ghi vào folder này (đây là input từ phía user)
+- ✅ User drops files
+- ✅ Agent READS them (via python-docx / openpyxl / MCP read)
+- ❌ Agent does NOT write into this folder (it is input from the user side)
 
-Mỗi file `input/<name>.<ext>` → agent sinh `context/<name>.md` sidecar tương ứng (đọc tiết kiệm token các session sau).
+Every file `input/<name>.<ext>` → the agent generates a `context/<name>.md` sidecar (cheap to read in later sessions).
 
 ## Workflow
 
-1. User drop file vào đây
-2. Yêu cầu agent: `"đọc context của <file>"` hoặc `"sync drive"` cho integration sync
-3. Agent tạo `context/<file>.md` mirror file dạng markdown
-4. Sau đó skill khác dùng `context/<file>.md` làm input cho artifact (vd `docs/requirements.md`)
+1. User drops a file here
+2. Asks the agent: `"read context of <file>"` or `"sync drive"` (for integration sync)
+3. Agent creates `context/<file>.md` mirroring the file as markdown
+4. Other skills then use `context/<file>.md` as input for artifacts (e.g. `docs/requirements.md`)

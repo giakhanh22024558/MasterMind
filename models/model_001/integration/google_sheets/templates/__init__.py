@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-"""sheets_api — CRUD trên Google Sheet via gspread API.
+"""sheets_api — CRUD on Google Sheets via the gspread API.
 
-Cell-level edit (giữ comment / history / dropdown / conditional formatting).
-Setup: xem SETUP.md.
+Cell-level edits (preserves comments / history / dropdowns / conditional formatting).
+Setup: see SETUP.md.
 
 Usage:
     from sheets_api import BacklogAPI

@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""bootstrap.py — scaffold BA workspace từ model_001 templates.
+"""bootstrap.py — scaffold a BA workspace from model_001 templates.
 
 Usage:
   python bootstrap.py [--force] [--workdir PATH]
 
-Hành vi:
-- Detect working folder (folder cha của MasterMind/)
-- Tạo input/, context/, output/, docs/, conventions/
-- Copy CLAUDE.md + templates/docs/* + templates/conventions/* vào working folder
-- Idempotent: không overwrite trừ khi --force
+Behavior:
+- Detect the working folder (the parent of MasterMind/)
+- Create input/, context/, output/, docs/, conventions/
+- Copy CLAUDE.md + templates/docs/* + templates/conventions/* into the working folder
+- Idempotent: does not overwrite existing files unless --force is passed
 """
 import argparse
 import os
@@ -18,8 +18,8 @@ import sys
 
 
 def find_working_folder(start=None):
-    """Working folder = folder chứa subfolder MasterMind/.
-    Search up từ cwd hoặc start."""
+    """Working folder = folder that contains a MasterMind/ subfolder.
+    Search upward from cwd (or `start`)."""
     p = os.path.abspath(start or os.getcwd())
     for _ in range(20):
         if os.path.isdir(os.path.join(p, "MasterMind")):
@@ -47,7 +47,7 @@ def main():
     script_dir = os.path.dirname(os.path.abspath(__file__))
     templates_root = os.path.normpath(os.path.join(script_dir, "..", "templates"))
     if not os.path.isdir(templates_root):
-        print(f"❌ Templates folder không tồn tại: {templates_root}", file=sys.stderr)
+        print(f"❌ Templates folder not found: {templates_root}", file=sys.stderr)
         sys.exit(1)
 
     workdir = args.workdir or find_working_folder()
@@ -91,8 +91,8 @@ def main():
     print("📖 Next steps:")
     print(f"  1. Read {os.path.join(workdir, 'CLAUDE.md')}")
     print(f"  2. Drop raw input materials into {os.path.join(workdir, 'input/')}")
-    print(f"  3. Open docs/*.md → ask Claude to fill (agent picks model_001 skill)")
-    print(f"  4. Optional: fill conventions/<skill>-conventions.md để override defaults")
+    print(f"  3. Open docs/*.md → ask Claude to fill them (agent picks the right model_001 skill)")
+    print(f"  4. Optional: fill conventions/<skill>-conventions.md to override defaults")
 
 
 if __name__ == "__main__":

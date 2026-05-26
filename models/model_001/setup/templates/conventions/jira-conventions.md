@@ -1,20 +1,20 @@
 # jira-conventions.md
 
-Override defaults của skill [`integration/jira`](../MasterMind/models/model_001/integration/jira/conventions-defaults/).
+Overrides defaults of skill [`integration/jira`](../MasterMind/models/model_001/integration/jira/conventions-defaults/).
 
 ## Project key
 
 ```yaml
-project_key: "<PROJECT>"          # bắt buộc fill — Jira project key (vd "LEX", "ABC")
+project_key: "<PROJECT>"          # required — Jira project key (e.g. "LEX", "ABC")
 ```
 
 ## Tag system
 
 ```yaml
 # tags:
-#   feature_tag: on               # default on — luôn prepend [FEAT-XXX]
-#   cr_tag: auto                  # default auto — bật khi story có prefix [CR-XX]
-#   custom_tags:                  # luôn prepend (vd milestone tag)
+#   feature_tag: on               # default on — always prepend [FEAT-XXX]
+#   cr_tag: auto                  # default auto — enabled when story has prefix [CR-XX]
+#   custom_tags:                  # always prepend (e.g. milestone tag)
 #     - "MVP-1"
 ```
 
@@ -22,8 +22,8 @@ project_key: "<PROJECT>"          # bắt buộc fill — Jira project key (vd "
 
 ```yaml
 # sub_tasks:
-#   roles: [BA, FE, BE]           # default 3 roles. Thêm: [BA, FE, BE, QA, Design]
-#   mode: auto                    # auto = skip role 0h | all = đủ mọi role
+#   roles: [BA, FE, BE]           # default 3 roles. Add more: [BA, FE, BE, QA, Design]
+#   mode: auto                    # auto = skip 0h roles | all = emit every role
 ```
 
 ## Issue types
