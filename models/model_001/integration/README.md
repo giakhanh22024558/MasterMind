@@ -7,5 +7,6 @@ Skill cluster cho **tích hợp với hệ thống bên ngoài** (Jira, Slack, L
 | Skill | Purpose |
 |---|---|
 | [`jira/`](jira/) | Sinh Jira issue + sub-task từ Change Requests (Gap + Impact Analysis) |
+| [`google_sheets/`](google_sheets/) | CRUD trên Google Sheets via API — cell-level edit (giữ comment, history, dropdown, conditional formatting). Drop-in template |
 
 Mỗi skill follow Core Rule (`input/` → `context/` → output `output/`).
