@@ -4,11 +4,20 @@ Backlog + Acceptance Criteria.
 
 USAGE:
   python cr_to_jira.py <gap.xlsx> <backlog.xlsx> <out_dir>
+                       [--no-feature-tag]      # tắt [FEAT-XXX] prefix
+                       [--no-cr-tag]           # tắt [CR-XX] prefix
+                       [--extra-tag TAG ...]   # thêm custom tag (vd MVP-1, BETA)
   # produces: <out_dir>/cr-XX-task.json + cr-XX-task.md cho mỗi CR đã approve
+
+Tag block trên title:
+  [FEAT-XXX] [CR-XX] [<extra...>] <title> — <scope>
+  - [FEAT-XXX] mặc định ON; tắt bằng --no-feature-tag
+  - [CR-XX] mặc định ON cho CR-derived task; tắt bằng --no-cr-tag
+  - Extra tag: --extra-tag MVP-1 --extra-tag BETA → prepend [MVP-1] [BETA]
 
 Requires: pip install openpyxl
 """
-import json, os, re, sys
+import argparse, json, os, re, sys
 import openpyxl
 
 PRIORITY_MAP = {"P0": "Highest", "P1": "High", "P2": "Medium"}
@@ -68,9 +77,14 @@ def load_gap(path):
 def load_backlog(path):
     wb = openpyxl.load_workbook(path, data_only=True)
     ws = wb["Backlog"]
-    cr_to_story = {}     # CR-XX -> {sid, name, lifecycle}
+    cr_to_story = {}     # CR-XX -> {sid, name, lifecycle, feat_id}
+    cur_feat = None
     for r in range(2, ws.max_row + 1):
+        fid = ws.cell(row=r, column=3).value
         sid = ws.cell(row=r, column=5).value
+        if fid and str(fid).startswith("FEAT-"):
+            cur_feat = fid
+            continue
         if not sid or not str(sid).startswith("STORY-"):
             continue
         name = ws.cell(row=r, column=6).value or ""
@@ -78,9 +92,10 @@ def load_backlog(path):
         if m:
             cr = m.group(1)
             cr_to_story[cr] = {
-                "sid":  sid,
-                "name": name,
+                "sid":     sid,
+                "name":    name,
                 "lifecycle": ws.cell(row=r, column=9).value or "",
+                "feat_id": cur_feat,
             }
     return cr_to_story, wb
 
@@ -100,8 +115,21 @@ def load_ac(wb, sid):
     return result
 
 # --- build task tree ---
-def build_main_title(cr):
-    return "[%s] %s — %s" % (cr["id"], cr["desc"].strip().rstrip("."), cr["criteria"].strip())
+def build_tag_block(cr, story, cfg):
+    """Build [TAG1] [TAG2] ... prefix theo config."""
+    tags = []
+    if cfg["feature_tag"] and story.get("feat_id"):
+        tags.append("[%s]" % story["feat_id"])
+    if cfg["cr_tag"]:
+        tags.append("[%s]" % cr["id"])
+    for t in cfg["extra_tags"]:
+        tags.append("[%s]" % t)
+    return " ".join(tags)
+
+def build_main_title(cr, story, cfg):
+    prefix = build_tag_block(cr, story, cfg)
+    body = "%s — %s" % (cr["desc"].strip().rstrip("."), cr["criteria"].strip())
+    return (prefix + " " + body).strip() if prefix else body
 
 def build_main_desc(cr, ac_list, sid):
     lines = [
@@ -144,20 +172,21 @@ def build_sub_desc(role, impl_text, est, ac_ids, parent_key):
         "- AC liên quan: " + (", ".join(a for a, _ in ac_ids) if ac_ids else "(chưa có AC)"),
     ])
 
-def build_task_tree(cr, story, ac_list, project_key="<PROJECT>"):
-    main_title = build_main_title(cr)
+def build_task_tree(cr, story, ac_list, cfg, project_key="<PROJECT>"):
+    main_title = build_main_title(cr, story, cfg)
     ac_ids = [(a, t) for a, t in ac_list]
+    labels = ["from-gap-analysis", cr["id"].lower(), slugify(cr["topic"])]
+    if cfg["feature_tag"] and story.get("feat_id"):
+        labels.append(story["feat_id"].lower())
+    for t in cfg["extra_tags"]:
+        labels.append(slugify(t))
     main = {
         "fields": {
             "project": {"key": project_key},
             "summary": main_title,
             "issuetype": {"name": "Task"},
             "priority": {"name": PRIORITY_MAP.get(cr["priority"], "Medium")},
-            "labels": [
-                "from-gap-analysis",
-                cr["id"].lower(),
-                slugify(cr["topic"]),
-            ],
+            "labels": labels,
             "description": build_main_desc(cr, ac_list, story["sid"]),
             # estimation: tổng — field tuỳ instance, đặt placeholder customfield_10016
             "customfield_10016": float(cr["est_ba"] or 0) + float(cr["est_fe"] or 0) + float(cr["est_be"] or 0),
@@ -175,15 +204,15 @@ def build_task_tree(cr, story, ac_list, project_key="<PROJECT>"):
                 "summary": "[%s] %s" % (role, main_title),
                 "issuetype": {"name": "Sub-task"},
                 "parent": {"key": "<MAIN-ISSUE-KEY>"},
-                "labels": ["from-gap-analysis", cr["id"].lower(), "role-" + role.lower()],
+                "labels": labels + ["role-" + role.lower()],
                 "description": build_sub_desc(role, impl, est, ac_ids, "<MAIN-ISSUE-KEY>"),
                 "customfield_10016": float(est or 0),
             }
         })
     return {"main": main, "subs": subs}
 
-def render_md(cr, story, ac_list, tree):
-    out = ["# %s" % build_main_title(cr), "",
+def render_md(cr, story, ac_list, tree, cfg):
+    out = ["# %s" % build_main_title(cr, story, cfg), "",
            "**Priority:** %s · **Labels:** %s · **Total estimate:** %g man-hours"
            % (PRIORITY_MAP.get(cr["priority"], "Medium"),
               ", ".join(tree["main"]["fields"]["labels"]),
@@ -197,14 +226,28 @@ def render_md(cr, story, ac_list, tree):
     return "\n".join(out)
 
 # --- main ---
-def main():
-    if len(sys.argv) != 4:
-        print(__doc__); sys.exit(1)
-    gap_path, backlog_path, out_dir = sys.argv[1:]
-    os.makedirs(out_dir, exist_ok=True)
+def parse_args():
+    p = argparse.ArgumentParser(description="Sinh Jira task tree từ Gap + Backlog")
+    p.add_argument("gap_xlsx")
+    p.add_argument("backlog_xlsx")
+    p.add_argument("out_dir")
+    p.add_argument("--no-feature-tag", action="store_true", help="Tắt [FEAT-XXX] prefix")
+    p.add_argument("--no-cr-tag", action="store_true", help="Tắt [CR-XX] prefix")
+    p.add_argument("--extra-tag", action="append", default=[],
+                   help="Thêm custom tag (repeat để thêm nhiều, vd: --extra-tag MVP-1 --extra-tag BETA)")
+    return p.parse_args()
 
-    crs = load_gap(gap_path)
-    cr_to_story, backlog_wb = load_backlog(backlog_path)
+def main():
+    args = parse_args()
+    cfg = {
+        "feature_tag": not args.no_feature_tag,
+        "cr_tag":      not args.no_cr_tag,
+        "extra_tags":  list(args.extra_tag),
+    }
+    os.makedirs(args.out_dir, exist_ok=True)
+
+    crs = load_gap(args.gap_xlsx)
+    cr_to_story, backlog_wb = load_backlog(args.backlog_xlsx)
 
     skipped, generated = [], []
     for cid, cr in sorted(crs.items()):
@@ -219,13 +262,13 @@ def main():
             skipped.append((cid, "lifecycle=" + story["lifecycle"]))
             continue
         ac_list = load_ac(backlog_wb, story["sid"])
-        tree = build_task_tree(cr, story, ac_list)
+        tree = build_task_tree(cr, story, ac_list, cfg)
         # write
-        base = os.path.join(out_dir, "%s-task" % cid.lower())
+        base = os.path.join(args.out_dir, "%s-task" % cid.lower())
         with open(base + ".json", "w", encoding="utf-8") as f:
             json.dump(tree, f, ensure_ascii=False, indent=2)
         with open(base + ".md", "w", encoding="utf-8") as f:
-            f.write(render_md(cr, story, ac_list, tree))
+            f.write(render_md(cr, story, ac_list, tree, cfg))
         generated.append(cid)
 
     print("Generated: %d CR" % len(generated), generated)

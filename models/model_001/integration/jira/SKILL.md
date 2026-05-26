@@ -1,81 +1,101 @@
 ---
 name: jira
-description: Generate Jira issues + sub-tasks from approved Change Requests. Reads Gap Analysis (CR scope, As-Is/To-Be, Decision) + Backlog (Story title + AC list) + Impact Analysis (per-role implementation breakdown), then emits one main task per CR with title `[CR-XX] <Story title> — <scope CR>`, body containing context + AC table with codes, plus 3 sub-tasks [BA] / [FE] / [BE] each listing only that role's concrete work. Use this skill after the change-request branch (gap → impact → approval → backlog) is complete and tasks need to be created on Jira.
+description: Generate Jira issues + sub-tasks from any task source (Change Requests, planned stories, bugs, refactors, hotfixes…). Each main task carries a configurable tag block — `[FEAT-XXX]` by default, plus optional `[CR-XX]` when derived from a Change Request, plus custom tags the project defines. Body contains context + AC table with codes; always emits 3 sub-tasks `[BA]` / `[FE]` / `[BE]` each listing only that role's concrete work. Reads Gap Analysis + Backlog + Acceptance Criteria sheets. Use this skill whenever the team needs to push refined backlog items onto Jira.
 ---
 
-# jira — sinh Jira task từ Change Requests
+# jira — sinh Jira task từ backlog
 
 ## Khi nào dùng
 
-Sau khi luồng change-request đã chốt:
-1. CR đã có Gap Analysis + Impact Analysis (skill [`analysis`](../../document/analysis/))
-2. CR đã được approve (Decision = `This Sprint` / `Next Sprint`)
-3. CR đã được đẩy thành User Story trong backlog với AC đầy đủ (skill [`features`](../../document/features/))
+Khi cần đẩy story đã refined trên backlog lên Jira. Story có thể đến từ nhiều nguồn:
 
-→ Skill này **đóng gói các CR đã approve thành Jira issue + sub-task** sẵn sàng import.
+- **Change Request** đã approve (luồng [`analysis`](../../document/analysis/) → [`features`](../../document/features/))
+- **Planned story** trong backlog (không xuất phát từ CR)
+- **Bug / Hotfix / Tech-debt / Spike** thêm thủ công
 
-## Cấu trúc output — 1 task lớn + 3 sub-task
+Skill này **đóng gói mỗi story thành Jira issue + 3 sub-task** sẵn sàng import. Tag trên title configurable theo nguồn.
+
+## Tag system
+
+Mỗi title bắt đầu bằng dãy **tag**. Tag report *nguồn gốc* / *loại* của task:
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│ [CR-01] Bổ sung view mode dạng bảng — Dashboard — View mode │  ← Main task
-│  context: As-Is / To-Be / Client Note                       │
-│  AC table: AC-133-01, AC-133-02, …                          │
-│                                                             │
-│  ├─ [BA] [CR-01] Bổ sung view mode … — Dashboard — View mode│  ← Sub-task 1
-│  │      Chỉ liệt kê công việc của BA                        │
-│  │                                                          │
-│  ├─ [FE] [CR-01] Bổ sung view mode … — Dashboard — View mode│  ← Sub-task 2
-│  │      Chỉ liệt kê công việc của FE                        │
-│  │                                                          │
-│  └─ [BE] [CR-01] Bổ sung view mode … — Dashboard — View mode│  ← Sub-task 3
-│         Chỉ liệt kê công việc của BE                        │
-└─────────────────────────────────────────────────────────────┘
+[FEAT-XXX]  [CR-XX]?  [<custom>]?  <task title>  [— <scope?>]
 ```
 
-Xem chi tiết format ở [`task-structure/`](task-structure/) và [`conventions-defaults/`](conventions-defaults/).
+| Tag | Default | Khi nào |
+|---|---|---|
+| `[FEAT-XXX]` | **ON** ✅ | Mọi task — định danh feature task thuộc về. Project có thể tắt trong `jira-conventions.md` |
+| `[CR-XX]` | optional | Khi story xuất phát từ Change Request (story name có prefix `[CR-XX]`). Bỏ qua nếu task không từ CR |
+| `[BUG-NNN]` `[HOTFIX]` `[TECH-DEBT]` `[SPIKE]` … | optional | Custom — project define hoặc per-task |
+
+→ Đầy đủ rule ở [`conventions-defaults/`](conventions-defaults/).
+
+## Cấu trúc output — 1 main task + 3 sub-task
+
+```
+┌────────────────────────────────────────────────────────────────────────────┐
+│ [FEAT-001] [CR-01] Bổ sung view mode dạng bảng — Dashboard — View mode     │  ← Main task
+│  context: As-Is / To-Be / Client Note (bỏ section nếu không có data)       │
+│  AC table: AC-133-01, AC-133-02, …                                         │
+│                                                                            │
+│  ├─ [BA] [FEAT-001] [CR-01] Bổ sung view mode … — Dashboard — View mode    │  ← Sub-task 1
+│  │      Chỉ liệt kê công việc của BA                                       │
+│  │                                                                         │
+│  ├─ [FE] [FEAT-001] [CR-01] Bổ sung view mode … — Dashboard — View mode    │  ← Sub-task 2
+│  │      Chỉ liệt kê công việc của FE                                       │
+│  │                                                                         │
+│  └─ [BE] [FEAT-001] [CR-01] Bổ sung view mode … — Dashboard — View mode    │  ← Sub-task 3
+│         Chỉ liệt kê công việc của BE                                       │
+└────────────────────────────────────────────────────────────────────────────┘
+```
+
+Format đầy đủ ở [`task-structure/`](task-structure/).
 
 ## Input → Output
 
-| Input | Lấy từ |
-|---|---|
-| CR scope, As-Is, To-Be, Decision, Note | Gap Analysis sheet |
-| Impl·BA / FE / BE (gạch đầu dòng) | Impact Analysis (gộp trong Gap_Analysis.xlsx) |
-| Estimation BA/FE/BE (man-hours) | Impact Analysis |
-| Story title (đã tag `[CR-XX]`) | Backlog (LEX Features list.xlsx) |
-| AC list + AC IDs | Acceptance Criteria sheet |
+| Input field | Lấy từ | Optional? |
+|---|---|---|
+| Story ID, Feature ID (cho `[FEAT-XXX]` tag) | Backlog | required |
+| Story title | Backlog (đã bỏ prefix `[CR-XX]` để tránh trùng tag) | required |
+| AC list + AC IDs | Acceptance Criteria sheet | nên có |
+| CR scope, As-Is, To-Be, Decision, Note | Gap Analysis sheet | chỉ khi từ CR |
+| Impl·BA / FE / BE + Est | Impact Analysis (gộp trong Gap_Analysis.xlsx) | chỉ khi từ CR; planned story có thể nhập thủ công |
+| Custom tags | `jira-conventions.md` hoặc CLI `--extra-tag` | optional |
 
 | Output | Đặt tại |
 |---|---|
-| Jira import payload | `output/jira/cr-<XX>-task.json` (hoặc `.md` để paste) |
+| Jira import payload | `output/jira/<source-id>-task.json` (vd `cr-01-task.json`, `story-034-task.json`, `bug-512-task.json`) |
+| Markdown để paste UI | `output/jira/<source-id>-task.md` |
 
 ## Content modules
 
 | Module | Purpose |
 |---|---|
-| [`task-structure/`](task-structure/) | Định nghĩa cấu trúc 1 task lớn + 3 sub-task |
-| [`conventions-defaults/`](conventions-defaults/) | Format title / description / sub-task body (mặc định) |
-| [`patterns/`](patterns/) | Pattern `CR → Task` — luồng đọc Gap+Backlog+AC sinh task |
+| [`task-structure/`](task-structure/) | Schema main + 3 sub-task — áp dụng cho mọi source |
+| [`conventions-defaults/`](conventions-defaults/) | Tag system + format defaults; cách override |
+| [`patterns/`](patterns/) | Pattern convert mỗi source thành task (CR là một trong nhiều) |
 | [`examples/`](examples/) | Worked example (CR-01) |
 | [`scripts/`](scripts/) | `cr_to_jira.py` — render task tree từ Gap_Analysis.xlsx + Backlog xlsx |
 
 ## Conventions
 
-Project có thể override trong `<project-root>/jira-conventions.md` (Jira project key, issue type, custom field mapping…). Mặc định ở [`conventions-defaults/conventions-defaults.md`](conventions-defaults/conventions-defaults.md).
+Project override trong `<project-root>/jira-conventions.md` (Jira project key, issue type, **tag config: bật/tắt feature tag, CR tag, custom tags**, custom field mapping…). Mặc định ở [`conventions-defaults/conventions-defaults.md`](conventions-defaults/conventions-defaults.md).
 
 ## Anti-patterns
 
-- ❌ Tạo Jira task **trước khi** CR được approve (Decision còn `Pending`)
+- ❌ Tạo Jira task **trước khi** story được refined đủ (AC trống, estimation chưa có)
 - ❌ Nhồi tất cả role-work vào main task — phải tách thành 3 sub-task để dev claim riêng
-- ❌ Sub-task có description trống — phải có ít nhất 1 bullet công việc theo role
-- ❌ Title sub-task khác title main task — phải **cùng** title, chỉ thêm prefix `[BA]/[FE]/[BE]`
-- ❌ Quên đối chiếu AC ID trong description — QA cần để test
+- ❌ Sub-task có description trống — phải có ít nhất 1 bullet công việc theo role (hoặc ghi `Không có công việc cho role này`)
+- ❌ Title sub-task khác title main task — phải **cùng** title, chỉ thêm prefix `[BA]/[FE]/[BE]` ở đầu
+- ❌ Quên tag — title không có `[FEAT-XXX]` thì dev không biết task thuộc đâu (trừ khi project chủ động tắt feature tag)
+- ❌ Trộn nguồn vào tag — `[CR-XX]` chỉ khi task thực sự từ CR; đừng gán bừa cho task planned
 
 ## Cross-references
 
 | Reference | Used for |
 |---|---|
-| [`../../document/analysis/`](../../document/analysis/) | Gap + Impact Analysis (input chính) |
-| [`../../document/features/`](../../document/features/) | Backlog + AC (input cho title + AC table) |
-| [`../../business_analysis/`](../../business_analysis/) | Pipeline upstream — Jira sinh ở cuối CR branch |
+| [`../../document/features/`](../../document/features/) | Backlog + AC + Feature ID (input cho FEAT tag + title + AC table) |
+| [`../../document/analysis/`](../../document/analysis/) | Gap + Impact Analysis (input khi task derive từ CR) |
+| [`../../business_analysis/`](../../business_analysis/) | Pipeline upstream — Jira là bước cuối của cả planned flow lẫn CR branch |
 | [Core Rule](../../../../core/core-rule/) | input → context → agent → output |

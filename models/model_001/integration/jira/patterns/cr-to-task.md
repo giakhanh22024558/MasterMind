@@ -1,6 +1,8 @@
 # Pattern · CR → Jira Task
 
-Luồng convert 1 Change Request thành Jira issue tree.
+Luồng convert 1 Change Request thành Jira issue tree. **Đây là một trong nhiều source** — xem [`story-to-task.md`](story-to-task.md) cho luồng tổng quát (planned story / bug / refactor cũng cùng schema).
+
+Phần đặc biệt của CR-derived: tự động prepend `[CR-XX]` tag và pull As-Is / To-Be / Impl per-role / Est per-role từ Gap Analysis.
 
 ## Inputs (3 sources)
 
@@ -53,9 +55,13 @@ Chỉ tạo Jira task cho CR có:
 2. **Load Backlog** → tìm story có `name.startswith("[CR-XX]")` → lấy Story ID
 3. **Load Acceptance Criteria sheet** → lấy list AC cho Story ID đó
 4. Với mỗi CR có `Decision ∈ {This Sprint, Next Sprint}`:
-   - **Main task title** = `[CR-XX] <Description> — <Criteria>`
+   - **Resolve tag block**: `[FEAT-XXX] [CR-XX]` + custom tags từ `jira-conventions.md` (xem [tag system](../conventions-defaults/conventions-defaults.md#tag-system--tổng-quan))
+     - Lookup `FEAT-XXX` từ story → Feature ID trong Backlog
+     - `[CR-XX]` auto-prepend vì story name có prefix tương ứng
+     - Skip `[FEAT-XXX]` nếu user tắt feature tag trong project conventions
+   - **Main task title** = `<tag block> <Description> — <Criteria>`
    - **Main task desc** = template (context + AC table) — xem [`../task-structure/task-structure.md`](../task-structure/task-structure.md)
-   - **3 sub-tasks** = `[BA]` `[FE]` `[BE]` với title cùng main + prefix role, desc = bullets từ Impl·<role>, estimate = Est <role>
+   - **3 sub-tasks** = `[BA]` `[FE]` `[BE]` với title cùng main + prefix role ở đầu, desc = bullets từ Impl·<role>, estimate = Est <role>
 5. **Serialize** ra JSON (cho REST API) hoặc Markdown (cho UI paste)
 6. **Lưu** `output/jira/cr-<XX>-task.json` / `.md`
 

@@ -2,6 +2,8 @@
 
 Worked example minh hoạ output của skill cho CR-01 (LEX project).
 
+**Tag block áp dụng:** `[FEAT-001]` (default ON, từ story → feature mapping) + `[CR-01]` (auto vì story name có prefix CR). Project có thể tắt `[FEAT-001]` nếu không muốn — xem [conventions-defaults](../conventions-defaults/conventions-defaults.md#tag-system--tổng-quan).
+
 ## Input snippets
 
 **Gap Analysis row CR-01:**
@@ -35,9 +37,9 @@ Worked example minh hoạ output của skill cho CR-01 (LEX project).
 
 ## Output — Main task
 
-**Title:** `[CR-01] Bổ sung chế độ xem dạng danh sách bảng cho vụ việc — Dashboard — View mode`
+**Title:** `[FEAT-001] [CR-01] Bổ sung chế độ xem dạng danh sách bảng cho vụ việc — Dashboard — View mode`
 
-**Labels:** `cr-01`, `from-gap-analysis`, `quan-ly-vu-viec`
+**Labels:** `feat-001`, `cr-01`, `from-gap-analysis`, `quan-ly-vu-viec`
 
 **Priority:** `Highest` *(P0)*
 
@@ -81,7 +83,7 @@ Xem 3 sub-task: `[BA]`, `[FE]`, `[BE]`.
 
 ## Output — Sub-task [BA]
 
-**Title:** `[BA] [CR-01] Bổ sung chế độ xem dạng danh sách bảng cho vụ việc — Dashboard — View mode`
+**Title:** `[BA] [FEAT-001] [CR-01] Bổ sung chế độ xem dạng danh sách bảng cho vụ việc — Dashboard — View mode`
 
 **Estimate:** `4 man-hours`
 
@@ -108,7 +110,7 @@ Xem 3 sub-task: `[BA]`, `[FE]`, `[BE]`.
 
 ## Output — Sub-task [FE]
 
-**Title:** `[FE] [CR-01] Bổ sung chế độ xem dạng danh sách bảng cho vụ việc — Dashboard — View mode`
+**Title:** `[FE] [FEAT-001] [CR-01] Bổ sung chế độ xem dạng danh sách bảng cho vụ việc — Dashboard — View mode`
 
 **Estimate:** `16 man-hours`
 
@@ -135,7 +137,7 @@ Xem 3 sub-task: `[BA]`, `[FE]`, `[BE]`.
 
 ## Output — Sub-task [BE]
 
-**Title:** `[BE] [CR-01] Bổ sung chế độ xem dạng danh sách bảng cho vụ việc — Dashboard — View mode`
+**Title:** `[BE] [FEAT-001] [CR-01] Bổ sung chế độ xem dạng danh sách bảng cho vụ việc — Dashboard — View mode`
 
 **Estimate:** `3 man-hours`
 
@@ -162,11 +164,21 @@ Xem 3 sub-task: `[BA]`, `[FE]`, `[BE]`.
 ## Visual tree
 
 ```
-[CR-01] Bổ sung chế độ xem dạng danh sách bảng cho vụ việc — Dashboard — View mode
-│  est: 23h · priority: Highest · labels: cr-01, from-gap-analysis, quan-ly-vu-viec
+[FEAT-001] [CR-01] Bổ sung chế độ xem dạng danh sách bảng cho vụ việc — Dashboard — View mode
+│  est: 23h · priority: Highest · labels: feat-001, cr-01, from-gap-analysis, quan-ly-vu-viec
 │  desc: context + 4 AC rows
 │
-├─ [BA] [CR-01] Bổ sung … — Dashboard — View mode    (4h)
-├─ [FE] [CR-01] Bổ sung … — Dashboard — View mode    (16h)
-└─ [BE] [CR-01] Bổ sung … — Dashboard — View mode    (3h)
+├─ [BA] [FEAT-001] [CR-01] Bổ sung … — Dashboard — View mode    (4h)
+├─ [FE] [FEAT-001] [CR-01] Bổ sung … — Dashboard — View mode    (16h)
+└─ [BE] [FEAT-001] [CR-01] Bổ sung … — Dashboard — View mode    (3h)
 ```
+
+## Variations theo tag config
+
+| Config | Title kết quả |
+|---|---|
+| Default | `[FEAT-001] [CR-01] Bổ sung … — Dashboard — View mode` |
+| Tắt feature tag (`feature_tag: off`) | `[CR-01] Bổ sung … — Dashboard — View mode` |
+| Tắt CR tag (`cr_tag: off`, hiếm) | `[FEAT-001] Bổ sung … — Dashboard — View mode` |
+| Thêm `[MVP-1]` custom | `[FEAT-001] [CR-01] [MVP-1] Bổ sung … — Dashboard — View mode` |
+| Tắt cả 2 default, chỉ custom | `[MVP-1] Bổ sung … — Dashboard — View mode` |

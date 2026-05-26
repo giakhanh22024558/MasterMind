@@ -1,38 +1,60 @@
 # Task structure — main + 3 sub-task
 
-Cấu trúc bắt buộc cho mỗi CR khi push lên Jira.
+Cấu trúc bắt buộc cho mỗi task khi push lên Jira. Áp dụng cho **mọi nguồn** task (CR, planned story, bug, refactor, hotfix...).
 
-## Main task (1 issue / CR)
+## Main task (1 issue / task source)
 
 | Field | Giá trị |
 |---|---|
 | **Issue type** | `Task` (hoặc `Story` nếu project conventions override) |
-| **Title** | `[CR-XX] <Story title> — <scope CR>` |
-| **Labels** | `cr-XX`, `from-gap-analysis`, scope topic (vd `quan-ly-vu-viec`) |
-| **Priority** | Map từ CR Priority: `P0 → Highest`, `P1 → High`, `P2 → Medium` |
+| **Title** | `[FEAT-XXX] [CR-XX]? [<custom>]? <task title> — <scope?>` (xem [tag system](../conventions-defaults/conventions-defaults.md#tag-system--tổng-quan)) |
+| **Labels** | `feat-XXX` (default) + `from-gap-analysis`, `cr-XX` (nếu CR tag bật) + topic kebab-case |
+| **Priority** | Map từ source: `P0 → Highest`, `P1 → High`, `P2 → Medium` |
 | **Estimate** (tổng) | `Est BA + Est FE + Est BE` man-hours |
-| **Description** | Theo template bên dưới |
+| **Description** | Theo template bên dưới (rút gọn nếu không có Gap data) |
 
-### Title — giải thích các thành phần
+### Tag system — applied
 
-- `[CR-XX]` — mã CR từ Gap Analysis (vd `[CR-01]`)
-- `<Story title>` — Description của CR (cột Description ở Gap Analysis); **không** dùng nguyên Story title trong Backlog vì đã có prefix `[CR-XX]` trùng
-- `<scope CR>` — cột Criteria của Gap Analysis (vd `Dashboard — View mode`)
+| Tag | Khi nào xuất hiện |
+|---|---|
+| `[FEAT-XXX]` | **Default ON** — mọi task. User có thể tắt trong `jira-conventions.md` |
+| `[CR-XX]` | Có khi task xuất phát từ Change Request (story name chứa prefix `[CR-XX]`). Không có nếu task không liên quan CR |
+| `[BUG-NNN]` / `[HOTFIX]` / `[TECH-DEBT]` / `[SPIKE]` / … | Custom — user định nghĩa trong project conventions hoặc set per-task |
 
-**Ví dụ:** `[CR-01] Bổ sung chế độ xem dạng danh sách bảng cho vụ việc — Dashboard — View mode`
+Thứ tự: `[FEAT] [CR] [custom...]` rồi tới title.
+
+### Title — các thành phần
+
+- **Tag block** (đứng đầu, xem trên): `[FEAT-XXX]` + tag optional khác
+- **`<task title>`** — tên công việc:
+  - Source = CR → `Description` của Gap Analysis
+  - Source = planned story → tên User Story (đã rút gọn, bỏ prefix `[CR-XX]` nếu trùng)
+  - Source = bug / refactor → mô tả ngắn (1 dòng)
+- **`<scope?>`** (optional, sau ` — `):
+  - Source = CR → `Criteria` của Gap Analysis (vd `Dashboard — View mode`)
+  - Source khác → tên section / màn bị ảnh hưởng, hoặc bỏ qua
+
+### Ví dụ title (theo source)
+
+| Source | Title |
+|---|---|
+| CR-derived | `[FEAT-001] [CR-01] Bổ sung view mode dạng bảng — Dashboard — View mode` |
+| Planned story | `[FEAT-010] Tạo công việc mới cho Admin` |
+| Bug | `[FEAT-019] [BUG-512] Xóa tài liệu trả 500` |
+| Hotfix (FEAT tag tắt) | `[HOTFIX] Restart queue worker khi memory leak` |
 
 ### Description — template
 
 ```markdown
 ## Context
 
-**As-Is:** <Current System Behavior từ Gap Analysis>
+**As-Is:** <Current System Behavior — bỏ nếu không phải CR>
 
-**To-Be:** <Client Expectation từ Gap Analysis>
+**To-Be:** <Client Expectation — hoặc mô tả mục tiêu>
 
-**Client Note:** <Client Note cột Q của Gap_Analysis>
+**Client Note:** <Note từ KH — bỏ nếu không có>
 
-**Impacted Module:** <Impacted Module>
+**Impacted Module:** <Module bị ảnh hưởng>
 
 **Decision:** <Decision> · **Priority:** <P0/P1/P2>
 
@@ -53,10 +75,12 @@ Xem 3 sub-task: `[BA]`, `[FE]`, `[BE]`.
 ## Reference
 
 - Backlog: `<Story ID>` (vd STORY-133)
-- Gap Analysis: row CR-XX
+- Source: `<CR-XX>` / `<BUG-NNN>` / `manual` (tuỳ nguồn)
 ```
 
-## Sub-tasks (3 issue / CR — luôn đủ cả 3)
+> Section nào không có data (vd As-Is/To-Be với planned story) thì **bỏ section đó** thay vì để trống.
+
+## Sub-tasks (3 issue / task — luôn đủ cả 3)
 
 Mỗi sub-task:
 
@@ -64,17 +88,17 @@ Mỗi sub-task:
 |---|---|
 | **Issue type** | `Sub-task` |
 | **Parent** | Main task |
-| **Title** | `[<ROLE>] [CR-XX] <Story title> — <scope CR>` — **cùng title main task**, chỉ thêm prefix `[BA]`/`[FE]`/`[BE]` |
+| **Title** | `[<ROLE>] <main title>` — vd `[BA] [FEAT-001] [CR-01] Bổ sung view mode dạng bảng — Dashboard — View mode`. **Cùng** title main task, chỉ thêm prefix `[BA]`/`[FE]`/`[BE]` ở đầu (trước tag block) |
 | **Assignee** | Để trống (PM gán sau) hoặc default theo role |
 | **Estimate** | Est của role đó (man-hours) |
-| **Description** | Bullet list công việc của role (lấy từ Impact Analysis cột Impl·BA/FE/BE) |
+| **Description** | Bullet list công việc của role (lấy từ Impact Analysis cột Impl·BA/FE/BE, hoặc breakdown thủ công) |
 
 ### Description sub-task — template
 
 ```markdown
 ## Công việc của <ROLE>
 
-<bullet list từ Impact Analysis Impl·BA / Impl·FE / Impl·BE>
+<bullet list — chỉ công việc của role này>
 
 ## Estimation
 
@@ -88,14 +112,14 @@ Mỗi sub-task:
 
 ### Quy tắc về 3 sub-task
 
-- **Luôn tạo đủ 3** — kể cả role có 0h work (description = `Không có`). Tránh role bị bỏ sót.
-- Title sub-task **phải giống** title main task, chỉ khác prefix `[BA]/[FE]/[BE]`. Đừng paraphrase.
+- **Luôn tạo đủ 3** — kể cả role có 0h work (description = `Không có công việc cho role này`). Tránh role bị bỏ sót.
+- Title sub-task **phải giống** title main task, chỉ khác prefix `[<ROLE>]`. Đừng paraphrase, đừng bỏ tag.
 - Body sub-task **chỉ chứa** công việc của role đó — không nhồi context (đã có ở main task).
 
 ## Output file format
 
 | File | Mục đích |
 |---|---|
-| `output/jira/cr-<XX>-task.json` | Payload cho Jira REST API `POST /rest/api/3/issue` (main) + `POST /rest/api/3/issue` (3 sub-tasks) |
-| `output/jira/cr-<XX>-task.md` | Markdown để paste vào Jira UI (description hỗ trợ markdown) |
-| `output/jira/all-tasks.csv` | (tuỳ chọn) Bulk CSV import cho nhiều CR cùng lúc |
+| `output/jira/<source-id>-task.json` | Payload cho Jira REST API `POST /rest/api/3/issue` (main) + 3 sub-tasks. Vd: `cr-01-task.json`, `story-034-task.json`, `bug-512-task.json` |
+| `output/jira/<source-id>-task.md` | Markdown để paste vào Jira UI |
+| `output/jira/all-tasks.csv` | (tuỳ chọn) Bulk CSV import cho nhiều task cùng lúc |
