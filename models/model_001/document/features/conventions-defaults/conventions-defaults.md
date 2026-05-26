@@ -21,3 +21,7 @@ Defaults applied when `<project-root>/features-conventions.md` does not specify 
 ## When defaults apply
 
 Each item the project does not declare takes the value here. The skill **acknowledges the source** when explaining a choice ("per project conventions" / "using default").
+
+## See also
+
+- [`ac-writing.md`](ac-writing.md) — convention viết Acceptance Criteria cho mỗi User Story (format VI `Khi/Nếu… thì…` · EN `Given/When/Then`, 6 nguyên tắc, anti-patterns).

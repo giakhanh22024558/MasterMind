@@ -30,7 +30,10 @@ When the project **already has an SRS** and the client sends **change requests (
 ```
 CRs + current SRS → gap analysis → impact analysis → user approval
                   → features (approved CRs) → back to stage 2 (erd / BR / srs updates)
+                  → JIRA TASK CREATION (skill `integration/jira/`)
 ```
+
+Bước cuối — skill [`integration/jira/`](../integration/jira/) đóng gói mỗi CR thành 1 main task + 3 sub-task (BA/FE/BE) để dev claim trên Jira.
 
 ## When to use this skill
 
