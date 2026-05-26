@@ -43,13 +43,19 @@ Overrides defaults of skill [`document/features`](../MasterMind/models/model_001
 
 ## AC writing format
 
+Pick **one** language per project — never mix within a file.
+See [`ac-writing.md`](../../MasterMind/models/model_001/document/features/conventions-defaults/ac-writing.md) for full guidance and examples.
+
 ```yaml
-# ac_writing:
-#   language: en              # en (default) | vi
-#   format_en: "Given/When/Then"
-#   format_vi: "Khi/Nếu… thì…"
-#   max_per_story: 10         # suggested max ACs per story
+ac_writing:
+  language: en              # en (default) → "Given/When/Then"
+                            # vi           → "Nếu/Khi… thì…"
+  # max_per_story: 10       # optional — suggested max ACs per story
 ```
+
+Reference patterns:
+- **EN (GWT):** `Given a missing required field, when clicking Save, then the Save button is disabled`
+- **VI:** `Nếu thiếu field bắt buộc, thì nút Lưu disable`
 
 ## Sheet layout (when rendering xlsx)
 

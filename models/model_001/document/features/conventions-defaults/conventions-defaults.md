@@ -15,8 +15,9 @@ Defaults applied when `<project-root>/features-conventions.md` does not specify 
 | In Scope values | `In scope` · `Out of scope` · `Next phase` · `Undecided` |
 | Checkbox display (`.xlsx`) | `Ready?` and `Done?` render as a two-value dropdown: `☐` (default) and `☑` |
 | Feature list pilot file | `output/features.xlsx` |
+| **`ac_writing.language`** | **`en`** — Acceptance Criteria written as `Given/When/Then`. Set to `vi` for the Vietnamese form `Khi/Nếu… thì…`. See [`ac-writing.md`](ac-writing.md). |
 
-> Most projects override the **In Scope** list — it is meant to match the project's actual delivery phases or scope buckets.
+> Most projects override the **In Scope** list — it should match the project's actual delivery phases or scope buckets. A Vietnamese-language project should also override `ac_writing.language: vi` explicitly.
 
 ## When defaults apply
 
@@ -24,4 +25,4 @@ Each item the project does not declare takes the value here. The skill **acknowl
 
 ## See also
 
-- [`ac-writing.md`](ac-writing.md) — convention viết Acceptance Criteria cho mỗi User Story (format VI `Khi/Nếu… thì…` · EN `Given/When/Then`, 6 nguyên tắc, anti-patterns).
+- [`ac-writing.md`](ac-writing.md) — Acceptance Criteria writing convention for each User Story (formats: EN `Given/When/Then` · VI `Khi/Nếu… thì…`, 6 principles, anti-patterns, sheet layout).
