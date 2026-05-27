@@ -3,9 +3,9 @@
 > Backed by skill [`document/features`](../MasterMind/models/model_001/document/features/).
 > 3-level hierarchy: **Epic → Feature → User Story**, with Acceptance Criteria (AC) in a **separate sheet** (`Acceptance Criteria`).
 
-## 🔒 Canonical layout — 9 columns, 3 row types (LOCKED)
+## 🔒 Canonical layout — 9 columns, 3 row types (default-locked, project-extensible)
 
-The skill enforces ONE canonical layout across every project. **Do not add columns, do not merge cells, do not translate headers.** Extra fields go in a separate sheet keyed by `STORY-XXX`. See [`feature-list.md`](../MasterMind/models/model_001/document/features/feature-list/feature-list.md) for full spec + anti-patterns.
+The skill produces the **same 9 canonical columns** across every project by default. Sessions do not silently invent columns. **If you (the user) explicitly need extra columns** for this project, ask the agent and they will append them at column J onwards + record under `extra_columns` in `conventions/features-conventions.md` (project-scoped). To turn an extension into a global default, ask *"save this to the model"*. See [`feature-list.md`](../MasterMind/models/model_001/document/features/feature-list/feature-list.md) for full spec.
 
 | A | B | C | D | E | F | G | H | I |
 |---|---|---|---|---|---|---|---|---|
@@ -45,12 +45,18 @@ The skill enforces ONE canonical layout across every project. **Do not add colum
 3. Live edit: skill `integration/google_sheets` (cell-level CRUD that preserves dropdown chips + comments)
 4. Render to xlsx mirror: `business_analysis/scripts/ba_md_to_xlsx.py` → `output/<project>-Backlog.xlsx`
 
-## Anti-patterns (will be rejected by reviewers)
+## Anti-patterns
 
-- ❌ Adding columns like `SRS Feature ID`, `AC count`, `Description`, `Ref. Req`, `Owner`, `Sprint`
+Silent inventions (rejected unless the user explicitly asked):
+
+- ❌ Adding columns like `SRS Feature ID`, `AC count`, `Description`, `Ref. Req`, `Owner`, `Sprint` on the agent's own initiative
+- ❌ Translating canonical headers (`Tên Epic` instead of `Epic Name`)
+- ❌ Reordering canonical columns
+
+Always-wrong (even with user request):
+
 - ❌ Merging Epic Name / Feature Name across story rows (use the 3-row-type pattern instead)
-- ❌ Translating headers (`Tên Epic` instead of `Epic Name`)
-- ❌ Reordering columns
+- ❌ Inserting extension columns in the middle (must append at column J onwards, preserving canonical A–I)
 - ❌ Story name contains both the `[CR-XX]` tag and the canonical format — pick one
 - ❌ AC longer than one line — split into multiple ACs, one condition each
 - ❌ AC describes implementation (DB, API) — only observable behavior is allowed

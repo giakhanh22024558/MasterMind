@@ -9,16 +9,19 @@ Derives a **feature backlog** from a requirements table, organized as a three-le
 
 Follows the [Core Rule](../../../../core/core-rule/): the requirements table → the feature list (live sheet, the source of truth) → `.md` sidecar in `context/` + optional `.xlsx` mirror in `output/`.
 
-## 🔒 Critical rule — the layout is LOCKED
+## 🔒 Critical rule — canonical layout (default-locked, project-extensible)
 
-Every project using this skill produces the **same 9-column sheet in the same order**, with the **same 3-row-type pattern**. Sessions MUST NOT:
-- Add columns (`SRS Feature ID`, `AC count`, `Description`, `Ref. Req`, `Owner`, `Sprint`, etc.)
-- Remove or reorder columns
-- Translate column headers
+**Default:** every project produces the same 9-column sheet in the same order, with the same 3-row-type pattern. Sessions MUST NOT **silently**:
+- Add columns (`SRS Feature ID`, `AC count`, `Description`, `Ref. Req`, `Owner`, `Sprint`, etc.) because they "seem useful"
+- Remove, reorder, or translate canonical columns
 - Merge cells across rows
-- Invent hybrid layouts to fit project-specific fields — route those to a separate sheet keyed by `STORY-XXX`
+- Invent hybrid layouts
 
-See [`feature-list/feature-list.md`](feature-list/feature-list.md) for the canonical spec + full anti-pattern list. **Read it before producing any backlog.**
+**Escape hatch — explicit user request:** if the user explicitly asks to add columns (*"thêm cột X"*, *"add column Y"*), the session **does it without arguing** — appended at column J onwards, recorded in `<project>/features-conventions.md` → `extra_columns`. The change is **scoped to the current project only**.
+
+**Promotion to model:** only when the user explicitly says *"save this to the model"* / *"lưu mẫu này vào model"* does the session edit MasterMind itself to make the extension a new global default.
+
+See [`feature-list/feature-list.md`](feature-list/feature-list.md) for the canonical spec, full anti-pattern list, and extension/promotion mechanics. **Read it before producing any backlog.**
 
 ## When to use this skill
 
@@ -68,10 +71,12 @@ Invoke when the user asks to:
 
 - ❌ A feature with no epic, or a user story with no feature.
 - ❌ Hand-assigning `EPIC-` / `FEAT-` / `STORY-` codes.
-- ❌ **Adding columns** beyond the canonical 9 (e.g. `SRS Feature ID`, `AC count`, `Description`, `Ref. Req`, `Owner`).
+- ❌ **Silently** adding columns beyond the canonical 9 because they "seem useful" (silent inventions like `SRS Feature ID`, `AC count`, `Description`, `Ref. Req`, `Owner` — *unless the user explicitly asks*).
+- ❌ Adding user-requested columns but **forgetting to record them in `<project>/features-conventions.md`** → next session won't reproduce them.
+- ❌ Adding user-requested columns to the **model** (`MasterMind/...`) without explicit promotion intent from the user.
 - ❌ **Merging cells** to span Epic Name / Feature Name across story rows — use the 3-row-type pattern instead.
-- ❌ **Translating column headers** (e.g. `Tên Epic` instead of `Epic Name`).
-- ❌ **Reordering columns** (e.g. `Status` before `Priority`).
+- ❌ **Translating** canonical column headers (e.g. `Tên Epic` instead of `Epic Name`).
+- ❌ **Reordering** canonical columns (e.g. `Status` before `Priority`) — extensions append at column J onwards.
 - ❌ Editing the rendered `.xlsx` and expecting it to flow back to the live sheet / `.md` sidecar.
 
 ## Cross-references

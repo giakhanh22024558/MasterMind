@@ -1,8 +1,12 @@
-# Feature list — canonical layout (LOCKED)
+# Feature list — canonical layout (LOCKED by default, project-extensible)
 
-The feature backlog, organized as a three-level hierarchy: **Epic → Feature → User Story**, rendered as **one sheet with exactly 9 columns** and **three row types**. Derived from the requirements table; consumed by every downstream skill (SRS, Jira, Google Sheets sync).
+The feature backlog, organized as a three-level hierarchy: **Epic → Feature → User Story**, rendered as **one sheet with exactly 9 canonical columns** and **three row types**. Derived from the requirements table; consumed by every downstream skill (SRS, Jira, Google Sheets sync).
 
-> 🔒 **This layout is LOCKED.** Every project using model_001 produces the same 9 columns in the same order. Sessions MUST NOT add, remove, rename, reorder, or merge columns. Project-level convention overrides allowed values only (priorities, status labels, ID prefix widths) — never the column set or the row pattern.
+> 🔒 **The 9-column layout is the DEFAULT for every project.** Sessions MUST NOT silently add, remove, rename, reorder, or merge columns. Use the canonical layout unless the user **explicitly requests an extension**.
+>
+> ✅ **Escape hatch — explicit user request:** If the user explicitly asks to add extra columns (e.g. "thêm cột Sprint và Owner", "add an SRS Feature ID column"), the session **does it without arguing** — but scopes the change to the **current project only** (record it under `extra_columns` in `<project>/features-conventions.md`). The change does NOT propagate to other projects.
+>
+> 🌐 **Promoting to the model:** Only when the user explicitly says something like *"save this template to the model"* / *"lưu mẫu này vào model"* / *"update model_001 defaults"* does the session edit `MasterMind/models/model_001/...` to make the extension a new global default.
 
 ## The hierarchy
 
@@ -56,20 +60,59 @@ The hierarchy is encoded by **which columns are filled in each row**, NOT by Exc
 | E starts with `STORY-` | **Story** |
 | anything else | spacer / ignore |
 
-## Forbidden — common deviations sessions invent
+## Default-forbidden — silent inventions
 
-These have been observed in past sessions and are **all violations**:
+The following are violations **when invented by the session without an explicit user request**. If the user explicitly asks for any of these, see the *Project extension* section below — do the extension for the current project, do not refuse.
 
-- ❌ Adding an `Epic Name` column whose value is **merged/repeated** across every feature row of the epic (instead of one Epic row with everything else blank)
-- ❌ Adding extra columns like `SRS Feature ID`, `AC count`, `Ref. Req`, `Description`, `Ready?`, `Done?`, `In Scope`, `Owner`, `Sprint`, `Created`, `Updated` — **NONE** belong in this sheet. Keep AC in the separate AC sheet (see `ac-writing.md`), SRS refs in the SRS document, owner/sprint in Jira.
-- ❌ Reordering columns (e.g. putting `Status` before `Priority`)
-- ❌ Translating headers (e.g. `Tên Epic` instead of `Epic Name`)
+- ❌ **Silently** adding columns like `SRS Feature ID`, `AC count`, `Ref. Req`, `Description`, `Ready?`, `Done?`, `In Scope`, `Owner`, `Sprint`, `Created`, `Updated` because they "seem useful"
+- ❌ Reordering canonical columns (e.g. putting `Status` before `Priority`) — even with extensions, canonical order is preserved; extensions append at column J onwards
+- ❌ Translating canonical headers (e.g. `Tên Epic` instead of `Epic Name`)
 - ❌ Using Excel merge-cells on Epic Name / Feature Name to span story rows — use the 3-row-type pattern instead
 - ❌ Putting Feature ID and Story ID in the same row (mashing the Feature row + first Story row together)
 - ❌ Color/background as a primary classifier — color is **decoration only**; the row-filled pattern is the actual classifier (so a script reading the sheet can parse it without RGB inspection)
-- ❌ Renaming `STORY-` to `US-`, `Story ID` to `US ID`, etc.
+- ❌ Renaming canonical IDs (`STORY-` → `US-`, `Story ID` → `US ID`) — width override is fine via `id_formats`; the prefix and header text are canonical
 
-If a project genuinely needs extra fields, put them in a **separate sheet** keyed by `STORY-XXX` (see how `Acceptance Criteria` sheet is structured) — never inflate the Backlog sheet.
+## Project extension — when the user explicitly asks
+
+When the user says *"add a column X"* / *"thêm cột Y"* / similar:
+
+1. **Do it** — do not argue, do not refuse, do not redirect to "a separate sheet" unless the user themselves chose that option.
+2. **Append** the new column at the right end (column J onwards) — never insert in the middle and never reorder the canonical 9.
+3. **Record** the extension in `<project-root>/features-conventions.md` under an `extra_columns` block so future sessions of the same project keep it consistent:
+   ```yaml
+   extra_columns:
+     - header: "SRS Feature ID"
+       filled_on: feature       # epic | feature | story
+       type: text               # text | dropdown | checkbox | date
+       # values: [...]          # for dropdown
+       notes: "Maps backlog feature to its SRS section anchor"
+     - header: "AC count"
+       filled_on: story
+       type: number
+       formula: "=COUNTIF('Acceptance Criteria'!A:A, E{row})"
+   ```
+4. **Mention** to the user that the change is **project-scoped only** and won't appear in other projects. If they want it everywhere, they can say *"save this to the model"* (see next section).
+
+### Promoting an extension to the model
+
+If the user explicitly says *"save this template to the model"* / *"lưu mẫu này vào model"* / *"update model_001 defaults"*:
+
+1. Edit `MasterMind/models/model_001/document/features/feature-list/feature-list.md` — append the new column to the canonical column set, bumping the canonical count from 9 to 10 (etc.).
+2. Update `MasterMind/models/model_001/document/features/conventions-defaults/conventions-defaults.md` to reflect the new default.
+3. Update `MasterMind/models/model_001/setup/templates/docs/backlog.md` so future `/set-up` runs use the new layout.
+4. Commit to MasterMind with a clear message.
+
+Do steps 1–4 only after explicit promotion intent. **Don't promote based on a single project's needs unless the user asks for it.**
+
+### When to suggest a separate sheet instead
+
+You may *suggest* (not enforce) routing extra fields to a separate sheet keyed by `STORY-XXX`/`FEAT-XXX` when:
+
+- The new data has many values per story (e.g. acceptance criteria, test runs, history entries)
+- The new data has its own lifecycle (e.g. QA test status that gets edited independently)
+- Adding it as a backlog column would create many empty cells (e.g. a `BR ref` that only applies to a few stories)
+
+If the user agrees, route there. If they still want it inline, add it as a project extension.
 
 ## Allowed project overrides (via `<project>/features-conventions.md`)
 
@@ -117,13 +160,20 @@ There is **no `Ref. Req` column** in this sheet because traceability lives in th
 - **`.md` mirror:** a sidecar in `context/backlog.md` that mirrors the sheet using the same 9-column markdown table. Used for cheap reading; never the source of truth.
 - **`.xlsx` export:** generated by `business_analysis/scripts/ba_md_to_xlsx.py` if needed for delivery — must reproduce the same 9 columns with the dropdowns + colors above.
 
-## Rules — non-negotiable
+## Rules
+
+**Non-negotiable** (always apply, even with extensions):
 
 1. Every feature belongs to exactly one epic; every user story belongs to exactly one feature.
 2. Codes are sequential, never reused, never hand-assigned.
 3. Use only the project's declared dropdown values for Priority / Status / Lifecycle.
-4. **Do not invent columns.** If the requirement does not fit one of the 9 canonical columns, put it in a separate sheet (AC sheet, Gap Analysis sheet, etc.) keyed by `STORY-XXX` or `FEAT-XXX`.
-5. **Do not merge cells.** The 3-row-type pattern is the layout — no Excel merge.
+4. **Do not merge cells.** The 3-row-type pattern is the layout — no Excel merge across rows.
+5. The canonical 9 columns appear in their fixed order at positions A–I.
+
+**Default behavior** (overridable on explicit user request):
+
+6. **Do not silently invent columns.** Default produces only the canonical 9.
+7. On explicit user request, append extra columns at column J onwards and record them in `<project>/features-conventions.md` → `extra_columns`. Scoped to that project unless the user asks to promote to the model.
 
 ## Cross-references
 

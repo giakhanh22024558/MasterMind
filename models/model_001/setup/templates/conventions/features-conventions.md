@@ -66,3 +66,33 @@ Reference patterns:
 #   story_color:   ""           # white = no fill (default)
 #   header_color:  "1F4E79"     # canonical dark blue
 ```
+
+## Project-extended columns (optional)
+
+The canonical 9 columns at A–I are fixed. If the user has explicitly asked for
+extra columns for this project, declare them here and they will be appended at
+column J onwards, in the order listed. Scoped to this project only — does not
+propagate to other projects. To make an extension a global default, ask the
+agent to *"save this to the model"*.
+
+```yaml
+# extra_columns:
+#   - header: "SRS Feature ID"
+#     filled_on: feature          # epic | feature | story
+#     type: text                  # text | dropdown | checkbox | date | number | formula
+#     notes: "Anchor to SRS section"
+#
+#   - header: "AC count"
+#     filled_on: story
+#     type: formula
+#     formula: "=COUNTIF('Acceptance Criteria'!A:A, E{row})"
+#
+#   - header: "Sprint"
+#     filled_on: story
+#     type: dropdown
+#     values: ["MVP-1", "MVP-2", "MVP-3", "Backlog"]
+#
+#   - header: "Owner"
+#     filled_on: story
+#     type: text
+```
