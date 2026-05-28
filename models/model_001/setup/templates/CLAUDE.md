@@ -33,6 +33,7 @@
 | document | `srs` | Generate IEEE SRS docx |
 | diagram | `erd` | ERD entities + relationships (Mermaid) |
 | diagram | `architecture` | C4-style architecture |
+| diagram | `wireframe` | Low-fi UI wireframes (annotated HTML) for new/changed screens + Design Assumptions table |
 | integration | `jira` | Generate the Jira task tree from CRs/stories |
 | integration | `google_sheets` | Edit Google Sheets via API (cell-level, preserves history) |
 | pipeline | `business_analysis` | End-to-end orchestration of the skills above |

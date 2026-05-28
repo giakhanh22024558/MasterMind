@@ -8,6 +8,7 @@ Skill cluster number 001.
 |---|---|---|
 | diagram | [`diagram/architecture/`](diagram/architecture/) | Draw / audit master architecture diagrams (C4-style) |
 | diagram | [`diagram/erd/`](diagram/erd/) | Build Entity-Relationship Diagrams (crow's-foot notation) |
+| diagram | [`diagram/wireframe/`](diagram/wireframe/) | Draw low-fi UI wireframes (annotated HTML) for new/changed screens, with a Design Assumptions table for client sign-off |
 | document | [`document/srs/`](document/srs/) | Generate IEEE SRS documents in `.docx` format from Markdown |
 | document | [`document/requirements/`](document/requirements/) | Consolidate any input into one requirements table |
 | document | [`document/features/`](document/features/) | Derive a feature list / backlog from a requirements table |

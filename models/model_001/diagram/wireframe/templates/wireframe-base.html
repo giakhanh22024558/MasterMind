@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<!--
+  Wireframe base shell — model_001 / diagram/wireframe.
+  Copy this file, rename to output/wireframes/WF-NN-<slug>.html, and fill in.
+  Keep it self-contained (no external assets). Low-fi grayscale; amber = assumptions only.
+  Every <span class="b">n</span> badge MUST have a matching row in the Design Assumptions table.
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WF-NN — &lt;Screen name&gt;</title>
+<style>
+  :root{
+    --ink:#111; --line:#111; --muted:#666; --soft:#e6e6e6; --soft2:#f4f4f4;
+    --req:#d23; --note:#b8860b; --noteBg:#fff8e1; --noteLine:#e0c060;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:#d9d9d9;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink);}
+  .sheet{max-width:1180px;margin:24px auto;background:#fff;border:1px solid #bbb;padding:0 0 36px;}
+  .crumbs{font-size:12px;color:var(--muted);padding:12px 28px;border-bottom:1px solid var(--soft);}
+  .crumbs b{color:var(--ink);}
+  .redirect-tag{display:inline-block;margin-left:10px;font-size:11px;color:#fff;background:#444;border-radius:3px;padding:2px 7px;}
+  .head{display:flex;justify-content:space-between;align-items:flex-end;padding:20px 28px 6px;}
+  .head h1{font-size:30px;margin:0;font-weight:800;letter-spacing:-.5px;}
+  .qno{font-size:12px;color:var(--muted);text-align:right;}
+  .qno .v{font-size:18px;color:var(--ink);font-weight:700;}
+  .sec{padding:18px 28px;border-top:1px solid var(--soft);}
+  .sec h2{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 14px;font-weight:700;}
+  .grid{display:grid;gap:16px 22px;}
+  .g2{grid-template-columns:1fr 1fr;} .g3{grid-template-columns:1fr 1fr 1fr;}
+  label{display:block;font-size:13px;color:#333;margin-bottom:6px;}
+  .req{color:var(--req);}
+  .inp,.sel,.ta{width:100%;border:1.5px solid var(--line);border-radius:5px;padding:11px 12px;font-size:15px;background:#fff;color:var(--ink);}
+  .ta{min-height:64px;resize:vertical;}
+  .sel{appearance:none;background-image:linear-gradient(45deg,transparent 50%,#111 50%),linear-gradient(135deg,#111 50%,transparent 50%);background-position:calc(100% - 18px) 19px,calc(100% - 12px) 19px;background-size:6px 6px,6px 6px;background-repeat:no-repeat;}
+  .ph{color:#999;} .ro{background:var(--soft2);color:#555;border-style:dashed;}
+  .hint{font-size:11px;color:var(--muted);margin-top:5px;}
+  table{width:100%;border-collapse:collapse;font-size:14px;}
+  th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:700;padding:0 8px 8px;border-bottom:1.5px solid var(--line);}
+  td{padding:9px 8px;vertical-align:top;border-bottom:1px solid var(--soft);}
+  td .inp,td .sel{padding:8px 10px;font-size:14px;border-radius:4px;}
+  .amt{font-variant-numeric:tabular-nums;padding-top:10px;}
+  .addbtn{margin-top:14px;border:1.5px solid var(--line);background:#fff;border-radius:5px;padding:9px 16px;font-size:14px;cursor:pointer;}
+  .trash{font-size:16px;text-align:center;cursor:pointer;}
+  .totals{margin-left:auto;width:340px;}
+  .totals .row{display:flex;justify-content:space-between;padding:7px 0;font-size:14px;border-bottom:1px solid var(--soft);}
+  .totals .row.grand{border-top:1.5px solid var(--line);border-bottom:none;font-weight:800;font-size:17px;padding-top:12px;margin-top:4px;}
+  .actions{display:flex;gap:14px;padding:22px 28px 0;}
+  .btn{flex:1;border:1.5px solid var(--line);background:#fff;border-radius:6px;padding:14px;font-size:16px;cursor:pointer;text-align:center;}
+  .btn.primary{background:#111;color:#fff;} .btn.ghost{color:#333;}
+  .b{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;border-radius:50%;background:var(--note);color:#fff;font-size:11px;font-weight:700;margin-left:6px;vertical-align:middle;padding:0 5px;}
+  .new-flag{display:inline-block;font-size:10px;background:#1a7f37;color:#fff;border-radius:3px;padding:1px 6px;margin-left:6px;vertical-align:middle;}
+  .legend{font-size:11px;color:var(--muted);padding:6px 28px 0;}
+  .assume{margin:26px 28px 0;border:1px solid var(--noteLine);background:var(--noteBg);border-radius:8px;padding:16px 18px;}
+  .assume h3{margin:0 0 12px;font-size:14px;color:#7a5c00;}
+  .assume table{font-size:12.5px;}
+  .assume th{border-bottom:1px solid var(--noteLine);color:#7a5c00;}
+  .assume td{border-bottom:1px solid #efe3b8;vertical-align:top;}
+  .assume .id{font-weight:700;color:var(--note);white-space:nowrap;}
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <div class="crumbs">Section › Sub › <b>&lt;Screen name&gt;</b>
+    <!-- optional when a pop-up becomes a page: <span class="redirect-tag">FULL PAGE — redirect</span> -->
+  </div>
+
+  <div class="head">
+    <h1>&lt;Screen name&gt;</h1>
+    <div class="qno">&lt;Auto ID label&gt; <span class="b">1</span><br><span class="v">&lt;AUTO-VALUE&gt;</span></div>
+  </div>
+  <div class="legend">Low-fi wireframe · numbers <span class="b" style="margin:0">n</span> map to the <b>Design Assumptions</b> table below (pending client confirmation).</div>
+
+  <div class="sec">
+    <h2>Section title <span class="new-flag">NEW vs &lt;source&gt;</span></h2>
+    <div class="grid g2">
+      <div><label>Field A <span class="req">*</span></label><input class="inp ph" placeholder="…"></div>
+      <div><label>Field B <span class="b">2</span></label><input class="inp ro" value="auto" readonly><div class="hint">Auto = …</div></div>
+    </div>
+  </div>
+
+  <!-- add sections / item tables / totals / actions as needed -->
+
+  <div class="actions">
+    <button class="btn ghost">Cancel</button>
+    <button class="btn primary">Confirm</button>
+  </div>
+
+  <div class="assume">
+    <h3>⚠ Design Assumptions — pending client confirmation (logged in &lt;tracker&gt;)</h3>
+    <table>
+      <tr><th style="width:42px;">#</th><th>Assumption</th><th>Question to confirm with client</th></tr>
+      <tr><td class="id">1</td><td>&lt;assumption for badge 1&gt;</td><td>&lt;question&gt;</td></tr>
+      <tr><td class="id">2</td><td>&lt;assumption for badge 2&gt;</td><td>&lt;question&gt;</td></tr>
+    </table>
+  </div>
+
+</div>
+</body>
+</html>
