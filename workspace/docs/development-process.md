@@ -24,6 +24,36 @@ Phiên bản Draft 0.1.0 · [DD/MM/YYYY]
 - **Phạm vi áp dụng**: Toàn công ty, mọi dự án, mọi vai trò.
 - **Cách đọc tài liệu này**: Đây là **mô hình tham chiếu**, không phải mệnh lệnh phải làm hết mọi tầng. Áp dụng phần nào giải quyết nỗi đau thật của team; ít tầng hơn luôn thắng nếu không có lý do cụ thể.
 
+# Toàn cảnh quy trình
+
+Bức tranh tổng thể — chi tiết từng phần ở các mục bên dưới.
+
+```mermaid
+flowchart TB
+    subgraph S1["① NỀN TẢNG — Cross-cutting (làm trước, Sprint 0)"]
+        F["Kiến trúc tổng quan · Hạ tầng/CI-CD · ERD nền · Auth · Chuẩn code<br/>Design System · UX Guidelines · Permission Matrix · Business Rules — phục vụ MỌI module"]
+    end
+    subgraph S2["② DUAL-TRACK trên nền nghiệp vụ (Epic → Feature → Story)"]
+        DIS["DISCOVERY track (đi trước 1 nhịp)<br/>Phân tích backlog · Research · UI/UX design · Prototype · Viết AC · Spike kỹ thuật<br/>→ Đầu ra: Story sẵn sàng (design chốt + AC rõ + dependency sạch)<br/>→ READY GATE: chỉ story qua cổng này mới vào Delivery"]
+        DEL["DELIVERY track (đi sau)<br/>Dev build theo Story/AC · QA viết & chạy test case · Ship<br/>Dev mở Story → đọc AC → tra design → reference BR/Permission/UX"]
+        DIS --> DEL
+    end
+    subgraph S3["③ HAI TRỤC — một nguồn, hai đầu ra"]
+        TD["Trục DELIVERY<br/>Story + AC (disposable)<br/>chảy nhanh theo sprint · đơn vị dev làm việc"]
+        TS["Trục SPEC<br/>Epic → Feature (living, ổn định)<br/>dừng ở tầng Feature · khách hiểu hệ thống"]
+        TD -->|"kết tinh 1 chiều, tại mốc milestone"| TS
+    end
+    subgraph S4["④ VÒNG GÓP Ý KHÁCH — một nguồn, view lọc"]
+        VK["View Khách<br/>file riêng, kéo phần client<br/>enforce + tự cập nhật"]
+        TR["Triage góp ý<br/>CR / làm rõ / từ chối<br/>→ Story mới về nguồn"]
+        NG["Nguồn duy nhất<br/>backlog + tag client / internal"]
+        VK --> TR --> NG
+        NG -.->|"view tự cập nhật"| VK
+    end
+    S5["⑤ VÒNG ĐỜI ARTIFACT<br/>Living (maintain): Spec/Feature · ERD · BR · Permission · UX · Test<br/>Archived (đông cứng): Story Done — Disposable (vứt): AC · sketch"]
+    S1 --> S2 --> S3 --> S4 --> S5
+```
+
 # Năm nguyên tắc nền (xuyên suốt)
 
 Năm nguyên tắc chi phối mọi quyết định trong quy trình:
