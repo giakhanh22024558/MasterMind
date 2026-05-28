@@ -13,10 +13,11 @@ Applied when `<project-root>/wireframe-conventions.md` does not specify a value.
 | Sheet / page width | ~1180px centered | Low-fi sheet on a gray page. |
 | Palette | grayscale + amber `#b8860b` badges + green `#1a7f37` "NEW" flag | Color is structural/annotation only. |
 | Sidecar | `context/wireframes.md` (or per-file `context/<name>.html.md`) | Token-cheap description per the Core Rule. |
-| Status values (tracker) | `To-do / In-design / Review / Done` | For the change tracker; assumptions use `Open / Answered / Deferred / Need clarification`. |
+| Status values (change tracker) | `To-do / In-design / Review / Done` | For the **wireframe** change tracker (per-screen progress). |
+| Assumption status | **none** | Assumptions have no approval workflow — dev builds against them; later feedback is absorbed on the relevant US. Tracker columns: `ID · Wireframe · Field/Area · Assumption · Client feedback`. |
 
 ## Defaults rationale
 
 - **HTML + self-contained**: opens offline in any browser, exports to PDF/screenshot, diff-able in git, fast to iterate.
-- **English default**: wireframes are usually produced to send to a client for confirmation; English is the safe lingua franca unless the project states otherwise.
-- **Assumptions logged, not lost**: a badge on the screen is paired with a tracker row so every open question reaches the client and can be closed.
+- **English default**: wireframes are usually produced to send to a client for awareness; English is the safe lingua franca unless the project states otherwise.
+- **Build against assumptions, don't block**: a badge on the screen is paired with a tracker row so the client is aware — but dev proceeds immediately. There is no "confirm/approve" gate; client feedback becomes a change on the affected user story.

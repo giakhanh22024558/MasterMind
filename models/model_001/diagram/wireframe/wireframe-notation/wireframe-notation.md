@@ -10,10 +10,18 @@ This is the defining technique of the skill.
   ```html
   <label>Valid Until <span class="b">3</span></label>
   ```
-- At the bottom of the screen, a **Design Assumptions** table lists each number with two columns: the **assumption** the wireframe was drawn against, and the **exact question** to confirm with the client.
+- At the bottom of the screen, a **Design Assumptions** table lists each number as a **plain statement** of what the wireframe (and the build) was drawn against.
 - The badge number ↔ table row number must match 1:1. Never leave a badge without a row, or a row without a badge.
 
-This lets a client read the screen and immediately see "what did you assume, and what do you need me to confirm" — turning a wireframe into a structured clarification artifact.
+This lets a client read the screen and immediately see "what did you assume" — and lets dev start building immediately.
+
+### No status / approval workflow
+
+Dev **builds against** the assumptions; it does **not** wait for the client to approve them. So the table has **no status column** (`Decided / To confirm / Need clarification` etc.). It is a flat list of statements. The screen carries one standing note near the table:
+
+> *The dev team builds against these assumptions — no pre-approval needed. Flag anything that should differ and we'll record the change on the relevant user story.*
+
+Optionally append a short *"(please flag if different)"* hint to the least-certain rows — but never a blocking status. When the client does flag something, absorb it as a **change on the corresponding US** (update its AC), mid-development.
 
 ## Visual rules
 
@@ -42,14 +50,14 @@ This lets a client read the screen and immediately see "what did you assume, and
 
 ## Logging assumptions
 
-A badge in the HTML is not enough — assumptions must be **trackable to closure**. Log every assumption to a project tracker so the client can answer and you can mark it resolved:
+A badge in the HTML is not enough — assumptions must be **recorded** so the client is aware and any later feedback has a home. Log every assumption to a project tracker:
 
-- Preferred: a **`WF Assumptions` sheet** in the project's Q&A workbook with columns `ID · Wireframe · Field/Area · Assumption · Question to confirm · Client answer · Status` (Status default `Need clarification`).
+- Preferred: a **`WF Assumptions` sheet** in the project's Q&A workbook with columns `ID · Wireframe · Field/Area · Assumption (dev builds against this) · Client feedback`. **No status column** — dev does not wait for sign-off.
 - Or a section in `docs/wireframe-changes.md`.
 - ID format: `A-WF<NN>-<nn>` (e.g. `A-WF01-04`).
 - ⚠️ If the Q&A workbook is **hand-maintained** (already contains filled answers), append the sheet via `openpyxl` load+edit — never re-run a generator that rebuilds it from scratch.
 
-When a client answers an assumption: update the sheet (Client answer + Status), then revise the wireframe and remove/keep the badge accordingly.
+When the client gives feedback on an assumption: record it (Client feedback), then revise the wireframe **and** update the affected user story's AC — build-and-adjust, no approval gate.
 
 ## Why HTML (not an image format)
 

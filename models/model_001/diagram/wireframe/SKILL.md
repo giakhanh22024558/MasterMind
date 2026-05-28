@@ -7,7 +7,15 @@ description: Draw low-fidelity UI wireframes (screen mockups) as self-contained 
 
 For **low-fidelity UI wireframes** — screen mockups that show layout, fields, and behavior for a new or changed screen, rendered as a **single self-contained HTML file** (grayscale, no external assets) that opens in any browser and exports cleanly to PDF/screenshot for client review.
 
-The signature of this skill is **numbered annotation badges + a Design Assumptions table**: every field whose meaning, configurability, or behavior the client has NOT fully specified is drawn against an explicit assumption, marked with a badge ①②③…, and listed in a table at the bottom of the screen with the exact question to confirm. Assumptions are also logged to a project tracker so they are not lost.
+The signature of this skill is **numbered annotation badges + a Design Assumptions table**: every field whose meaning, configurability, or behavior the source has NOT fully specified is drawn against an explicit assumption, marked with a badge ①②③…, and listed in a plain table at the bottom of the screen.
+
+## Build-against-assumptions (do NOT block on client sign-off)
+
+The dev team **proceeds to implement the user stories against the assumptions** — it does **not** wait for the client to approve them first (waiting wastes time). Assumptions are recorded purely so the client is **aware** of what was assumed and can give feedback.
+
+- The wireframe carries a standing note: *"Dev builds against these assumptions; flag anything that should differ and we'll record the change on the relevant user story."*
+- If the client later disagrees with an assumption, it's handled as a **change on the corresponding US** (update the AC) — build-and-adjust, mid-development. No separate approval gate.
+- Therefore the Design Assumptions table has **no status/approval column** (no "Decided / To confirm / Need clarification" workflow). It's a flat list of statements the build was made against. Optionally mark the least-certain ones with a short *"(please flag if different)"* hint — but never a blocking status.
 
 ## When to use this sub-skill
 
@@ -46,9 +54,9 @@ For data models use [`../erd/`](../erd/); for system/component architecture use 
 1. **Identify the source** (CR / SRS figure / Q&A) and confirm it's a NEW screen vs an update.
 2. **Copy the base shell** from [`templates/wireframe-base.html`](templates/) — gives you the CSS, badge styles, and the Design Assumptions table.
 3. **Lay out sections** top-to-bottom (header/meta → main content → totals/summary → actions). Use the patterns in [`patterns/`](patterns/).
-4. **For every field the source doesn't fully specify**, design against an assumption, drop a numbered badge `<span class="b">n</span>`, and add a matching row to the Design Assumptions table with the question to confirm.
+4. **For every field the source doesn't fully specify**, design against an assumption, drop a numbered badge `<span class="b">n</span>`, and add a matching row to the Design Assumptions table (a plain statement — no status).
 5. **Save** to `output/wireframes/WF-NN-<slug>.html` (per conventions). Add a `.md` sidecar in `context/` per the Core Rule.
-6. **Log assumptions** to the project's confirmation tracker (e.g. a "WF Assumptions" sheet in the Q&A workbook, or `docs/wireframe-changes.md`) so the client can answer them — see [`wireframe-notation/`](wireframe-notation/#logging-assumptions).
+6. **Log assumptions** to the project tracker (e.g. a "WF Assumptions" sheet in the Q&A workbook, or `docs/wireframe-changes.md`) so the client is aware — see [`wireframe-notation/`](wireframe-notation/#logging-assumptions). Dev does **not** wait for sign-off; changes are absorbed on the relevant US.
 
 ### Workflow B · Update an existing screen
 
@@ -63,6 +71,7 @@ Wireframes meant for client sign-off must be in the **client's language** (defau
 ## Anti-patterns
 
 - ❌ Inventing field behavior silently — if the source doesn't specify it, make it an explicit **assumption badge**, never a hidden decision.
+- ❌ **Blocking development on client sign-off of assumptions** — dev builds against them; changes are absorbed on the US. Do not add a status/approval workflow to the assumptions.
 - ❌ High-fidelity / pixel-perfect styling — this skill is **low-fi**; color is for structure (sections) and annotations only.
 - ❌ External dependencies (web fonts, CDN CSS, images) — wireframes must be **single self-contained HTML** so they open offline and export cleanly.
 - ❌ Losing assumptions — every badge MUST have a row in the Design Assumptions table AND be logged to the project tracker.

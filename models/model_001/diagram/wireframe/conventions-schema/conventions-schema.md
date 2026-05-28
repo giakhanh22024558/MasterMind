@@ -15,13 +15,14 @@ file_name: "WF-{nn:02d}-{slug}.html"
 # Language of client-facing wireframes (labels, annotations, assumptions)
 language: en            # en (default) | vi | …
 
-# Where to log Design Assumptions for client confirmation
+# Where to log Design Assumptions (for client awareness — NOT an approval gate)
 assumptions_tracker:
   kind: qa_sheet        # qa_sheet | markdown
   file: output/<project>-SRS-QA.xlsx   # if kind=qa_sheet
   sheet: "WF Assumptions"
   # file: docs/wireframe-changes.md    # if kind=markdown
   id_format: "A-WF{wf_nn}-{nn:02d}"
+  # columns: ID · Wireframe · Field/Area · Assumption · Client feedback  (NO status column)
 
 # Visual palette (decoration only — keep low-fi)
 palette:
@@ -37,7 +38,7 @@ palette:
 | `output_dir` | Folder for wireframe files under the working folder. |
 | `file_name` | Naming pattern. Keep the `WF-NN` prefix so wireframes cross-reference the change tracker. |
 | `language` | Language for client-facing labels + the Design Assumptions table. |
-| `assumptions_tracker` | Where badge assumptions are logged for client sign-off. If the Q&A workbook is hand-maintained, append via load+edit. |
+| `assumptions_tracker` | Where badge assumptions are recorded for client awareness (no sign-off gate). If the Q&A workbook is hand-maintained, append via load+edit. |
 | `palette.accent` | Badge color. Everything else stays grayscale. |
 
 ## What is NOT configurable
