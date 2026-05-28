@@ -58,7 +58,7 @@ Leave empty = skill defaults apply.
 
 | File | Backing skill | Workflow |
 |---|---|---|
-| `docs/project-overview.md` | `business_analysis` / `srs` | Overview master doc (tiếng Việt, format model_001) — tổng hợp & trỏ tới mọi artifact; render ra `.docx` |
+| `docs/development-process.md` | `business_analysis` / `srs` | **Quy trình phát triển phần mềm chuẩn công ty** (tiếng Việt, format model_001) — nguyên tắc tổng quát áp dụng mọi dự án; render ra `.docx` |
 | `docs/requirements.md` | `document/requirements` | REQ-XXXX table, filled from raw input |
 | `docs/backlog.md` | `document/features` | Epic → Feature → Story + AC nested |
 | `docs/gap-analysis.md` | `document/analysis` | 17 standard columns (Topic / Criteria / As-Is / To-Be / Impl per role / Est per role / Decision) |
