@@ -11,7 +11,8 @@ Skill cluster number 001.
 | diagram | [`diagram/wireframe/`](diagram/wireframe/) | Draw low-fi UI wireframes (annotated HTML) for new/changed screens, with a Design Assumptions table for client sign-off |
 | document | [`document/srs/`](document/srs/) | Generate IEEE SRS documents in `.docx` format from Markdown |
 | document | [`document/requirements/`](document/requirements/) | Consolidate any input into one requirements table |
-| document | [`document/features/`](document/features/) | Derive a feature list / backlog from a requirements table |
+| document | [`document/features/`](document/features/) | Derive a feature list / backlog from a requirements table (Epic → Feature → US) |
+| document | [`document/foundation-sprint/`](document/foundation-sprint/) | Plan the Sprint 0 / cross-cutting foundation (Topic → Concern → Task → ACs) + gate-buffer scheduling |
 | document | [`document/analysis/`](document/analysis/) | Gap Analysis & Impact Analysis for change requests (`.xlsx` sheets) |
 | integration | [`integration/jira/`](integration/jira/) | Generate Jira issues + sub-tasks (BA / FE / BE) from approved CRs |
 | integration | [`integration/google_sheets/`](integration/google_sheets/) | CRUD Google Sheets via API — cell-level edits preserve comments/history/dropdowns |

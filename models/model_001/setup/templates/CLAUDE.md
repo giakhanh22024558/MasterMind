@@ -29,6 +29,7 @@
 |---|---|---|
 | document | `requirements` | Consolidate raw input → requirements table |
 | document | `features` | Backlog table — Epic / Feature / Story / AC |
+| document | `foundation-sprint` | Sprint 0 foundation register — Topic / Concern / Task / ACs + gate-buffer schedule |
 | document | `analysis` | Gap + Impact Analysis for CRs |
 | document | `srs` | Generate IEEE SRS docx |
 | diagram | `erd` | ERD entities + relationships (Mermaid) |
