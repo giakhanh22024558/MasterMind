@@ -1,6 +1,6 @@
 ---
 name: diagram/wireframe
-description: Draw low-fidelity UI wireframes (screen mockups) as self-contained annotated HTML, for new or changed screens derived from requirements / change requests / Q&A. Each interactive element is numbered with a badge that maps to a "Design Assumptions" table, so any field the client has not fully specified is designed against an explicit assumption and logged for confirmation. Use when the user asks to draw/mock up a screen, visualize a UI change from a CR, or produce client-facing wireframes for sign-off. Not for data ERDs (use diagram/erd) or system architecture (use diagram/architecture).
+description: Draw low-fidelity UI wireframes (screen mockups) as self-contained HTML, for new or changed screens derived from requirements / change requests / Q&A. Every component is tagged with a section-grouped ID badge (A1/B2…) that maps 1:1 to a component-spec table in a companion .md; design assumptions live in that .md and the dev team builds against them (no sign-off gate). Lightweight inline JS may demo state changes (lock-on-status, toggle panels, add/remove rows). Screens can be packaged for client review as a consolidated Markdown (snapshots + spec + assumptions) for Confluence. Use when the user asks to draw/mock up a screen, visualize a UI change from a CR, or produce client-facing wireframes. Not for data ERDs (use diagram/erd) or system architecture (use diagram/architecture).
 ---
 
 # Wireframe diagram sub-skill
@@ -56,22 +56,36 @@ For data models use [`../erd/`](../erd/); for system/component architecture use 
 ### Workflow A · Draw a new screen
 
 1. **Identify the source** (CR / SRS figure / Q&A) and confirm it's a NEW screen vs an update.
-2. **Copy the base shell** from [`templates/wireframe-base.html`](templates/) — gives you the CSS, badge styles, and the Design Assumptions table.
+2. **Copy the base shell** from [`templates/wireframe-base.html`](templates/) — gives you the CSS, badge styles, and (for backend admin screens) the left sidebar shell.
 3. **Lay out sections** top-to-bottom (header/meta → main content → totals/summary → actions). Use the patterns in [`patterns/`](patterns/).
 4. **Tag every component** with its component ID badge `<span class="b">B2</span>` (matching the `.md` `No./ID`). **No prose annotations** in the HTML; **no assumptions table** in the HTML. For a field the source doesn't fully specify, record the assumption in the `.md` spec row + assumptions list (the badge is the component ID, not the assumption number).
 5. **Save** to `output/wireframes/WF-NN-<slug>.html` (per conventions). Add a `.md` sidecar in `context/` per the Core Rule.
 6. **Write the companion component-spec doc** `output/wireframes/WF-NN-<slug>.md` (same folder, same base name) from [`templates/wireframe-spec.md`](templates/wireframe-spec.md): a component-specification table per on-screen section (its `No./ID` = the badge IDs on the screen) + the Design Assumptions list (a spec row references its assumption via `(Assumption n.)`). This is where the assumptions live and the dev-facing detail the low-fi HTML omits — see [`wireframe-notation/`](wireframe-notation/#companion-component-spec-doc).
-7. **Log assumptions** to the project tracker (e.g. a "WF Assumptions" sheet in the Q&A workbook, or `docs/wireframe-changes.md`) so the client is aware — see [`wireframe-notation/`](wireframe-notation/#logging-assumptions). Dev does **not** wait for sign-off; changes are absorbed on the relevant US.
+7. **Record assumptions** in the companion `.md` (the single source — the assumptions list). Optionally mirror to a project tracker (`docs/wireframe-changes.md`) so the client is aware. Dev does **not** wait for sign-off; changes are absorbed on the relevant US. Do **not** keep a duplicate assumptions copy in two places to maintain.
 
 ### Workflow B · Update an existing screen
 
 1. Locate the source screen (SRS figure / existing wireframe / screenshot in `input/`).
-2. Reproduce the **relevant** part of the layout — annotate only what changes (tag changed areas, e.g. `NEW vs SRS`).
-3. Same assumption-badge discipline for anything underspecified.
+2. Reproduce the **relevant** part of the layout — tag changed areas, e.g. `NEW vs <source>`.
+3. Same component-ID + assumption discipline for anything underspecified.
 
 ### Workflow C · Client language
 
-Wireframes meant for client sign-off must be in the **client's language** (default English unless the project says otherwise). Internal hints may be bilingual, but field labels, the Design Assumptions table, and annotations on a client-facing wireframe should match the language the client confirms in.
+Wireframes meant for client sign-off must be in the **client's language** (default English unless the project says otherwise). Field labels, the component spec, and assumptions should match the language the client confirms in.
+
+### Workflow D · Package screens for client review (Confluence / sign-off)
+
+Turn the HTML wireframes into a single, shareable document:
+
+1. **Render each HTML to PNG** with a headless browser — Chrome/Edge `--headless=new --hide-scrollbars --force-device-scale-factor=1.5 --screenshot=<out.png> --window-size=W,H "file:///…/WF-NN.html"` — then **trim the page background** (PIL: bbox-crop the gray margin). Save to `output/wireframes/snapshots/`.
+2. **Build one client-facing Markdown** `output/<project>-Wireframes-Client.md` — per screen: ① the snapshot image + ②.A component spec + ②.B assumptions, parsed from each WF's companion `.md`. Per-screen flags `show_spec` / `show_assumptions` (read-only **list** screens → snapshot only; some screens hide assumptions from the client copy). See [`scripts/`](scripts/).
+3. **Push to Confluence:** paste the Markdown and **attach the PNGs** (relative links `wireframes/snapshots/WF-NN.png`).
+
+> Markdown is the preferred client deliverable (diff-able, Confluence-friendly). An `.xlsx` workbook (image left, spec/assumptions right) is an alternative if the client prefers a spreadsheet, but keep a **single** generated format to maintain.
+
+## Optional · interactive state (lightweight JS)
+
+A wireframe may include a small inline `<script>` to demo state changes that are hard to show statically — e.g. lock fields + reveal an action when status = Accepted; toggle Delivery vs Store-Pickup panels; add/remove an item row. Keep it tiny and dependency-free. The behavior is still documented in the companion `.md` (so the static read is complete).
 
 ## Anti-patterns
 
