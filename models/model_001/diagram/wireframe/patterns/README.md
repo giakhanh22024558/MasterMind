@@ -13,7 +13,9 @@ Header/meta → main fields → (line-item table) → totals/summary → terms �
 
 ## List / table screen
 
-A toolbar (filters, search) above a `<table>`. Annotate a **new column** with a badge and a `NEW vs <source>` flag on the column header. Useful for "add column X to the backend list" CRs.
+A toolbar (filters, search) above a `<table>`, then pagination. For a brand-new list, top-right actions hold the primary "+ Create …" and an Export.
+
+**No assumption badges on a read-only list.** List screens are overviews, not data-entry forms — the **companion `.md` carries only the component spec** (columns, filters, actions, pagination), and the `.md` header states *"List screen — no design assumptions tracked here."* Only add a badge + assumption if the list introduces a genuinely underspecified interactive decision. For "add column X to an existing list" CRs, a `NEW vs <source>` flag on the column header is enough.
 
 ## Detail screen
 
