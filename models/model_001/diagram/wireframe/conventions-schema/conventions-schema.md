@@ -26,7 +26,7 @@ assumptions_tracker:
 
 # Visual palette (decoration only — keep low-fi)
 palette:
-  accent: "b8860b"      # amber — reserved for assumption badges
+  accent: "b8860b"      # amber — reserved for component-ID badges
   new_flag: "1a7f37"    # green — "NEW vs <source>" tag
 ```
 

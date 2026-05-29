@@ -4,12 +4,13 @@ Reusable screen patterns. Each is a layout recipe built from the [base shell](..
 
 ## Form screen (create / edit an entity)
 
-Header/meta → main fields → (line-item table) → totals/summary → terms → actions → assumptions.
+Top-right action bar → header/meta → main fields → (line-item table) → totals/summary → terms. (No assumptions section on the screen — that lives in the companion `.md`.)
 
 - Group fields into `<div class="sec">` sections with uppercase `<h2>` labels.
 - `g2` / `g3` grids for field rows.
-- Read-only/auto fields use `.ro` (dashed border) + a `.hint`.
+- Read-only/auto fields use `.ro` (dashed border) — **no `.hint`**; behavior goes in the `.md`.
 - Required fields get a red `*`.
+- **Tag every component** with its component-ID badge (`A1`, `B2`…) matching the `.md` spec.
 
 ## List / table screen
 
@@ -33,10 +34,11 @@ When a CR turns a modal into a standalone page:
 When the client wants a legacy paper/PDF form replicated (e.g. an old quotation):
 1. Read the legacy file from `input/` first.
 2. Map every legacy field into the screen — even ones the new SRS omitted.
-3. For each legacy field whose meaning/config the client hasn't restated, add an **assumption badge** (this is where most assumptions come from).
+3. Give each field a component-ID badge + a `.md` spec row. For any legacy field whose meaning/config the client hasn't restated, **record an assumption in that spec row** (`(Assumption n.)`) and in the assumptions list (this is where most assumptions come from).
 
-## Annotating change type
+## Marking components & change type
 
+- **Component-ID badge** (`A1`, `B2`…) on **every** component — maps to the `.md` spec row. This is the only required marker.
 - `NEW vs <source>` (green flag) for sections/fields not in the original spec.
-- Assumption badge ①②③ for anything underspecified.
-- A short `.hint` under a field for behavior notes that are NOT open questions.
+- Compact state tags only (e.g. `catalog` / `custom`, required `*`).
+- **No prose notes / `.hint` on the screen** — all behavior text lives in the companion `.md`.

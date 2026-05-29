@@ -28,7 +28,7 @@ Optionally append a short *"(please flag if different)"* hint to the least-certa
 
 | Element | Rule |
 |---|---|
-| Palette | Grayscale only. The single accent (amber `#b8860b`) is reserved for assumption badges + the assumptions panel. Optional green flag for "NEW vs <source>". |
+| Palette | Grayscale only. The single accent (amber `#b8860b`) is reserved for the component-ID badges. Optional green flag for "NEW vs <source>". |
 | Background | White sheet on a gray page; max-width ~1180px, centered. |
 | Typography | System sans-serif. Bold large page title. Uppercase muted section headers. |
 | Inputs | 1.5px solid black border, slight radius. Dashed border = read-only/auto. Placeholder text in gray. |
@@ -69,7 +69,7 @@ Build it from [`../templates/wireframe-spec.md`](../templates/wireframe-spec.md)
 3. **Design Assumptions** — the same flat list as the HTML (no status), with `(please flag if different)` on the least-certain rows.
 4. **Linked artifacts** — user story, Q&A workbook, change tracker.
 
-Keep the HTML and the companion `.md` in sync: badge ① on the HTML = component row referencing `(Assumption 1.)` = row #1 in the assumptions list.
+Keep the HTML and the companion `.md` in sync: badge `B2` on the HTML = the `B2` row in the component spec table, which references its assumption via `(Assumption n.)` when it has one.
 
 ## Logging assumptions
 
