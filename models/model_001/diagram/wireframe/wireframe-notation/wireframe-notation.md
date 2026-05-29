@@ -2,18 +2,19 @@
 
 How a wireframe in this skill looks and what its parts mean. Keep it **low-fidelity**: the goal is to communicate layout + behavior + open questions, not visual design.
 
-## The signature: assumption badges + Design Assumptions table
+## The signature: component-ID badges (no prose on the wireframe)
 
 This is the defining technique of the skill.
 
-- Every interactive element whose **meaning, configurability, or behavior** the source does NOT fully specify gets a small numbered badge right after its label:
+- The wireframe HTML carries **no prose annotations**. Instead **every component is tagged with its component ID** as a small badge right after its label:
   ```html
-  <label>Valid Until <span class="b">3</span></label>
+  <label>Valid Until <span class="b">B3</span></label>
   ```
-- The badges are the **only** annotation in the HTML. The **Design Assumptions list lives in the companion `.md`** (alongside the component spec) — it is **not** duplicated as a table in the HTML, so the screen stays clean.
-- The badge number ↔ assumption row number in the companion `.md` must match 1:1. Never leave a badge without a row, or a row without a badge.
+- IDs are **section-grouped**: `A`/`B`/`C`… = sections (top bar, details, items, totals…), the number = the component within the section. They match the companion `.md` `No./ID` column exactly.
+- The badge ID ↔ `.md` component-spec row must match 1:1. Never leave a component without an ID, an ID without a spec row, or a spec row without a badge on the screen.
+- **Assumptions are not badged directly.** A spec row references its assumption with `(Assumption n.)`; the assumptions are listed at the end of the `.md`. Read-only list screens carry the spec only (no assumptions).
 
-This lets a client read the screen and immediately see "what did you assume" (via the companion doc) — and lets dev start building immediately.
+This keeps the screen clean (a dev never mistakes a note for UI copy), while every component's full behavior + open questions are one ID lookup away in the companion `.md`. Compact tags (`NEW`, `catalog`/`custom`, required `*`) are allowed on the screen; full prose is not.
 
 ### No status / approval workflow
 

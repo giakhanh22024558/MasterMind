@@ -7,7 +7,11 @@ description: Draw low-fidelity UI wireframes (screen mockups) as self-contained 
 
 For **low-fidelity UI wireframes** — screen mockups that show layout, fields, and behavior for a new or changed screen, rendered as a **single self-contained HTML file** (grayscale, no external assets) that opens in any browser and exports cleanly to PDF/screenshot for client review.
 
-The signature of this skill is **numbered annotation badges**: every field whose meaning, configurability, or behavior the source has NOT fully specified is drawn against an explicit assumption and marked with a badge ①②③… on the screen. The badges are the **only** annotation kept in the HTML — the actual **component spec table and the Design Assumptions list live in the companion `.md`** (not duplicated in the HTML), so the screen stays clean and devs don't mistake notes for UI copy.
+The signature of this skill: the wireframe HTML carries **no prose annotations** — instead **every component is tagged with its component ID** (`A1`, `B2`, `C3`…) as a small badge. Each ID maps 1:1 to a row in the **component spec table** in the companion `.md`, and that row references a **Design Assumption** if the component has one. So the screen stays clean (no notes/hints a dev could mistake for UI copy), and anyone can look up a component's full behavior + open questions by its ID.
+
+- IDs are section-grouped: `A`/`B`/`C`… = the screen's sections (top bar, details, items, totals…); the number is the component within that section. They match the companion `.md` `No./ID` column exactly.
+- **No `.hint`, no inline note sentences** in the HTML. Compact tags (`NEW`, `catalog`/`custom`, `required *`) are allowed; full prose belongs in the `.md`.
+- Assumptions are **not** badged directly — they are reached via the component spec row (`(Assumption n.)`), and listed at the end of the `.md`. (Read-only list screens carry the spec only, no assumptions.)
 
 ## Build-against-assumptions (do NOT block on client sign-off)
 
@@ -54,7 +58,7 @@ For data models use [`../erd/`](../erd/); for system/component architecture use 
 1. **Identify the source** (CR / SRS figure / Q&A) and confirm it's a NEW screen vs an update.
 2. **Copy the base shell** from [`templates/wireframe-base.html`](templates/) — gives you the CSS, badge styles, and the Design Assumptions table.
 3. **Lay out sections** top-to-bottom (header/meta → main content → totals/summary → actions). Use the patterns in [`patterns/`](patterns/).
-4. **For every field the source doesn't fully specify**, design against an assumption and drop a numbered badge `<span class="b">n</span>` on the screen. **Do not add an assumptions table to the HTML** — the badge just points to the companion `.md`.
+4. **Tag every component** with its component ID badge `<span class="b">B2</span>` (matching the `.md` `No./ID`). **No prose annotations** in the HTML; **no assumptions table** in the HTML. For a field the source doesn't fully specify, record the assumption in the `.md` spec row + assumptions list (the badge is the component ID, not the assumption number).
 5. **Save** to `output/wireframes/WF-NN-<slug>.html` (per conventions). Add a `.md` sidecar in `context/` per the Core Rule.
 6. **Write the companion component-spec doc** `output/wireframes/WF-NN-<slug>.md` (same folder, same base name) from [`templates/wireframe-spec.md`](templates/wireframe-spec.md): a component-specification table per on-screen section + the Design Assumptions list (`badge ① ↔ Assumption 1`). This is where the assumptions live and the dev-facing detail the low-fi HTML omits — see [`wireframe-notation/`](wireframe-notation/#companion-component-spec-doc).
 7. **Log assumptions** to the project tracker (e.g. a "WF Assumptions" sheet in the Q&A workbook, or `docs/wireframe-changes.md`) so the client is aware — see [`wireframe-notation/`](wireframe-notation/#logging-assumptions). Dev does **not** wait for sign-off; changes are absorbed on the relevant US.
@@ -71,11 +75,13 @@ Wireframes meant for client sign-off must be in the **client's language** (defau
 
 ## Anti-patterns
 
-- ❌ Inventing field behavior silently — if the source doesn't specify it, make it an explicit **assumption badge**, never a hidden decision.
+- ❌ **Prose annotations / `.hint` notes in the HTML** — the wireframe carries component-ID badges only; all behavior text lives in the companion `.md`. (Compact tags like `NEW` are fine.)
+- ❌ A component on the screen with **no ID badge**, or an ID badge with **no matching `.md` spec row** — keep them 1:1.
+- ❌ Inventing field behavior silently — if the source doesn't specify it, record it as an explicit assumption in the `.md` spec row, never a hidden decision.
 - ❌ **Blocking development on client sign-off of assumptions** — dev builds against them; changes are absorbed on the US. Do not add a status/approval workflow to the assumptions.
 - ❌ High-fidelity / pixel-perfect styling — this skill is **low-fi**; color is for structure (sections) and annotations only.
 - ❌ External dependencies (web fonts, CDN CSS, images) — wireframes must be **single self-contained HTML** so they open offline and export cleanly.
-- ❌ Losing assumptions — every badge MUST have a row in the Design Assumptions table AND be logged to the project tracker.
+- ❌ Losing assumptions — record each in the companion `.md` (spec row ref + list) AND the project tracker.
 - ❌ Re-running a generator that overwrites a hand-maintained client file (e.g. a Q&A workbook with filled answers) — append via load+edit instead.
 - ❌ Mixing languages on a client-facing wireframe.
 

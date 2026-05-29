@@ -19,11 +19,11 @@ Group components by on-screen section (A, B, C…). One table per section. Colum
 
 ## Design Assumptions
 
-Plain list — no status column (dev builds against these; client feedback → change on the relevant US). Mark the least-certain rows with *(please flag if different)*. Mirror to the project assumptions tracker (`A-WFNN-nn`).
+Plain list — no status column (dev builds against these; client feedback → change on the relevant US). Reached from the component spec rows above via `(Assumption n.)`, **not** badged on the wireframe (the wireframe badges are component IDs). Mark the least-certain rows with *(please flag if different)*. Mirror to the project assumptions tracker (`A-WFNN-nn`). *(Read-only list screens: omit this section.)*
 
 | # | Assumption |
 |---|---|
-| 1 | <assumption — matches badge ① on the HTML> |
+| 1 | <assumption referenced by a component spec row above> |
 | 2 | <…> |
 
 ## Linked artifacts
