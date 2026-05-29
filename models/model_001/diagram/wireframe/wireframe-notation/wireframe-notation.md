@@ -48,6 +48,28 @@ Optionally append a short *"(please flag if different)"* hint to the least-certa
 7. Footer actions (Cancel / Save / Confirm …)
 8. **Design Assumptions** table
 
+## Action bar placement
+
+- **Full-page (standalone) screens:** put the primary actions in a **top-right action bar** in the header (title on the left), not at the bottom. Include an **Export PDF** action when the screen represents a document the customer receives (quotation, invoice, order). Conditional actions (e.g. *Generate Order*) live in the same bar and show/hide by state.
+- **Pop-up / modal screens:** keep actions at the bottom of the modal (Cancel / Confirm), as modals are read top-to-bottom and dismissed at the bottom.
+
+## Companion component-spec doc
+
+Every wireframe ships with a **companion `.md`** next to the HTML — same folder, same base name (`WF-NN-<slug>.html` + `WF-NN-<slug>.md`). It carries the **dev-facing detail that the low-fi HTML deliberately omits**, so the HTML stays clean (avoids dev misreading inline notes as UI copy) while devs still get a precise spec.
+
+Build it from [`../templates/wireframe-spec.md`](../templates/wireframe-spec.md). Contents:
+
+1. **Header** — link back to the HTML, the source (story/CR/legacy), screen type, breadcrumb, and the build-against-assumptions note.
+2. **Component specification** — one table per on-screen section (A, B, C…), using the SRS component-spec columns: `No./ID · Name / Label · Type · Attribute · Description`.
+   - **Type** vocabulary: `Button · Text input · Number input · Dropdown (single/multi) · Date input · Text area · Icon button · Number (computed) · Display`.
+   - **Attribute** vocabulary: `Required · Read-only · Disabled · Auto · Computed · Conditional · Default: x · > 0 · ≥ 0 · …`.
+   - Cross-reference assumptions inline with `(Assumption n.)` so each component ties to its badge.
+   - Add a small **Status-based locking / Conditional behavior** table when the screen has state-dependent rules.
+3. **Design Assumptions** — the same flat list as the HTML (no status), with `(please flag if different)` on the least-certain rows.
+4. **Linked artifacts** — user story, Q&A workbook, change tracker.
+
+Keep the HTML and the companion `.md` in sync: badge ① on the HTML = component row referencing `(Assumption 1.)` = row #1 in the assumptions list.
+
 ## Logging assumptions
 
 A badge in the HTML is not enough — assumptions must be **recorded** so the client is aware and any later feedback has a home. Log every assumption to a project tracker:

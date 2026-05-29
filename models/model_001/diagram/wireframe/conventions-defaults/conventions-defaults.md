@@ -7,6 +7,8 @@ Applied when `<project-root>/wireframe-conventions.md` does not specify a value.
 | `format` | `html` | Single self-contained HTML file (no external assets). |
 | `output_dir` | `output/wireframes/` | One file per screen. |
 | `file_name` | `WF-{nn:02d}-{slug}.html` | e.g. `WF-01-create-quotation-standalone.html`. The `WF-NN` ties to the change tracker. |
+| Companion doc | `WF-{nn:02d}-{slug}.md` (same folder) | Component-spec table per section + assumptions; dev-facing detail the HTML omits. From `templates/wireframe-spec.md`. |
+| Action bar | Full-page: **top-right** + Export PDF for document screens · Modal: bottom (Cancel/Confirm) | Keep the low-fi HTML clean; detailed component behavior goes in the companion `.md`. |
 | `language` | `en` | Client-facing wireframes default to English so they can be sent for sign-off. Switch to the client's language only if the project says so. |
 | `assumptions_tracker.kind` | `qa_sheet` | Log assumptions to a `WF Assumptions` sheet in the project Q&A workbook; fall back to `docs/wireframe-changes.md` if no Q&A workbook exists. |
 | `assumptions_tracker.id_format` | `A-WF{wf_nn}-{nn:02d}` | e.g. `A-WF01-04`. |

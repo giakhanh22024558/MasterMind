@@ -42,7 +42,7 @@ For data models use [`../erd/`](../erd/); for system/component architecture use 
 | [`conventions-schema/`](conventions-schema/) | What a project must define (format, file naming, output dir, assumption tracker location) |
 | [`conventions-defaults/`](conventions-defaults/) | Defaults: self-contained HTML, grayscale low-fi, `output/wireframes/WF-NN-<slug>.html` |
 | [`wireframe-notation/`](wireframe-notation/) | The visual language: badge annotations, Design Assumptions table, section/field patterns, the base HTML shell |
-| [`templates/`](templates/) | `wireframe-base.html` — copy-and-fill shell with the canonical CSS + annotation styles |
+| [`templates/`](templates/) | `wireframe-base.html` (HTML shell) + `wireframe-spec.md` (companion component-spec doc) |
 | [`patterns/`](patterns/) | Reusable screen patterns (form screen, list/table screen, detail screen, pop-up→full-page) |
 | [`examples/`](examples/) | Worked walkthrough (Create Quotation standalone) |
 | [`scripts/`](scripts/) | Helper scripts (if applicable) |
@@ -56,7 +56,8 @@ For data models use [`../erd/`](../erd/); for system/component architecture use 
 3. **Lay out sections** top-to-bottom (header/meta → main content → totals/summary → actions). Use the patterns in [`patterns/`](patterns/).
 4. **For every field the source doesn't fully specify**, design against an assumption, drop a numbered badge `<span class="b">n</span>`, and add a matching row to the Design Assumptions table (a plain statement — no status).
 5. **Save** to `output/wireframes/WF-NN-<slug>.html` (per conventions). Add a `.md` sidecar in `context/` per the Core Rule.
-6. **Log assumptions** to the project tracker (e.g. a "WF Assumptions" sheet in the Q&A workbook, or `docs/wireframe-changes.md`) so the client is aware — see [`wireframe-notation/`](wireframe-notation/#logging-assumptions). Dev does **not** wait for sign-off; changes are absorbed on the relevant US.
+6. **Write the companion component-spec doc** `output/wireframes/WF-NN-<slug>.md` (same folder, same base name) from [`templates/wireframe-spec.md`](templates/wireframe-spec.md): a component-specification table per on-screen section + the Design Assumptions list. This is the dev-facing detail that the low-fi HTML deliberately omits — see [`wireframe-notation/`](wireframe-notation/#companion-component-spec-doc).
+7. **Log assumptions** to the project tracker (e.g. a "WF Assumptions" sheet in the Q&A workbook, or `docs/wireframe-changes.md`) so the client is aware — see [`wireframe-notation/`](wireframe-notation/#logging-assumptions). Dev does **not** wait for sign-off; changes are absorbed on the relevant US.
 
 ### Workflow B · Update an existing screen
 
