@@ -7,7 +7,7 @@ description: Draw low-fidelity UI wireframes (screen mockups) as self-contained 
 
 For **low-fidelity UI wireframes** — screen mockups that show layout, fields, and behavior for a new or changed screen, rendered as a **single self-contained HTML file** (grayscale, no external assets) that opens in any browser and exports cleanly to PDF/screenshot for client review.
 
-The signature of this skill is **numbered annotation badges + a Design Assumptions table**: every field whose meaning, configurability, or behavior the source has NOT fully specified is drawn against an explicit assumption, marked with a badge ①②③…, and listed in a plain table at the bottom of the screen.
+The signature of this skill is **numbered annotation badges**: every field whose meaning, configurability, or behavior the source has NOT fully specified is drawn against an explicit assumption and marked with a badge ①②③… on the screen. The badges are the **only** annotation kept in the HTML — the actual **component spec table and the Design Assumptions list live in the companion `.md`** (not duplicated in the HTML), so the screen stays clean and devs don't mistake notes for UI copy.
 
 ## Build-against-assumptions (do NOT block on client sign-off)
 
@@ -15,7 +15,7 @@ The dev team **proceeds to implement the user stories against the assumptions** 
 
 - The wireframe carries a standing note: *"Dev builds against these assumptions; flag anything that should differ and we'll record the change on the relevant user story."*
 - If the client later disagrees with an assumption, it's handled as a **change on the corresponding US** (update the AC) — build-and-adjust, mid-development. No separate approval gate.
-- Therefore the Design Assumptions table has **no status/approval column** (no "Decided / To confirm / Need clarification" workflow). It's a flat list of statements the build was made against. Optionally mark the least-certain ones with a short *"(please flag if different)"* hint — but never a blocking status.
+- Therefore the Design Assumptions list (in the companion `.md`) has **no status/approval column** (no "Decided / To confirm / Need clarification" workflow). It's a flat list of statements the build was made against. Optionally mark the least-certain ones with a short *"(please flag if different)"* hint — but never a blocking status.
 
 ## When to use this sub-skill
 
@@ -54,9 +54,9 @@ For data models use [`../erd/`](../erd/); for system/component architecture use 
 1. **Identify the source** (CR / SRS figure / Q&A) and confirm it's a NEW screen vs an update.
 2. **Copy the base shell** from [`templates/wireframe-base.html`](templates/) — gives you the CSS, badge styles, and the Design Assumptions table.
 3. **Lay out sections** top-to-bottom (header/meta → main content → totals/summary → actions). Use the patterns in [`patterns/`](patterns/).
-4. **For every field the source doesn't fully specify**, design against an assumption, drop a numbered badge `<span class="b">n</span>`, and add a matching row to the Design Assumptions table (a plain statement — no status).
+4. **For every field the source doesn't fully specify**, design against an assumption and drop a numbered badge `<span class="b">n</span>` on the screen. **Do not add an assumptions table to the HTML** — the badge just points to the companion `.md`.
 5. **Save** to `output/wireframes/WF-NN-<slug>.html` (per conventions). Add a `.md` sidecar in `context/` per the Core Rule.
-6. **Write the companion component-spec doc** `output/wireframes/WF-NN-<slug>.md` (same folder, same base name) from [`templates/wireframe-spec.md`](templates/wireframe-spec.md): a component-specification table per on-screen section + the Design Assumptions list. This is the dev-facing detail that the low-fi HTML deliberately omits — see [`wireframe-notation/`](wireframe-notation/#companion-component-spec-doc).
+6. **Write the companion component-spec doc** `output/wireframes/WF-NN-<slug>.md` (same folder, same base name) from [`templates/wireframe-spec.md`](templates/wireframe-spec.md): a component-specification table per on-screen section + the Design Assumptions list (`badge ① ↔ Assumption 1`). This is where the assumptions live and the dev-facing detail the low-fi HTML omits — see [`wireframe-notation/`](wireframe-notation/#companion-component-spec-doc).
 7. **Log assumptions** to the project tracker (e.g. a "WF Assumptions" sheet in the Q&A workbook, or `docs/wireframe-changes.md`) so the client is aware — see [`wireframe-notation/`](wireframe-notation/#logging-assumptions). Dev does **not** wait for sign-off; changes are absorbed on the relevant US.
 
 ### Workflow B · Update an existing screen

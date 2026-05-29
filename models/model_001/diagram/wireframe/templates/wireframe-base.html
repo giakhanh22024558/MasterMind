@@ -86,11 +86,11 @@
     <div class="topactions">
       <button class="tbtn">⭳ Export PDF</button>      <!-- document screens only -->
       <button class="tbtn ghost">Cancel</button>
-      <button class="tbtn primary">Confirm</button>
+      <button class="tbtn primary">Save</button>
       <!-- <button class="tbtn gen" id="genOrder">Generate Order →</button>  conditional -->
     </div>
   </div>
-  <div class="legend">Low-fi wireframe · badges <span class="b" style="margin:0">n</span> only point to the <b>Design Assumptions</b> table below — they are not UI elements. Detailed component spec lives in the companion <code>WF-NN-&lt;slug&gt;.md</code>.</div>
+  <div class="legend">Low-fi wireframe · badges <span class="b" style="margin:0">n</span> are not UI elements — they map to the component spec &amp; Design Assumptions in the companion <code>WF-NN-&lt;slug&gt;.md</code>.</div>
 
   <div class="sec">
     <h2>Section title <span class="new-flag">NEW vs &lt;source&gt;</span></h2>
@@ -100,18 +100,9 @@
     </div>
   </div>
 
-  <!-- add sections / item tables / totals as needed. Keep the HTML clean: NO inline hint notes —
-       put field behavior in the companion WF-NN-<slug>.md component-spec table instead. -->
-
-  <div class="assume">
-    <h3>Design Assumptions</h3>
-    <p style="font-size:12px;color:#7a5c00;margin:0 0 10px;">Dev builds against these — no pre-approval needed. Flag anything that should differ → recorded as a change on the relevant US. Mirror to the project assumptions tracker.</p>
-    <table>
-      <tr><th style="width:34px;">#</th><th>Assumption (dev builds against this)</th></tr>
-      <tr><td class="id">1</td><td>&lt;assumption for badge 1&gt; <i>(please flag if different)</i></td></tr>
-      <tr><td class="id">2</td><td>&lt;assumption for badge 2&gt;</td></tr>
-    </table>
-  </div>
+  <!-- add sections / item tables / totals as needed. Keep the HTML clean: NO inline hint notes and
+       NO assumptions table — field behavior + the Design Assumptions list live in the companion
+       WF-NN-<slug>.md (badge ① ↔ Assumption 1). The badges above are the only annotation here. -->
 
 </div>
 </body>

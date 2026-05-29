@@ -10,14 +10,14 @@ This is the defining technique of the skill.
   ```html
   <label>Valid Until <span class="b">3</span></label>
   ```
-- At the bottom of the screen, a **Design Assumptions** table lists each number as a **plain statement** of what the wireframe (and the build) was drawn against.
-- The badge number ↔ table row number must match 1:1. Never leave a badge without a row, or a row without a badge.
+- The badges are the **only** annotation in the HTML. The **Design Assumptions list lives in the companion `.md`** (alongside the component spec) — it is **not** duplicated as a table in the HTML, so the screen stays clean.
+- The badge number ↔ assumption row number in the companion `.md` must match 1:1. Never leave a badge without a row, or a row without a badge.
 
-This lets a client read the screen and immediately see "what did you assume" — and lets dev start building immediately.
+This lets a client read the screen and immediately see "what did you assume" (via the companion doc) — and lets dev start building immediately.
 
 ### No status / approval workflow
 
-Dev **builds against** the assumptions; it does **not** wait for the client to approve them. So the table has **no status column** (`Decided / To confirm / Need clarification` etc.). It is a flat list of statements. The screen carries one standing note near the table:
+Dev **builds against** the assumptions; it does **not** wait for the client to approve them. So the assumptions list (in the companion `.md`) has **no status column** (`Decided / To confirm / Need clarification` etc.). It is a flat list of statements, carrying one standing note at the top:
 
 > *The dev team builds against these assumptions — no pre-approval needed. Flag anything that should differ and we'll record the change on the relevant user story.*
 
@@ -39,14 +39,14 @@ Optionally append a short *"(please flag if different)"* hint to the least-certa
 
 ## Section order (typical form screen)
 
-1. Breadcrumb + page title (+ auto IDs on the right)
+1. Breadcrumb + page title (+ top-right actions for full-page; auto IDs near the title)
 2. Header / meta fields
 3. Main content (the entity being created/edited)
 4. Line items / sub-table (if any)
 5. Totals / summary
 6. Secondary blocks (terms, signatures…)
-7. Footer actions (Cancel / Save / Confirm …)
-8. **Design Assumptions** table
+
+(No assumptions table in the HTML — it lives in the companion `.md`. A short legend line under the title tells the reader the badges point to that companion doc.)
 
 ## Action bar placement
 
